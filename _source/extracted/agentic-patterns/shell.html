@@ -1,0 +1,36 @@
+<div class="topbar">
+  <button class="mbtn" id="menuBtn">☰ Curriculum</button>
+  <span class="tt">Agentic Patterns</span>
+  <span class="tp" id="topPct">0%</span>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand"><span class="dot"></span><span class="name">The Console</span></div>
+    <div class="course-switch" id="courseSwitch">
+      <button class="cs-trigger" id="csTrigger" aria-haspopup="true" aria-expanded="false">
+        <span class="cs-ic">🔁</span>
+        <span class="cs-tx"><span class="cs-name">Agentic Patterns</span><span class="cs-meta">Course 02 of 03 · switch ▾</span></span>
+        <span class="cs-caret">▾</span>
+      </button>
+      <div class="cs-menu" id="csMenu">
+        <a class="cs-item" href="https://claude.ai/code/artifact/beb16fc4-2571-4fa9-991f-cbdd2adfd374" target="_blank" rel="noopener"><span class="cs-ic">🎛️</span><span class="cs-t"><b>Context Engineering</b><span>Course 01 · open →</span></span></a>
+        <a class="cs-item current"><span class="cs-ic">🔁</span><span class="cs-t"><b>Agentic Patterns</b><span>Course 02 · you're here</span></span><span class="cs-check">●</span></a>
+        <a class="cs-item" href="https://claude.ai/code/artifact/eeab613e-a8e8-43d0-9972-5e25bea2b7ee" target="_blank" rel="noopener"><span class="cs-ic">🕸️</span><span class="cs-t"><b>Multi-Agent Systems</b><span>Course 03 · open →</span></span></a>
+      </div>
+    </div>
+    <div class="sb-sub">full course · ~2.5 hrs · 33 lessons</div>
+    <div class="sb-progress">
+      <div class="pl"><span>Course progress</span><span><b id="pdone">0</b>/<span id="ptotal">0</span> lessons</span></div>
+      <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    </div>
+    <div class="curriculum" id="curriculum"></div>
+    <button class="theme-btn" id="themeBtn">◐ Toggle theme</button>
+  </aside>
+
+  <div class="stage">
+    <article class="lesson" id="lesson"></article>
+    <div class="lesson-footer" id="footer"></div>
+  </div>
+</div>

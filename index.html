@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agentcraft — AI Agent Engineering</title>
+<meta name="description" content="Four hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, and evals & observability.">
+<meta name="theme-color" content="#0E1216">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="stylesheet" href="./shared/hub.css">
+</head>
+<body>
+
+<button class="theme-fab" id="themeFab" aria-label="Toggle dark / light theme" title="Toggle dark / light theme">
+  <span class="ic-light">🌙</span><span class="ic-dark">☀️</span>
+</button>
+
+<div class="wrap">
+
+  <div class="brand"><span class="dot"></span><span class="name">Agentcraft</span></div>
+  <h1>Build AI systems that actually work.</h1>
+  <p class="lede">Four hands-on courses, 130 lessons. Each one has live instruments to play with, a checkpoint quiz per section and a final exam. Progress saves on this device — nothing is uploaded anywhere.</p>
+
+  <div class="overall">
+    <div class="row"><span>Total progress</span><span><b id="ov-done">0</b> / 130 lessons</span></div>
+    <div class="track"><div class="fill" id="ov-fill"></div></div>
+  </div>
+
+  <div class="grid" id="grid">
+      <a class="course" href="./context-engineering.html" data-key="agentcraft_ce_full_v1" data-total="30">
+        <span class="ic">🎛️</span>
+        <span>
+          <span class="num">Course 01</span>
+          <h2>Context Engineering</h2>
+          <p>Decide, on every turn, exactly what the model sees. The highest-leverage skill in building reliable agents.</p>
+          <span class="meta"><span>30 lessons</span><span>~2.5 hrs</span><span class="done-note"></span></span>
+        </span>
+        <span class="cta"><span class="pct none">0%</span><span class="go">Start →</span></span>
+        <span class="ctrack"><span class="cfill"></span></span>
+      </a>
+      <a class="course" href="./agentic-patterns.html" data-key="agentcraft_ap_full_v1" data-total="33">
+        <span class="ic">🔁</span>
+        <span>
+          <span class="num">Course 02</span>
+          <h2>Agentic Patterns</h2>
+          <p>The reasoning and control shapes that turn a raw model into an agent that acts, checks itself and recovers.</p>
+          <span class="meta"><span>33 lessons</span><span>~2.5 hrs</span><span class="done-note"></span></span>
+        </span>
+        <span class="cta"><span class="pct none">0%</span><span class="go">Start →</span></span>
+        <span class="ctrack"><span class="cfill"></span></span>
+      </a>
+      <a class="course" href="./multi-agent-systems.html" data-key="agentcraft_ma_full_v1" data-total="34">
+        <span class="ic">🕸️</span>
+        <span>
+          <span class="num">Course 03</span>
+          <h2>Multi-Agent Systems</h2>
+          <p>Designing systems where agents cooperate — topologies, communication, cost, and when not to build one.</p>
+          <span class="meta"><span>34 lessons</span><span>~2.5 hrs</span><span class="done-note"></span></span>
+        </span>
+        <span class="cta"><span class="pct none">0%</span><span class="go">Start →</span></span>
+        <span class="ctrack"><span class="cfill"></span></span>
+      </a>
+      <a class="course" href="./evals-and-observability.html" data-key="agentcraft_eo_full_v1" data-total="33">
+        <span class="ic">📊</span>
+        <span>
+          <span class="num">Course 04</span>
+          <h2>Evals & Observability</h2>
+          <p>How you know any of it works. Eval sets, LLM-as-judge, tracing, regression gates and production drift.</p>
+          <span class="meta"><span>33 lessons</span><span>~3 hrs</span><span class="done-note"></span></span>
+        </span>
+        <span class="cta"><span class="pct none">0%</span><span class="go">Start →</span></span>
+        <span class="ctrack"><span class="cfill"></span></span>
+      </a>
+  </div>
+
+  <div class="note"><b>Suggested order:</b> 01 → 02 → 03 → 04. Each course stands alone, but they build: context engineering is the ground the patterns run on, multi-agent design is those patterns scaled out, and evals are how you find out whether any of it worked. If you only take one, take 01. If you already ship AI features and something feels unmeasurable, jump to 04.</div>
+
+  <footer>
+    <button class="btn" id="themeBtn">◐ Theme</button>
+    <button class="btn" id="bk-export">↓ Export progress</button>
+    <button class="btn" id="bk-import">↑ Import progress</button>
+    <input type="file" id="bk-file" accept="application/json" hidden>
+    <span class="sp"></span>
+    <span class="fine">progress stored locally · no account, no server</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var THEME_KEY = 'agentcraft_theme';
+  var PREFIX = 'agentcraft_';
+  var root = document.documentElement;
+
+  try { var t = localStorage.getItem(THEME_KEY); if (t) root.setAttribute('data-theme', t); } catch (e) {}
+  function toggleTheme() {
+    var cur = root.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  }
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  document.getElementById('themeFab').addEventListener('click', toggleTheme);
+
+  function paint() {
+    var done = 0, total = 0;
+    [].forEach.call(document.querySelectorAll('.course'), function (card) {
+      var key = card.getAttribute('data-key');
+      var lessons = parseInt(card.getAttribute('data-total'), 10);
+      var n = 0;
+      try {
+        var raw = localStorage.getItem(key);
+        if (raw) {
+          var store = JSON.parse(raw);
+          n = Object.keys(store.done || {}).filter(function (k) { return store.done[k]; }).length;
+        }
+      } catch (e) {}
+      n = Math.min(n, lessons);
+      done += n; total += lessons;
+
+      var pct = Math.round((n / lessons) * 100);
+      var pctEl = card.querySelector('.pct');
+      pctEl.textContent = pct + '%';
+      pctEl.className = 'pct ' + (pct === 0 ? 'none' : pct >= 100 ? 'done' : 'part');
+      card.querySelector('.go').textContent =
+        pct === 0 ? 'Start →' : pct >= 100 ? 'Review →' : 'Continue →';
+      card.querySelector('.done-note').textContent = n > 0 ? n + ' done' : '';
+      var fill = card.querySelector('.cfill');
+      fill.style.width = pct + '%';
+      fill.className = 'cfill' + (pct >= 100 ? ' complete' : '');
+    });
+    document.getElementById('ov-done').textContent = done;
+    document.getElementById('ov-fill').style.width = Math.round((done / total) * 100) + '%';
+  }
+
+  /* ---- progress backup, same format the course pages read ---- */
+  document.getElementById('bk-export').addEventListener('click', function () {
+    var data = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(PREFIX) === 0) data[k] = localStorage.getItem(k);
+    }
+    var blob = new Blob([JSON.stringify({ kind: 'agentcraft-progress', version: 1, data: data }, null, 2)],
+      { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'agentcraft-progress.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  var file = document.getElementById('bk-file');
+  document.getElementById('bk-import').addEventListener('click', function () { file.click(); });
+  file.addEventListener('change', function () {
+    var f = file.files && file.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var parsed = JSON.parse(String(reader.result));
+        if (!/^(agentcraft|the-console)-progress$/.test(parsed.kind)) throw new Error('wrong file');
+        Object.keys(parsed.data).forEach(function (k) {
+          if (k.indexOf(PREFIX) === 0) localStorage.setItem(k, parsed.data[k]);
+        });
+        paint();
+      } catch (e) {
+        alert("That file isn't a Console progress export.");
+      }
+      file.value = '';
+    };
+    reader.readAsText(f);
+  });
+
+  paint();
+})();
+</script>
+</body>
+</html>

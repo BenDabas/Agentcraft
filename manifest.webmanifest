@@ -1,0 +1,29 @@
+{
+  "name": "Agentcraft — AI Agent Engineering",
+  "short_name": "Agentcraft",
+  "description": "Four hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, and evals & observability.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0E1216",
+  "theme_color": "#0E1216",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

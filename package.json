@@ -1,0 +1,9 @@
+{
+  "name": "agentcraft",
+  "private": true,
+  "description": "Four hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, and evals & observability.",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs"
+  }
+}

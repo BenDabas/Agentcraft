@@ -1,0 +1,395 @@
+<script type="text/html" data-lesson="1-1">
+  <div class="obj"><div class="ol">In this course</div>You'll learn to design systems where multiple agents cooperate — how to structure them, how they communicate, how to keep them reliable and cheap, and, above all, when <em>not</em> to build one.</div>
+  <p>Welcome to course 03. It builds on the first two: multi-agent systems are the <em>Isolate</em> operation from Context Engineering plus the orchestration patterns from Agentic Patterns, taken to their full form. This is hands-on — you'll step through a live orchestrator, explore topologies interactively, and use a decision tool, with a checkpoint after every section and a final exam.</p>
+  <h2>What you'll be able to do by the end</h2>
+  <div class="hero-outcomes">
+    <div class="outcome"><span class="ck">✓</span><span>Decide honestly whether a task needs multiple agents at all.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Pick the right topology — orchestrator, pipeline, parallel, or network.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Design how agents communicate and what context travels between them.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Anticipate multi-agent failure modes, cost, and the security surface.</span></div>
+  </div>
+  <h2>The one rule that governs everything here</h2>
+  <div class="callout key"><span class="ic">!</span><p><strong>Multi-agent is a cost you pay to buy something a single agent can't give you.</strong> More agents means more calls, more latency, more coordination, more ways to fail. This course teaches you to reach for it deliberately — and to recognize when one good agent would have been better.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-2">
+  <div class="obj"><div class="ol">Objective</div>Define a multi-agent system precisely, and separate it from a single agent with many tools.</div>
+  <p>A <strong>multi-agent system</strong> is one where two or more agents — each with its own context, and often its own role, tools, and even model — work together toward a goal, coordinating through some form of communication.</p>
+  <p>The key word is <em>own context</em>. A single agent with fifty tools is still one agent: one window, one reasoning loop. Multi-agent means <strong>multiple independent windows</strong>, each reasoning separately, whose outputs are combined.</p>
+  <table class="tbl">
+    <tr><th></th><th>Single agent (many tools)</th><th>Multi-agent</th></tr>
+    <tr><td><b>Windows</b></td><td>One shared context</td><td>Several independent contexts</td></tr>
+    <tr><td><b>Reasoning</b></td><td>One loop</td><td>Multiple loops, coordinated</td></tr>
+    <tr><td><b>Strength</b></td><td>Simple, coherent, cheap</td><td>Scales past one context; specialization</td></tr>
+    <tr><td><b>Cost</b></td><td>Low</td><td>More calls, latency, coordination</td></tr>
+  </table>
+  <div class="callout tip"><span class="ic">✓</span><p>If you can't point to <em>separate contexts doing separate reasoning</em>, you don't have a multi-agent system — you have one agent, and that's usually fine.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-3">
+  <div class="obj"><div class="ol">Objective</div>Know the real reasons to go multi-agent — and the real costs.</div>
+  <p>There are only a few <em>good</em> reasons to split into multiple agents. Learn them, because everything else is usually over-engineering.</p>
+  <h2>Legitimate reasons</h2>
+  <ul>
+    <li><strong>Context won't fit.</strong> The task involves more material than one clean window can hold without rotting. Split it (Isolate).</li>
+    <li><strong>Genuine parallelism.</strong> Independent sub-tasks can run at the same time, cutting wall-clock time.</li>
+    <li><strong>Specialization.</strong> Sub-tasks need very different tools, instructions, or even models — a coder, a researcher, a critic.</li>
+    <li><strong>Isolation of risk.</strong> You want a sandboxed agent with narrow permissions handling untrusted input, separate from a privileged one.</li>
+  </ul>
+  <h2>The costs you always pay</h2>
+  <div class="cards">
+    <div class="card"><div class="num">COST</div><h4>Latency</h4><p>Coordination round-trips add up; a chain of agents is only as fast as its slowest link.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Money</h4><p>Every agent is more model calls. Fan-out multiplies token spend.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Fragility</h4><p>More components, more coordination bugs, more places for errors to propagate.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Debuggability</h4><p>A failure is now spread across several agents' traces, not one.</p></div>
+  </div>
+  <div class="callout warn"><span class="ic">▲</span><p>If none of the four legitimate reasons applies, a single agent is almost certainly the better system. "It sounds more sophisticated" is not a reason.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-4">
+  <div class="obj"><div class="ol">Objective</div>Adopt the discipline of clearing the single-agent bar first.</div>
+  <p>The most valuable habit in this entire course: before building a multi-agent system, prove a single agent can't do the job. This isn't caution for its own sake — single-agent systems are dramatically easier to build, debug, and run.</p>
+  <h2>The escalation ladder</h2>
+  <ol>
+    <li><strong>Single model call</strong> — can a well-assembled prompt do it?</li>
+    <li><strong>Workflow</strong> — a fixed chain of steps you control?</li>
+    <li><strong>Single agent (ReAct loop)</strong> — one context, a curated tool set?</li>
+    <li><strong>Multi-agent</strong> — only when 1–3 genuinely can't hold the task.</li>
+  </ol>
+  <div class="callout key"><span class="ic">=</span><p>This is the same ladder from Agentic Patterns, extended by one rung. Climb it in order. Each rung is an order of magnitude simpler to operate than the next — spend the complexity only when forced.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>A good test: try the single-agent version first, even as a throwaway. If it gets 80% of the way, you've learned the task is more tractable than it looked — and you have a baseline to beat.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 1</div>Confirm the foundations before topologies.</div>
+  <p>Three questions on what a multi-agent system is and when to reach for one.</p>
+  <div data-mount="quiz" data-quiz="s1"></div>
+</script>
+
+<script type="text/html" data-lesson="2-1">
+  <div class="obj"><div class="ol">Objective</div>See the four core topologies at a glance — the shapes almost every multi-agent system is built from.</div>
+  <p>Multi-agent designs come in a handful of recurring <strong>topologies</strong> — the wiring diagram of who talks to whom. Explore them below; the rest of this section takes each one in depth.</p>
+  <div data-mount="topology"></div>
+  <div class="callout key"><span class="ic">!</span><p>Most real systems are a <em>composition</em> of these — an orchestrator whose workers each run a small pipeline, say. Learn the four pure forms first; you'll blend them later.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-2">
+  <div class="obj"><div class="ol">Objective</div>Master orchestrator–workers, the most common and most useful topology.</div>
+  <p>In <strong>orchestrator–workers</strong> (also called supervisor/lead), one agent owns the goal. It <em>decomposes</em> the task, <em>delegates</em> sub-tasks to worker agents — each in its own isolated context — and <em>synthesizes</em> their results into the final answer.</p>
+  <h2>Step through a real orchestrator run</h2>
+  <p>Watch a lead agent build a competitive brief by dispatching three workers in parallel, then synthesizing three short summaries instead of drowning in thirty documents. Step through it:</p>
+  <div data-mount="orch"></div>
+  <div class="callout key"><span class="ic">=</span><p>This is the <em>Isolate</em> operation as an architecture: each worker sees only its slice and returns a distilled result, so the orchestrator reasons over summaries, not raw material. The whole system stays within clean windows.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-3">
+  <div class="obj"><div class="ol">Objective</div>Use the pipeline topology when order matters.</div>
+  <p>A <strong>pipeline</strong> (sequential) passes work through agents in a fixed order, each transforming the output of the last: draft → edit → fact-check → format. It's the multi-agent cousin of prompt chaining, with each stage being a full agent rather than a single call.</p>
+  <h2>When it fits</h2>
+  <ul>
+    <li>The stages are <strong>genuinely sequential</strong> — each needs the previous one's output.</li>
+    <li>Each stage benefits from its <strong>own specialized</strong> instructions/tools (a "writer" agent, then a distinct "editor" agent).</li>
+    <li>You want <strong>inspectable hand-offs</strong> between stages for debugging or human review.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">▲</span><p>The pipeline's weakness is its serial nature: total latency is the sum of all stages, and an early-stage error propagates downstream. If your stages are actually independent, you want parallel, not pipeline.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-4">
+  <div class="obj"><div class="ol">Objective</div>Use parallel / map-reduce to cut wall-clock time on independent work.</div>
+  <p>The <strong>parallel</strong> topology (fan-out / fan-in, or map-reduce) splits a task into independent pieces, runs them <em>at the same time</em>, and merges the results. Unlike orchestrator–workers, there's no dynamic planning — the split is fixed and the merge is mechanical.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">parallel.ts</span></div><pre><code><span class="tok-com">// fan-out: same task shape, different inputs, all at once</span>
+<span class="tok-key">const</span> results = <span class="tok-key">await</span> Promise.<span class="tok-fn">all</span>(
+  chunks.map(chunk => <span class="tok-fn">summarizeAgent</span>(chunk))
+);
+<span class="tok-com">// fan-in: mechanical merge</span>
+<span class="tok-key">const</span> brief = <span class="tok-fn">combine</span>(results);</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Two flavors: <strong>sectioning</strong> (different pieces of one job) and <strong>voting</strong> (the same job N times, take the best/majority for reliability). Both need a defined aggregation step — don't forget to budget for the merge.</p></div>
+  <div class="callout key"><span class="ic">=</span><p>Each parallel worker is an isolated window — so none rots under the full load. That's why parallel scales to inputs a single agent couldn't hold.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-5">
+  <div class="obj"><div class="ol">Objective</div>Understand the network topology — and why to use it sparingly.</div>
+  <p>In a <strong>network</strong> (decentralized) topology, agents talk to each other peer-to-peer, with no single boss. Any agent can hand off to any other. It's the most flexible — and by far the hardest to control.</p>
+  <h2>The trade-off</h2>
+  <table class="tbl">
+    <tr><th>Upside</th><th>Downside</th></tr>
+    <tr><td>Maximum flexibility; agents route dynamically</td><td>Hard to predict, debug, and bound</td></tr>
+    <tr><td>No single bottleneck or coordinator</td><td>Risk of loops, ping-pong, and runaway cost</td></tr>
+    <tr><td>Natural fit for true peer negotiation</td><td>Emergent behavior is hard to test</td></tr>
+  </table>
+  <div class="callout warn"><span class="ic">▲</span><p>Networks are seductive and rarely the right first choice. Most problems that <em>look</em> like they need peer-to-peer negotiation are better served by an orchestrator that mediates. Reach for a network only when there's genuinely no natural coordinator — and bound it hard.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-6">
+  <div class="obj"><div class="ol">Checkpoint · Section 2</div>The four core topologies.</div>
+  <p>Four questions — one per topology.</p>
+  <div data-mount="quiz" data-quiz="s2"></div>
+</script>
+
+<script type="text/html" data-lesson="3-1">
+  <div class="obj"><div class="ol">Objective</div>Understand handoffs — transferring control (and scoped context) between agents.</div>
+  <p>A <strong>handoff</strong> is one agent passing control to another better suited to continue. The receiving agent takes over the conversation or task. It's how routing happens <em>mid-flight</em>, not just at the entry point.</p>
+  <p>Example: a triage agent handles a support conversation, recognizes a billing dispute, and hands off to a billing specialist — passing the account and the specific question, not the entire chat history.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>The hard part of a handoff is what context travels with it.</strong> Too little and the receiver is lost; the whole history and you've rebuilt the bloated window you were avoiding. Scoping the handoff payload is the single most important design decision — and it's pure context engineering (course 01).</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-2">
+  <div class="obj"><div class="ol">Objective</div>Choose between shared state and message passing for coordination.</div>
+  <p>Agents coordinate through one of two mechanisms. Picking the right one shapes your whole architecture.</p>
+  <table class="tbl">
+    <tr><th></th><th>Shared state (blackboard)</th><th>Message passing</th></tr>
+    <tr><td><b>How</b></td><td>Agents read/write a common store</td><td>Agents send explicit messages</td></tr>
+    <tr><td><b>Good for</b></td><td>Many agents needing the same evolving facts</td><td>Clear, traceable, decoupled hand-offs</td></tr>
+    <tr><td><b>Risk</b></td><td>Contention; one agent poisoning the shared store</td><td>Message bloat; lost/ordering issues</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">=</span><p>Shared state is powerful but dangerous: a hallucination written to the blackboard becomes <em>context poisoning</em> for every agent that reads it. Validate before writing to shared state, and prefer message passing when you want isolation and traceability.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-3">
+  <div class="obj"><div class="ol">Objective</div>Scope what context travels between agents — the make-or-break skill.</div>
+  <p>Every boundary between agents is a decision about <em>what context crosses it</em>. Get this wrong and you either strand the receiving agent or recreate the bloated windows multi-agent was meant to avoid.</p>
+  <h2>Principles for context at boundaries</h2>
+  <ul>
+    <li><strong>Pass distilled results, not raw transcripts.</strong> A worker should return a summary, not its entire reasoning trace.</li>
+    <li><strong>Pass the goal, not the history.</strong> The receiver needs what to do and the facts it needs — rarely the full conversation that led here.</li>
+    <li><strong>Re-establish, don't assume.</strong> Give the receiving agent a crisp brief; don't rely on it "just knowing" what a sibling did.</li>
+    <li><strong>Keep secrets and untrusted content from spreading.</strong> A boundary is a good place to strip both.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Think of each agent as a function with a deliberately narrow signature. The art of multi-agent design is largely the art of designing those signatures — the same discipline as assembling a single window, applied at every seam.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-4">
+  <div class="obj"><div class="ol">Objective</div>Design roles and specialization that actually pull their weight.</div>
+  <p>The appeal of specialization is real: a "researcher," a "writer," a "critic," each with tailored instructions and tools. But specialization is only worth the coordination cost when the roles are <em>genuinely different</em>.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>The anti-pattern:</strong> a dozen agents whose only difference is a slightly reworded system prompt. That's not specialization — it's overhead. If two agents could share one prompt and tool set, they should be one agent.</p></div>
+  <h2>Good specialization has</h2>
+  <ul>
+    <li><strong>Distinct tools</strong> — the researcher can search; the writer can't and doesn't need to.</li>
+    <li><strong>Distinct instructions</strong> that would genuinely conflict if merged into one prompt.</li>
+    <li><strong>Distinct context needs</strong> — the critic should see the output fresh, not the writer's reasoning.</li>
+  </ul>
+</script>
+
+<script type="text/html" data-lesson="3-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 3</div>Coordination &amp; communication.</div>
+  <p>Three questions on handoffs, state, and roles.</p>
+  <div data-mount="quiz" data-quiz="s3"></div>
+</script>
+
+<script type="text/html" data-lesson="4-1">
+  <div class="obj"><div class="ol">Objective</div>Place MCP and A2A correctly — they solve different problems.</div>
+  <p>Two protocols dominate the interop conversation, and they're often confused. The distinction is simple once you see it.</p>
+  <table class="tbl">
+    <tr><th></th><th>MCP (Model Context Protocol)</th><th>A2A (Agent-to-Agent)</th></tr>
+    <tr><td><b>Connects</b></td><td>An agent to <em>tools &amp; data</em></td><td>An agent to <em>other agents</em></td></tr>
+    <tr><td><b>Metaphor</b></td><td>"USB-C for AI" — plugging in capabilities</td><td>Agents delegating to peer agents</td></tr>
+    <tr><td><b>You use it to</b></td><td>Expose a database or API to your agent</td><td>Let your agent hand a task to another team's agent</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">=</span><p>They compose: an agent might use <strong>MCP</strong> to reach its tools and <strong>A2A</strong> to delegate a sub-task to a specialist agent it doesn't own. Both now sit under the Linux Foundation's Agentic AI Foundation (AAIF).</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-2">
+  <div class="obj"><div class="ol">Objective</div>Understand the A2A idea: agents that advertise and consume capabilities.</div>
+  <p><strong>Agent-to-Agent (A2A)</strong> is a standard for agents to discover and delegate to one another across organizational boundaries. The core idea: an agent publishes a description of what it can do (often called an "agent card"), and other agents can find it and send it structured tasks.</p>
+  <h2>Why a standard matters here</h2>
+  <ul>
+    <li><strong>Cross-vendor delegation.</strong> Your agent can hand a task to an agent built by another team or company without a bespoke integration.</li>
+    <li><strong>Capability discovery.</strong> Agents advertise what they do, so orchestration can be dynamic.</li>
+    <li><strong>Structured task lifecycle.</strong> A shared notion of submitting a task, checking status, and getting results.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Think of A2A as doing for <em>agents</em> what MCP does for <em>tools</em>: turning M×N bespoke integrations into a common protocol. It's earlier in its adoption curve than MCP — worth knowing, not yet worth betting everything on.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-3">
+  <div class="obj"><div class="ol">Objective</div>Read the interop landscape without getting lost in the hype.</div>
+  <p>The protocol space is moving fast. You don't need to track every entrant — you need a stable mental model for where a new standard fits.</p>
+  <div class="callout key"><span class="ic">!</span><p>Ask two questions of any new agent standard: <strong>(1)</strong> does it connect an agent to <em>capabilities/data</em> (MCP-shaped) or to <em>other agents</em> (A2A-shaped)? <strong>(2)</strong> Is it governed neutrally with real multi-vendor adoption, or is it one company's proposal? Those two answers place almost anything.</p></div>
+  <h2>Practical stance for a builder</h2>
+  <ul>
+    <li><strong>Adopt the settled standard</strong> (MCP for tools) rather than hand-rolling integrations.</li>
+    <li><strong>Watch the emerging one</strong> (A2A for agent interop) and design boundaries so you could adopt it, without depending on it prematurely.</li>
+    <li><strong>Don't let protocol excitement drive architecture.</strong> Choose your topology from the task; use protocols to implement it, not to justify it.</li>
+  </ul>
+</script>
+
+<script type="text/html" data-lesson="4-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 4</div>Protocols &amp; interop.</div>
+  <p>Three questions on MCP vs A2A and the standards landscape.</p>
+  <div data-mount="quiz" data-quiz="s4"></div>
+</script>
+
+<script type="text/html" data-lesson="5-1">
+  <div class="obj"><div class="ol">Objective</div>Build an orchestrator loop in code — it's simpler than it sounds.</div>
+  <p>An orchestrator is just an agent whose "tools" are <em>other agents</em>. Here's the skeleton: the lead plans sub-tasks, dispatches them (in parallel where independent), and synthesizes.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">orchestrator.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">orchestrate</span>(goal: <span class="tok-key">string</span>) {
+  <span class="tok-com">// 1. Lead decomposes the goal into independent sub-tasks</span>
+  <span class="tok-key">const</span> subtasks = <span class="tok-key">await</span> <span class="tok-fn">plan</span>(goal);
+
+  <span class="tok-com">// 2. Dispatch workers — each in its OWN isolated context</span>
+  <span class="tok-key">const</span> results = <span class="tok-key">await</span> Promise.<span class="tok-fn">all</span>(
+    subtasks.map(t => <span class="tok-fn">worker</span>(t))   <span class="tok-com">// fresh window per worker</span>
+  );
+
+  <span class="tok-com">// 3. Lead synthesizes distilled results — not raw material</span>
+  <span class="tok-key">return</span> <span class="tok-key">await</span> <span class="tok-fn">synthesize</span>(goal, results);
+}</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Frameworks (LangGraph, the OpenAI Agents SDK, CrewAI, the Anthropic Agent SDK) give you orchestration primitives, but this is the shape underneath all of them: plan → dispatch to isolated workers → synthesize.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-2">
+  <div class="obj"><div class="ol">Objective</div>Give each worker a clean, isolated context — the reason multi-agent works at all.</div>
+  <p>The entire benefit of orchestration collapses if workers share a bloated context. Each worker must get a <strong>fresh window</strong> containing only its sub-task and the minimal facts it needs.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">worker.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">worker</span>(subtask: Subtask) {
+  <span class="tok-com">// A brand-new context: just this sub-task's brief + its own tools.</span>
+  <span class="tok-key">const</span> ctx = <span class="tok-fn">buildTurn</span>({
+    role: subtask.role,          <span class="tok-com">// specialized instructions</span>
+    goal: subtask.brief,         <span class="tok-com">// scoped, not the whole goal</span>
+    tools: <span class="tok-fn">toolsFor</span>(subtask.role), <span class="tok-com">// only what this role needs</span>
+  });
+  <span class="tok-key">const</span> full = <span class="tok-key">await</span> <span class="tok-fn">runAgent</span>(ctx);
+  <span class="tok-key">return</span> <span class="tok-fn">distill</span>(full);          <span class="tok-com">// return a SUMMARY, not the transcript</span>
+}</code></pre></div>
+  <div class="callout key"><span class="ic">=</span><p>Two context-engineering moves make this work: <strong>Isolate</strong> (fresh window per worker) and <strong>Compress</strong> (distill the result before it goes back). Skip the distill and the orchestrator's window fills with every worker's raw output — straight back to context rot.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-3">
+  <div class="obj"><div class="ol">Objective</div>Synthesize worker results into one coherent answer.</div>
+  <p>Synthesis is where multi-agent systems earn or lose their keep. The orchestrator receives several distilled results and must weave them into a single answer — reconciling overlaps, resolving contradictions, and producing something coherent.</p>
+  <h2>What good synthesis handles</h2>
+  <ul>
+    <li><strong>Overlap</strong> — two workers found the same fact; report it once.</li>
+    <li><strong>Contradiction</strong> — two workers disagree; the orchestrator must reconcile or flag it, not average blindly.</li>
+    <li><strong>Gaps</strong> — a sub-task came back empty; decide whether to re-dispatch or proceed.</li>
+    <li><strong>Attribution</strong> — keep track of which worker supplied what, for traceability.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">▲</span><p>Naive synthesis — concatenating worker outputs — is a common failure. If contradictions from workers land unresolved in the final answer, that's <em>context clash</em> surfacing at the system level. Synthesis must actively reconcile.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-4">
+  <div class="obj"><div class="ol">Objective</div>Handle errors across agents without one failure sinking the system.</div>
+  <p>In a single agent, an error is one place. In a multi-agent system, a worker can fail, time out, or return garbage — and you need the system to degrade gracefully, not collapse.</p>
+  <ul>
+    <li><strong>Isolate failures.</strong> One worker failing shouldn't crash the run. Catch per-worker; let the others finish.</li>
+    <li><strong>Decide the fallback</strong> per sub-task: retry, skip with a noted gap, or fail the whole run if it's critical.</li>
+    <li><strong>Guard against error propagation.</strong> A worker's wrong result feeding synthesis poisons the answer — validate distilled results before combining.</li>
+    <li><strong>Bound the whole system,</strong> not just each agent: total step/cost ceilings so a misbehaving sub-tree can't run away.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Treat workers like unreliable network calls, because that's effectively what they are. The engineering discipline of timeouts, retries, and graceful degradation applies directly.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 5</div>Building it.</div>
+  <p>Three questions on orchestration, isolation, and error handling.</p>
+  <div data-mount="quiz" data-quiz="s5"></div>
+</script>
+
+<script type="text/html" data-lesson="6-1">
+  <div class="obj"><div class="ol">Objective</div>Recognize the failure modes unique to multi-agent systems.</div>
+  <p>Multi-agent systems fail in ways single agents can't. Knowing the names makes them findable.</p>
+  <div class="cards">
+    <div class="card"><div class="num">FAIL</div><h4>Error propagation</h4><p>An early agent's mistake flows downstream and compounds. Common in pipelines.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Ping-pong / loops</h4><p>Agents hand off back and forth without progress. Common in networks.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Shared-state poisoning</h4><p>One agent writes a bad fact; every reader inherits it.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Lost-in-synthesis</h4><p>Good worker results get garbled or dropped when the lead combines them.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Coordination deadlock</h4><p>Agents wait on each other; nothing finishes.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Cost blowout</h4><p>Fan-out or loops multiply calls beyond what the result is worth.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Nearly all of these trace back to two things: <strong>unbounded coordination</strong> and <strong>context crossing boundaries badly</strong>. Bound the system and scope every hand-off, and most of these never appear.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-2">
+  <div class="obj"><div class="ol">Objective</div>Reason about the cost and latency of fan-out before it surprises you.</div>
+  <p>Multi-agent economics are easy to get wrong. A five-worker fan-out isn't 5× one call — each worker is itself an agent running a multi-step loop, so costs multiply fast.</p>
+  <table class="tbl">
+    <tr><th>Shape</th><th>Latency</th><th>Cost</th></tr>
+    <tr><td><b>Pipeline</b> (serial)</td><td>Sum of all stages — slow</td><td>Sum of stages</td></tr>
+    <tr><td><b>Parallel</b> (fan-out)</td><td>The slowest single worker — fast</td><td>Sum of all workers (high)</td></tr>
+    <tr><td><b>Orchestrator</b></td><td>Plan + slowest worker + synthesize</td><td>Lead + all workers</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p>Parallelism buys <em>latency</em>, never <em>cost</em> — you still pay for every worker. If a task is cost-sensitive rather than time-sensitive, fewer agents (or one) may win even when parallel is "faster."</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Model routing helps: use a cheap, fast model for workers and simple triage, and reserve a strong model for planning and synthesis where judgment matters.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-3">
+  <div class="obj"><div class="ol">Objective</div>Get observability and evals across a whole agent tree — not just one loop.</div>
+  <p>Everything from Agentic Patterns' production section still applies, but now the trace spans <em>multiple</em> agents. You need to see the whole tree.</p>
+  <ul>
+    <li><strong>Trace the tree, not the node.</strong> Capture the orchestrator's plan, each worker's full sub-trace, and the synthesis — linked, so you can drill from the final answer down to the worker that caused a problem.</li>
+    <li><strong>Attribute failures.</strong> When the answer is wrong, observability should tell you <em>which agent</em> introduced the error.</li>
+    <li><strong>Eval at both levels.</strong> Evaluate individual workers (did the researcher find the right facts?) <em>and</em> the end-to-end system (was the final brief correct?).</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>Without tree-level tracing, a multi-agent system is nearly undebuggable — a wrong answer with no way to localize the cause. Build the observability before you scale the agents.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-4">
+  <div class="obj"><div class="ol">Objective</div>Understand the expanded security surface when agents trust each other.</div>
+  <p>Multi-agent systems widen the attack surface: now agents pass content to <em>each other</em>, and a compromise in one can spread.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>Injection propagation:</strong> if a worker ingests untrusted content and gets hijacked, the malicious instructions can ride its "result" into the orchestrator or a sibling — turning one poisoned agent into a system-wide compromise.</p></div>
+  <h2>Defenses across agents</h2>
+  <ul>
+    <li><strong>Treat inter-agent messages as untrusted too.</strong> A worker's output is data, not a command the orchestrator must obey.</li>
+    <li><strong>Least privilege per agent.</strong> The agent handling untrusted input should have the fewest, safest tools. Keep privileged actions in a separate, sandboxed agent.</li>
+    <li><strong>Gate side effects centrally.</strong> Route destructive actions through a single checkpoint with policy checks, not scattered across every agent.</li>
+    <li><strong>Validate at boundaries.</strong> Every seam is a place to sanitize and drop anything that looks like an instruction.</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>This is where multi-agent design meets your Azure security work: the trust boundaries between agents are exactly the kind of privilege-separation an appsec review reasons about.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 6</div>Reliability, cost &amp; security.</div>
+  <p>Three questions on failure modes, economics, and the security surface.</p>
+  <div data-mount="quiz" data-quiz="s6"></div>
+</script>
+
+<script type="text/html" data-lesson="7-1">
+  <div class="obj"><div class="ol">Objective</div>Choose a topology from the task, with a decision tool.</div>
+  <p>Topology should fall out of the task's shape, not personal preference. Answer up to two questions and get a starting recommendation — then read the <em>why</em>.</p>
+  <div data-mount="picker"></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Notice the tool never lands on "network" lightly — decentralized systems are powerful but the hardest to control. Most problems that seem to need peer-to-peer are better mediated by an orchestrator.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-2">
+  <div class="obj"><div class="ol">Objective</div>Avoid the multi-agent anti-patterns that sink real projects.</div>
+  <div class="cards">
+    <div class="card"><div class="num">ANTI</div><h4>Multi-agent when one would do</h4><p>The cardinal sin. If a single agent clears the bar, stop there.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Cosmetic specialization</h4><p>A swarm of agents that differ only by a reworded prompt. Merge them.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Fat hand-offs</h4><p>Passing full histories between agents, rebuilding the bloated window.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Unbounded networks</h4><p>Peer-to-peer with no ceilings — loops and cost blowouts waiting to happen.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Concatenate-as-synthesis</h4><p>Gluing worker outputs together instead of reconciling them.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>No tree observability</h4><p>Scaling agents before you can trace them. Undebuggable by design.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Every one of these has the same cure as the rest of the series: <em>start simple, bound everything, keep each context lean, scope every boundary.</em></p></div>
+</script>
+
+<script type="text/html" data-lesson="7-3">
+  <div class="obj"><div class="ol">Final exam</div>Eight questions across the whole course. Answer all to see your score.</div>
+  <p>A self-check spanning when to go multi-agent, the topologies, coordination, protocols, building, and reliability. Missed one? The explanation names the lesson to revisit.</p>
+  <div data-mount="quiz" data-quiz="final"></div>
+</script>
+
+<script type="text/html" data-lesson="7-4">
+  <div class="obj"><div class="ol">You've finished the series</div>Three courses, one system.</div>
+  <p>You can now decide whether a task needs multiple agents, pick and wire the right topology, design how they coordinate and what context crosses each boundary, and keep the whole thing reliable, affordable, and secure.</p>
+  <h2>The through-line across all three courses</h2>
+  <p>Multi-agent systems aren't a separate skill — they're the first two courses composed. Every worker is a <strong>context</strong> you assemble (course 01). Every agent runs a <strong>pattern</strong> — usually ReAct with Reflexion (course 02). And the system that wires them is <strong>Isolate</strong> turned into architecture. If you've done all three, you hold the whole stack.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>The one sentence to remember:</strong> a multi-agent system is many lean contexts, each running a bounded pattern, coordinated through carefully scoped boundaries — reached for only when a single agent genuinely can't hold the task.</p></div>
+  <h2>Revisit the companions</h2>
+  <a class="nextcourse" href="https://claude.ai/code/artifact/beb16fc4-2571-4fa9-991f-cbdd2adfd374" target="_blank" rel="noopener">
+    <span class="nb">🎛️</span>
+    <span class="body"><span class="k">Course 01 of 03</span><span class="tt">Context Engineering</span><span class="d">Every worker window is assembled with these four operations.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <a class="nextcourse" href="https://claude.ai/code/artifact/f5497728-de30-4c32-9f6e-92a7db0a27ec" target="_blank" rel="noopener">
+    <span class="nb">🔁</span>
+    <span class="body"><span class="k">Course 02 of 03</span><span class="tt">Agentic Patterns</span><span class="d">Every agent in the system runs one of these patterns.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <h2>Go deeper</h2>
+  <div class="reading">
+    <a href="https://www.anthropic.com/engineering/multi-agent-research-system" target="_blank" rel="noopener"><span class="src">Anthropic</span><span class="ti">How we built a multi-agent research system</span></a>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><span class="src">Anthropic</span><span class="ti">Building Effective Agents — orchestrator-workers & more</span></a>
+    <a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener"><span class="src">LangGraph</span><span class="ti">Multi-agent orchestration in code</span></a>
+    <a href="https://aaif.io/" target="_blank" rel="noopener"><span class="src">AAIF</span><span class="ti">Agentic AI Foundation — MCP & A2A governance</span></a>
+  </div>
+  <div class="callout key"><span class="ic">→</span><p><strong>Your move now:</strong> take a task you think needs multiple agents. Build the single-agent version first. Only if it genuinely can't hold the task, split it — starting with an orchestrator, isolating each worker's context, and tracing the whole tree.</p></div>
+</script>

@@ -1,0 +1,967 @@
+<!doctype html><html><head><!-- frame-runtime --><script>window.__FRAME_PREAMBLE={"capabilities":{"assets":"assets.hcOK0ALv.js","comments":"comments.BKZ3qutA.js","db":"db.CeV_J5G-.js","downloads":"downloads.BXsoAvg9.js","mcp":"mcp.CYSdpjo0.js","permissions":"permissions.DdITF2Mk.js","sample":"sample.DpdXn9di.js","self":"self.BN4be5De.js","user":"user.Cr_h1ETf.js"},"transforms":"_transforms.VaITkagF.js","comments":"_comments.CNSvmFji.js","translate":"_translate.BOzFH2D9.js"}</script><script>(function(){"use strict";var ne=["light","dark","system"];function oe(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function W(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function se(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const n=t.theme;return typeof n=="string"&&ne.includes(n)}function ie(e){try{typeof reportError=="function"?reportError(e):setTimeout(()=>{throw e},0)}catch{}}var Y=Object.freeze(Object.assign(Object.create(null),{user:Object.freeze(Object.assign(Object.create(null),{id:null,isOwner:!1,canEdit:!1,name:null,avatarUrl:null,email:null}))})),ae={sample:"sample"};function x(){const e=new Uint8Array(20);try{crypto.getRandomValues(e)}catch{for(let n=0;n<e.length;n++)e[n]=Math.floor(Math.random()*256)}let t="";for(const n of e)t+=(n%36).toString(36);return t}function ce(e,t){const n=r=>{const o={path:r},i=r.split("/");return{id:i[i.length-1],path:r,get:()=>t("get",[o]),set:g=>t("set",[o,g]),update:g=>t("update",[o,g]),delete:()=>t("delete",[o]),acquire:g=>t("acquire",[o,g]),onSnapshot:(g,y)=>t("subscribe",[o,g,y]),collection:g=>a(r+"/"+String(g))}},u=r=>({where:(o,i,g)=>u({...r,where:[...r.where??[],{f:String(o),op:String(i),v:g}]}),orderBy:(o,i)=>u({...r,orderBy:{f:String(o),dir:i===void 0?"asc":String(i)}}),limit:o=>u({...r,limit:Number(o)}),get:()=>t("query",[r]),onSnapshot:(o,i)=>t("subscribe",[r,o,i])}),a=r=>({...u({collection:r}),path:r,doc:o=>n(r+"/"+(o===void 0?x():String(o))),add:o=>{const i=n(r+"/"+x());return Promise.resolve(i.set(o)).then(()=>i)}});e.doc=r=>n(String(r)),e.collection=r=>a(String(r))}function J(e){if(window===top||e.type==="auxclick"&&e.button!==1)return;const t=e.composedPath?e.composedPath():[e.target];let n=null;for(let o=0;o<t.length;o++){const i=t[o];if(i&&i.matches&&i.matches("a[href],area[href]")){n=i;break}}if(!n&&e.target&&e.target.closest&&(n=e.target.closest("a[href],area[href]")),!n)return;const u=n.getAttribute("href");if(!u)return;let a,r;try{a=new URL(u,document.baseURI),r=new URL(document.baseURI).origin}catch{return}if((a.protocol==="http:"||a.protocol==="https:")&&a.origin!==r){e.preventDefault();const o=(n.getAttribute("target")??document.querySelector("base[target]")?.getAttribute("target")??"").toLowerCase(),i=e.type==="auxclick"||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||!["","_self","_top","_parent"].includes(o);parent.postMessage({__frame_nav:!0,url:a.href,newTab:i},"*")}}var G={};function I(e){if(window===top)return;const t=Date.now();t-(G[e]||0)<500||(G[e]=t,parent.postMessage({__frame_engaged:!0,kind:e},"*"))}var le=2e3,V=["wheel","touchstart","touchmove","keydown","pointerdown"],X=0;function ue(e){e.isTrusted&&(X=Date.now())}function fe(){addEventListener("click",J,!0),addEventListener("auxclick",J,!0)}function de(){for(let e=0;e<V.length;e++)addEventListener(V[e],ue,{capture:!0,passive:!0});addEventListener("scroll",e=>{e.isTrusted&&Date.now()-X<le&&I("scroll")},{capture:!0,passive:!0}),addEventListener("pointermove",e=>{e.isTrusted&&I("pointer")},{capture:!0,passive:!0}),addEventListener("click",e=>{e.isTrusted&&I("click")},{capture:!0,passive:!0})}var q="__frame_scroll",me=150,pe=310,ge=160,he=3e4;function ve(){let e=0,t=!1,n=!1,u=!1,a=0,r=null;const o=d=>{try{sessionStorage.setItem(q,JSON.stringify({y:d}))}catch{}},i=()=>{if(clearTimeout(e),r===null)return;const d=r;r=null,o(d)},g=()=>{if(t){t=!1;return}n=!0,r=scrollY,clearTimeout(e),e=setTimeout(i,me)};try{addEventListener("scroll",g,{passive:!0}),addEventListener("pagehide",i)}catch{}const y=()=>{let d;try{d=sessionStorage.getItem(q)}catch{return null}if(d===null)return null;let l;try{l=JSON.parse(d)}catch{l=null}const p=l?.y;if(!(typeof p=="number"&&Number.isFinite(p)&&p>=0)){try{sessionStorage.removeItem(q)}catch{}return null}return p};let c=!1;const f=d=>{try{const l=scrollY;scrollTo({top:d,left:0,behavior:"instant"}),a=d,u=!0,clearTimeout(e),r=null,o(d);const p=scrollY;p!==l&&(t=!0),p!==d&&!c&&(c=!0,addEventListener("load",()=>{try{if(scrollY===p){const v=y();f(v!==null?v:a)}}catch{}},{once:!0}))}catch{}},m=()=>{try{return!!location.hash}catch{return!0}};let h=!1;const _=()=>{try{if(h||innerWidth>pe||innerHeight>ge)return;h=!0;const d=Date.now(),l=()=>{try{removeEventListener("resize",l)}catch{}if(Date.now()-d>he||n||m())return;const p=y();f(p!==null?p:a)};addEventListener("resize",l)}catch{}};let w=!1,S=!1;return{restore(){if(w||(w=!0,m()))return;const d=y();d!==null&&(f(d),_())},promoted(){if(S||(S=!0,m()))return;const d=y();d!==null?(f(d),_()):u&&f(a)}}}function _e(e,t,n){const u=[...t.values()].filter(a=>a.targets.some(r=>r.startsWith(e+".")));return{wrap(a,r){const o=`${e}.${a}`,i=u.filter(g=>g.targets.includes(o));return i.length===0?(...g)=>{try{return r(...g)}catch(y){return Promise.reject(y)}}:(...g)=>{let y=g;for(const f of i){const m=f.module.parameters;if(m)try{y=m(y)}catch{return Promise.reject({code:"transform_error",id:f.id,scope:e,message:"parameters transform failed"})}}let c;try{c=r(...y)}catch(f){c=Promise.reject(f)}return c.then(f=>{for(let m=i.length-1;m>=0;m--){const h=i[m],_=h.module.returns;if(_)try{f=_(f)}catch{return n({id:h.id,scope:e,leg:"returns"}),f}}return f},f=>{for(let m=i.length-1;m>=0;m--){const h=i[m],_=h.module.throws;if(_)try{f=_(f)}catch{return n({id:h.id,scope:e,leg:"throws"}),Promise.reject(f)}}return Promise.reject(f)})}}}}function ye(e,t,n,u=()=>{}){const a=new Set(e.changes??[]),r=new Map;for(const o of a){const i=t[o];i&&r.set(o,i)}return{contract:e.contract,changes:a,flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:r,shellOrigin:n.shellOrigin,mount:n.mount,pipe:o=>_e(o,r,u)}}var Ae="modulepreload",Re=function(e){return"/"+e},je={},be=function(t,n,u){let a=Promise.resolve();function r(o){const i=new Event("vite:preloadError",{cancelable:!0});if(i.payload=o,window.dispatchEvent(i),!i.defaultPrevented)throw o}return a.then(o=>{for(const i of o||[])i.status==="rejected"&&r(i.reason);return t().catch(r)})};(function(){const e=Object.defineProperty,t=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let u=0;for(let a=0;a<n.length;a++){const r=n[a];try{e(t,r,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[r]}catch{}try{e(t,r,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[r]=="function"&&u++}if(u&&window!==top)try{parent.postMessage({__frame_rtc_lockdown_failed:u},"*")}catch{}})();var Ee=1e4,we=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function Q(e){for(const t of we)if(t.endsWith(":*"))try{const n=new URL(e);if(`${n.protocol}//${n.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var k=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),D=window.__FRAME_PREAMBLE?.transforms,z=window.__FRAME_PREAMBLE?.comments,B=window.__FRAME_PREAMBLE?.translate,C=/^[\w.-]+\.js$/,Se=/^[a-z][a-z0-9_-]{0,63}$/,Z=null,M=null;function $(e,t,n){try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var F=!1;function ee(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,F=!0):F&&(delete t.dataset.theme,t.style.colorScheme="",F=!1)}var te=256,P=Object.assign(Object.create(null),{mcp:Object.assign(Object.create(null),{watchTool:{handlerArg:3}}),db:Object.assign(Object.create(null),{subscribe:{handlerArg:1,errArg:2}})}),L=new Map;function re(e,t){const n=L.get(e);if(!n)return;const u=Object.assign(Object.create(null),t);Object.assign(n.impl,u),n.impl.__settled=()=>Promise.reject({code:"capability_removed",message:`${e}: method not in this runtime`});const a=n.queue;n.queue=[];for(const r of a){const o=u[r.method];if(o)if(P[e]?.[r.method])try{r.resolve(o(...r.args))}catch{T(r,P[e][r.method],{code:"transform_error",message:`${e}.${r.method} rejected its arguments`})}else o(...r.args).then(r.resolve,r.reject);else{const i={code:"capability_removed",message:`${e}.${r.method} is not in this runtime`},g=P[e]?.[r.method];if(g){T(r,g,i);continue}r.reject(i)}}}function Oe(e,t){const n=L.get(e);if(!n)return;n.impl.__settled=()=>Promise.reject(t);const u=n.queue;n.queue=[];for(const a of u){const r=P[e]?.[a.method];if(r){T(a,r,t);continue}a.reject(t)}}function N(e,t){const n=Y[e];if(!n){Oe(e,t);return}re(e,Object.fromEntries(Object.entries(n).map(([u,a])=>[u,()=>Promise.resolve(a)])))}function T(e,t,n){if(e.syncState?.dead)return;const u=t.errArg===void 0?void 0:e.args[t.errArg],a=t.errArg===void 0?e.args[t.handlerArg]:u;typeof a=="function"&&queueMicrotask(()=>{if(!e.syncState?.dead)try{a(t.errArg===void 0?{type:"error",error:n}:n)}catch(r){ie(r)}})}var H=Object.getOwnPropertyDescriptor(window,"claude");if(window!==top&&!(H&&H.writable===!1)){fe(),de();let e=null;try{e=ve()}catch{}const t=H?.value??{};$(window,"claude",t);const n=c=>{const f={impl:Object.create(null),queue:[]};L.set(c,f);const m=f.impl,h=d=>({code:"queue_overflow",message:`${c}.${d}: pre-init call queue is full`}),_=(d,l)=>{if(f.queue.length>=te){const p=Y[c];return p&&d in p?Promise.resolve(p[d]):Promise.reject(h(d))}return new Promise((p,v)=>{f.queue.push({method:d,args:l,resolve:p,reject:v})})},w=ae[c],S=new Proxy(w===void 0?m:(()=>{}),{apply:(d,l,p)=>{const v=w,E=m[v]??m.__settled;return E?E(...p):_(v,p)},get:(d,l)=>{if(typeof l!="string"||l==="then"||l==="toJSON"||l==="valueOf")return;if(l==="toString")return Object.prototype.toString;if(w!==void 0&&(l==="call"||l==="apply"||l==="bind"))return Function.prototype[l];const p=P[c]?.[l];return p?(...v)=>{if(typeof v[p.handlerArg]!="function")throw new TypeError(`${c}.${l} requires a handler function`);const E=m[l];if(E)return E(...v);if(m.__settled){const b={dead:!1},U={args:[...v],syncState:b};return m.__settled().catch(s=>T(U,p,s)),()=>{b.dead=!0}}if(f.queue.length>=te){const b={dead:!1};return T({args:[...v],syncState:b},p,h(l)),()=>{b.dead=!0}}let A=null;const R={dead:!1};return f.queue.push({method:l,args:v,resolve:b=>{A=typeof b=="function"?b:null,R.dead&&A?.()},reject:()=>{},syncState:R}),()=>{R.dead=!0,A?.()}}:(...v)=>{const E=m[l]??m.__settled;return E?E(...v):_(l,v)}},set:()=>!1});c==="db"&&ce(m,(d,l)=>S[d](...l)),$(t,c,S)};for(const c of Object.keys(k)){if(t[c]!==void 0){$(t,c,t[c]);continue}n(c)}let u=null,a=null,r=0;const o=c=>{c.source!==parent||!Q(c.origin)||oe(c.data)&&(u=c.data.__frame_init,M=c.origin,removeEventListener("message",o),clearTimeout(r),a?.())};addEventListener("message",o),parent.postMessage({__frame_connect:!0},"*");const i=new Promise(c=>{a=c,r=setTimeout(()=>{removeEventListener("message",o),c()},Ee)}),g=document.readyState==="loading"?new Promise(c=>document.addEventListener("DOMContentLoaded",()=>c(),{once:!0})):Promise.resolve();g.then(()=>{try{e?.restore()}catch{}});const y=c=>{if(!(c.source!==parent||!Q(c.origin))&&W(c.data)){removeEventListener("message",y);try{e?.promoted()}catch{}}};addEventListener("message",y),i.then(async()=>{if(!u||!M){for(const s of L.keys())N(s,{code:"not_granted",message:"frame initialization did not arrive - capability unavailable"});return}ee(u.theme);const c=M;let f=!1,m=!1;addEventListener("message",s=>{if(s.source!==parent||s.origin!==c)return;se(s.data)&&ee(s.data.__frame_theme.theme);const O=s.data?.__fc_mode;O&&typeof O=="object"&&!f&&z&&C.test(z)&&(f=!0,h(z).then(K=>K.install?.(c,O.on===!0)).catch(()=>{}));const j=s.data?.__ft_cmd;j&&typeof j=="object"&&!m&&B&&C.test(B)&&(m=!0,h(B).then(K=>K.install?.(c,j)).catch(()=>{}))});const h=s=>be(()=>import("/_runtime/"+s),void 0),_=Object.keys(u.capabilities??{});for(const s of _)Object.hasOwn(k,s)||Se.test(s)&&t[s]===void 0&&(n(s),N(s,{code:"capability_disabled",message:"capability not in this runtime generation"}));const w=_.filter(s=>Object.hasOwn(k,s)).map(s=>[s,k[s]]).filter(s=>typeof s[1]=="string"&&C.test(s[1])),[S,...d]=await Promise.allSettled([D&&C.test(D)?h(D):Promise.resolve({}),...w.map(([,s])=>h(s))]),l=M;Z=ye(u,S.status==="fulfilled"&&S.value?.TRANSFORMS||{},{shellOrigin:l,mount:re},s=>parent.postMessage({__frame_cap_telemetry:s},l));const p=s=>parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:s}},l),v=Z;d.forEach((s,O)=>{const j=w[O][0];if(s.status!=="fulfilled"){p(j);return}try{s.value?.install?.(v)}catch{p(j)}});for(const[s,O]of L)if(!(O.queue.length===0&&Object.keys(O.impl).length>0)){if(_.includes(s)){N(s,{code:"capability_disabled",message:"capability not available in this session"});continue}N(s,{code:"not_granted",message:"capability not available in this session"})}await g,parent.postMessage({__frame_ready:!0},M);let E=-1,A=0;const R=()=>{A=0;const s=Math.max(document.documentElement.scrollHeight,document.body?document.body.scrollHeight:0);s!==E&&(E=s,parent.postMessage({__frame_size:!0,h:s},l))},b=()=>{A||(A=setTimeout(R,200))},U=new ResizeObserver(b);U.observe(document.documentElement),document.body&&U.observe(document.body),document.addEventListener("load",b,!0),document.fonts?.ready.then(b,()=>{}),addEventListener("beforeprint",()=>{E=-1,R()}),b(),addEventListener("message",s=>{if(!(s.source!==parent||s.origin!==l)&&W(s.data)){try{e?.promoted()}catch{}E=-1,b()}})})}})();</script><!-- /frame-runtime --><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Multi-Agent Systems — Full Course · The Console</title>
+<style>
+  :root {
+    --bg:#ECEEF1; --grid:rgba(20,40,70,.045); --surface:#F8F9FB; --surface-2:#E7EBF0; --surface-3:#DEE3EA;
+    --ink:#14181D; --ink-soft:#47515C; --ink-faint:#7A8592; --line:#D2D8E0; --line-strong:#B9C1CC;
+    --accent:#6D34D6; --accent-2:#7C43F0; --accent-ink:#FFFFFF;
+    --signal:#0C8C7E; --signal-bg:rgba(12,140,126,.10); --warn:#B57C00; --warn-bg:rgba(230,161,0,.12);
+    --bad:#C7331F; --bad-bg:rgba(199,51,31,.10);
+    --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,"Liberation Mono",monospace;
+    --shadow:0 1px 2px rgba(12,20,33,.06),0 8px 24px rgba(12,20,33,.06); --radius:6px;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0E1216; --grid:rgba(120,170,230,.05); --surface:#161C22; --surface-2:#1C242C; --surface-3:#232D36;
+    --ink:#E7ECF1; --ink-soft:#A6B0BB; --ink-faint:#6C7883; --line:#2A343D; --line-strong:#3A4753;
+    --accent:#A889FF; --accent-2:#B79BFF; --accent-ink:#0E1216; --signal:#2AC7B5; --signal-bg:rgba(42,199,181,.12);
+    --warn:#F0B429; --warn-bg:rgba(240,180,41,.13); --bad:#F0503E; --bad-bg:rgba(240,80,62,.13);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="light"]{--bg:#ECEEF1;--grid:rgba(20,40,70,.045);--surface:#F8F9FB;--surface-2:#E7EBF0;--surface-3:#DEE3EA;--ink:#14181D;--ink-soft:#47515C;--ink-faint:#7A8592;--line:#D2D8E0;--line-strong:#B9C1CC;--accent:#6D34D6;--accent-2:#7C43F0;--accent-ink:#FFFFFF;--signal:#0C8C7E;--signal-bg:rgba(12,140,126,.10);--warn:#B57C00;--warn-bg:rgba(230,161,0,.12);--bad:#C7331F;--bad-bg:rgba(199,51,31,.10);--shadow:0 1px 2px rgba(12,20,33,.06),0 8px 24px rgba(12,20,33,.06);}
+  :root[data-theme="dark"]{--bg:#0E1216;--grid:rgba(120,170,230,.05);--surface:#161C22;--surface-2:#1C242C;--surface-3:#232D36;--ink:#E7ECF1;--ink-soft:#A6B0BB;--ink-faint:#6C7883;--line:#2A343D;--line-strong:#3A4753;--accent:#A889FF;--accent-2:#B79BFF;--accent-ink:#0E1216;--signal:#2AC7B5;--signal-bg:rgba(42,199,181,.12);--warn:#F0B429;--warn-bg:rgba(240,180,41,.13);--bad:#F0503E;--bad-bg:rgba(240,80,62,.13);--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);}
+
+  *{box-sizing:border-box;}
+  body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font-family:var(--font-sans);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--accent);color:var(--accent-ink);}
+  a{color:var(--accent);}
+  .layout{display:grid;grid-template-columns:320px minmax(0,1fr);max-width:1240px;margin:0 auto;}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 90%,var(--surface)));padding:22px 16px 40px;}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:0 8px;}
+  .sb-brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent);}
+  .sb-brand .name{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;}
+  .sb-sub{padding:0 8px;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.05em;}
+  .sb-progress{margin:16px 8px;padding:12px 13px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);}
+  .sb-progress .pl{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);margin-bottom:7px;}
+  .sb-progress .pl b{color:var(--ink);}
+  .ptrack{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;}
+  .pfill{height:100%;width:0%;background:linear-gradient(90deg,var(--signal),color-mix(in srgb,var(--signal) 55%,var(--accent)));transition:width .4s;}
+  .curriculum{margin-top:8px;}
+  .sec{margin:2px 0;}
+  .sec-head{display:flex;align-items:center;gap:8px;width:100%;padding:9px 8px;background:none;border:none;cursor:pointer;text-align:left;color:var(--ink);border-radius:6px;font-family:inherit;}
+  .sec-head:hover{background:var(--surface-2);}
+  .sec-head .caret{font-family:var(--font-mono);font-size:10px;color:var(--ink-faint);transition:transform .2s;flex:0 0 auto;}
+  .sec.collapsed .caret{transform:rotate(-90deg);}
+  .sec-head .sx{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:.08em;flex:0 0 auto;}
+  .sec-head .st{font-size:13.5px;font-weight:650;flex:1;line-height:1.25;}
+  .sec-head .sc{font-family:var(--font-mono);font-size:10px;color:var(--ink-faint);flex:0 0 auto;}
+  .lessons{display:flex;flex-direction:column;gap:1px;overflow:hidden;padding-left:6px;}
+  .sec.collapsed .lessons{display:none;}
+  .lrow{display:flex;align-items:flex-start;gap:9px;width:100%;padding:8px 8px 8px 10px;background:none;border:none;border-left:2px solid transparent;cursor:pointer;text-align:left;color:var(--ink-soft);border-radius:0 6px 6px 0;font-family:inherit;transition:background .12s,color .12s;}
+  .lrow:hover{background:var(--surface-2);color:var(--ink);}
+  .lrow.current{background:var(--surface);border-left-color:var(--accent);color:var(--ink);box-shadow:var(--shadow);}
+  .lrow .tick{flex:0 0 auto;margin-top:1px;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:9px;color:#fff;background:transparent;}
+  .lrow.done .tick{background:var(--signal);border-color:var(--signal);}
+  .lrow .lt{flex:1;font-size:12.7px;line-height:1.35;}
+  .lrow .lm{flex:0 0 auto;font-family:var(--font-mono);font-size:9.5px;color:var(--ink-faint);margin-top:2px;}
+  .lrow .badge{font-family:var(--font-mono);font-size:8.5px;letter-spacing:.06em;padding:1px 5px;border-radius:100px;border:1px solid var(--line-strong);color:var(--ink-faint);margin-top:1px;}
+  .lrow.done .badge{border-color:var(--signal);color:var(--signal);}
+  .theme-btn{margin:16px 8px 0;width:calc(100% - 16px);padding:8px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink-soft);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+  .theme-btn:hover{background:var(--surface-2);color:var(--ink);}
+  .course-switch{position:relative;padding:0 8px;margin:12px 0 2px;}
+  .cs-trigger{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);transition:border-color .15s;}
+  .cs-trigger:hover{border-color:var(--accent);}
+  .cs-trigger .cs-ic{font-size:18px;flex:0 0 auto;line-height:1;}
+  .cs-trigger .cs-tx{flex:1;min-width:0;}
+  .cs-trigger .cs-name{display:block;font-size:15px;font-weight:800;letter-spacing:-.01em;line-height:1.15;}
+  .cs-trigger .cs-meta{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;color:var(--ink-faint);margin-top:2px;text-transform:uppercase;}
+  .cs-trigger .cs-caret{flex:0 0 auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);transition:transform .2s;}
+  .course-switch.open .cs-caret{transform:rotate(180deg);}
+  .cs-menu{position:absolute;left:8px;right:8px;top:calc(100% + 5px);z-index:50;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);box-shadow:var(--shadow);padding:5px;display:none;}
+  .course-switch.open .cs-menu{display:block;}
+  .cs-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:5px;text-decoration:none;cursor:pointer;transition:background .12s;}
+  .cs-item:hover{background:var(--surface-2);}
+  .cs-item .cs-ic{font-size:16px;flex:0 0 auto;line-height:1;}
+  .cs-item .cs-t{flex:1;min-width:0;}
+  .cs-item .cs-t b{display:block;font-size:13px;font-weight:650;color:var(--ink);line-height:1.2;}
+  .cs-item .cs-t span{font-family:var(--font-mono);font-size:9px;letter-spacing:.04em;color:var(--ink-faint);}
+  .cs-item .cs-check{flex:0 0 auto;font-size:10px;color:var(--signal);}
+  .cs-item.current{background:var(--surface-2);}
+  .cs-item.current .cs-t b{color:var(--accent);}
+  .topbar{display:none;position:sticky;top:0;z-index:30;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 92%,var(--surface));backdrop-filter:blur(6px);}
+  .topbar .mbtn{font-family:var(--font-mono);font-size:12px;padding:7px 12px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer;}
+  .topbar .tt{font-weight:700;font-size:14px;flex:1;}
+  .topbar .tp{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);}
+  .stage{padding:0 clamp(20px,5vw,72px);min-width:0;}
+  .lesson{max-width:740px;margin:0 auto;padding:44px 0 60px;}
+  .crumb{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .crumb .sep{color:var(--ink-faint);}
+  .crumb .dur{color:var(--ink-faint);}
+  .lesson h1{font-size:clamp(1.9rem,4vw,2.7rem);line-height:1.06;letter-spacing:-.025em;font-weight:800;margin:14px 0 0;text-wrap:balance;}
+  .lesson .obj{margin:20px 0 4px;padding:14px 16px;border:1px solid var(--line);border-left:3px solid var(--signal);border-radius:var(--radius);background:var(--signal-bg);font-size:.92rem;}
+  .lesson .obj .ol{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal);margin-bottom:4px;}
+  .lesson h2{font-size:1.4rem;letter-spacing:-.015em;font-weight:750;margin:34px 0 8px;}
+  .lesson h3{font-size:1.08rem;font-weight:700;margin:24px 0 6px;}
+  .lesson p{color:var(--ink-soft);margin:12px 0;}
+  .lesson li{color:var(--ink-soft);margin:6px 0;}
+  .lesson strong{color:var(--ink);font-weight:650;}
+  .lesson em{color:var(--ink);font-style:italic;}
+  .lesson ul,.lesson ol{padding-left:22px;}
+  code:not(pre code){font-family:var(--font-mono);font-size:.85em;background:var(--surface-2);padding:1.5px 6px;border-radius:4px;border:1px solid var(--line);color:var(--ink);}
+  .callout{margin:20px 0;padding:15px 17px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface);display:flex;gap:12px;}
+  .callout .ic{font-family:var(--font-mono);font-weight:700;flex:0 0 auto;width:23px;height:23px;border-radius:5px;display:grid;place-items:center;font-size:12px;}
+  .callout p{margin:0;font-size:.93rem;}
+  .callout.key{border-left:3px solid var(--accent);}.callout.key .ic{background:var(--accent);color:var(--accent-ink);}
+  .callout.tip{border-left:3px solid var(--signal);background:var(--signal-bg);}.callout.tip .ic{background:var(--signal);color:#fff;}
+  .callout.warn{border-left:3px solid var(--warn);background:var(--warn-bg);}.callout.warn .ic{background:var(--warn);color:#fff;}
+  .code{margin:18px 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:8px 13px;border-bottom:1px solid var(--line);background:var(--surface-2);}
+  .code .bar .d{width:9px;height:9px;border-radius:50%;background:var(--line-strong);}
+  .code .bar .fn{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);margin-left:6px;}
+  .code pre{margin:0;padding:15px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:12.5px;line-height:1.65;}
+  .code pre code{color:var(--ink);background:none;border:none;padding:0;font-size:inherit;}
+  .tok-key{color:var(--accent);}.tok-str{color:var(--signal);}.tok-com{color:var(--ink-faint);font-style:italic;}.tok-fn{color:var(--ink);font-weight:600;}.tok-num{color:var(--warn);}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin:20px 0;}
+  .card{padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);}
+  .card .num{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);letter-spacing:.1em;}
+  .card h4{margin:5px 0 5px;font-size:1rem;}
+  .card p{font-size:.87rem;margin:0;color:var(--ink-soft);}
+  table.tbl{width:100%;border-collapse:collapse;margin:18px 0;font-size:.9rem;overflow-x:auto;display:block;}
+  table.tbl th,table.tbl td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top;}
+  table.tbl th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;}
+  table.tbl td{color:var(--ink-soft);}table.tbl td b{color:var(--ink);}
+  .keyterms{margin:20px 0;padding:16px 18px;border:1px dashed var(--line-strong);border-radius:8px;background:var(--surface);}
+  .keyterms .tt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .keyterms dl{margin:0;display:grid;gap:8px;}
+  .keyterms dt{font-weight:650;color:var(--ink);font-size:.92rem;}
+  .keyterms dd{margin:0 0 4px;color:var(--ink-soft);font-size:.88rem;}
+  .lesson-footer{max-width:740px;margin:0 auto;padding:24px 0 70px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .btn{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;padding:10px 16px;border-radius:6px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+  .btn:hover:not(:disabled){border-color:var(--accent);}
+  .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+  .btn.primary:hover:not(:disabled){background:var(--accent-2);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .lesson-footer .spacer{flex:1;}
+  .lesson-footer .lfmeta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);width:100%;text-align:center;order:5;}
+  .instrument{margin:22px 0;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden;}
+  .instrument .ihead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface-2);}
+  .instrument .ihead .t{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);}
+  .instrument .ibody{padding:17px;}
+  .loop-body{display:grid;grid-template-columns:210px 1fr;gap:20px;}
+  .loop-svg{width:100%;height:auto;}
+  .node .ring{fill:var(--surface-2);stroke:var(--line-strong);stroke-width:1.5;transition:all .3s;}
+  .node.active .ring{fill:var(--accent);stroke:var(--accent);}
+  .node.done .ring{fill:var(--signal);stroke:var(--signal);}
+  .node text{font-family:var(--font-mono);font-size:9px;font-weight:600;fill:var(--ink-soft);transition:fill .3s;}
+  .node.active text,.node.done text{fill:#fff;}
+  .edge{stroke:var(--line-strong);stroke-width:1.5;transition:stroke .3s;}
+  .edge.hot{stroke:var(--accent);}
+  .loop-log{display:flex;flex-direction:column;min-width:0;max-height:340px;overflow-y:auto;}
+  .loop-step{padding:9px 12px;border-radius:6px;border:1px solid var(--line);margin-bottom:7px;font-size:.87rem;opacity:.4;transition:opacity .3s;background:var(--surface);border-left:3px solid var(--line-strong);}
+  .loop-step.shown{opacity:1;}
+  .loop-step.shown.lead{border-left-color:var(--accent);}
+  .loop-step.shown.worker{border-left-color:var(--warn);}
+  .loop-step.shown.ret{border-left-color:var(--signal);}
+  .loop-step.shown.final{border-left-color:var(--ink);background:var(--surface-2);}
+  .loop-step .lk{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);}
+  .loop-step .lv{margin-top:3px;color:var(--ink);}
+  .loop-controls{display:flex;gap:10px;padding:12px 17px;border-top:1px solid var(--line);background:var(--surface-2);align-items:center;}
+  .loop-controls .cnt{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);}
+  .topo-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:15px;}
+  .topo-tab{font-family:var(--font-mono);font-size:11px;padding:7px 11px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink-soft);cursor:pointer;transition:all .12s;}
+  .topo-tab:hover{border-color:var(--accent);}
+  .topo-tab.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+  .topo-view{display:grid;grid-template-columns:190px 1fr;gap:22px;align-items:center;}
+  .topo-view svg{width:100%;height:auto;}
+  .topo-desc h4{margin:0 0 6px;font-size:1.1rem;}
+  .topo-desc p{margin:0 0 10px;font-size:.9rem;color:var(--ink-soft);}
+  .topo-best{font-family:var(--font-mono);font-size:10.5px;color:var(--signal);letter-spacing:.03em;display:block;margin-bottom:4px;}
+  .topo-avoid{font-family:var(--font-mono);font-size:10.5px;color:var(--warn);letter-spacing:.03em;}
+  .picker .pq{font-weight:650;font-size:1.02rem;margin-bottom:4px;color:var(--ink);}
+  .picker .pq-sub{font-size:.82rem;color:var(--ink-faint);margin-bottom:13px;font-family:var(--font-mono);letter-spacing:.04em;}
+  .pick-opts{display:grid;gap:9px;}
+  .pick-opt{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;font-size:.92rem;color:var(--ink);transition:all .15s;}
+  .pick-opt:hover{border-color:var(--accent);background:var(--surface-2);}
+  .pick-result{margin-top:15px;padding:14px 16px;border-radius:6px;border:1px solid var(--signal);background:var(--signal-bg);display:none;}
+  .pick-result.show{display:block;}
+  .pick-result .rt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--signal);}
+  .pick-result .rn{font-size:1.15rem;font-weight:750;margin:5px 0 6px;color:var(--ink);}
+  .pick-result p{margin:0;font-size:.9rem;}
+  .pick-reset{margin-top:12px;}
+  .quiz{margin:6px 0;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+  .quiz .qhead{padding:13px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .quiz .qhead .t{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);}
+  .quiz .qhead .score{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .quiz .qbody{padding:17px;background:var(--surface);}
+  .qitem{margin-bottom:22px;}.qitem:last-child{margin-bottom:0;}
+  .qitem .qn{font-weight:650;margin-bottom:10px;color:var(--ink);}
+  .qitem .qn .qx{font-family:var(--font-mono);color:var(--accent);margin-right:8px;font-size:.82em;}
+  .qopts{display:grid;gap:8px;}
+  .qopt{display:flex;align-items:flex-start;gap:10px;width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;font-size:.9rem;color:var(--ink);transition:all .15s;text-align:left;}
+  .qopt:hover:not(:disabled){border-color:var(--line-strong);background:var(--surface-2);}
+  .qopt .mk{font-family:var(--font-mono);font-size:11px;flex:0 0 auto;width:19px;height:19px;border-radius:4px;border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--ink-soft);}
+  .qopt.correct{border-color:var(--signal);background:var(--signal-bg);}.qopt.correct .mk{background:var(--signal);border-color:var(--signal);color:#fff;}
+  .qopt.wrong{border-color:var(--bad);background:var(--bad-bg);}.qopt.wrong .mk{background:var(--bad);border-color:var(--bad);color:#fff;}
+  .qopt:disabled{cursor:default;}
+  .qexpl{margin-top:11px;padding:11px 13px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:.87rem;color:var(--ink-soft);display:none;}
+  .qexpl.show{display:block;}.qexpl b{color:var(--ink);}
+  .quiz-final .verdict{margin-top:6px;padding:14px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);font-size:.95rem;display:none;}
+  .quiz-final .verdict.show{display:block;}.quiz-final .verdict b{color:var(--ink);}
+  .nextcourse{margin:22px 0;padding:22px;border:1px solid var(--line-strong);border-radius:10px;background:linear-gradient(135deg,var(--surface),var(--surface-2));box-shadow:var(--shadow);display:flex;align-items:center;gap:18px;flex-wrap:wrap;text-decoration:none;}
+  .nextcourse:hover{border-color:var(--accent);}
+  .nextcourse .nb{font-family:var(--font-mono);font-size:24px;}
+  .nextcourse .body{flex:1;min-width:200px;}
+  .nextcourse .k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+  .nextcourse .tt{font-size:1.15rem;font-weight:750;color:var(--ink);margin:3px 0;}
+  .nextcourse .d{font-size:.88rem;color:var(--ink-soft);margin:0;}
+  .nextcourse .ar{font-family:var(--font-mono);color:var(--accent);font-size:1.3rem;}
+  .reading{display:grid;gap:9px;margin:16px 0;}
+  .reading a{display:flex;gap:12px;align-items:baseline;padding:11px 14px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink);background:var(--surface);transition:border-color .15s;}
+  .reading a:hover{border-color:var(--accent);}
+  .reading a .src{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);letter-spacing:.04em;flex:0 0 auto;width:92px;}
+  .reading a .ti{font-size:.9rem;}
+  .hero-outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:20px 0;}
+  .outcome{display:flex;gap:10px;align-items:flex-start;padding:13px 15px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);font-size:.9rem;color:var(--ink-soft);}
+  .outcome .ck{color:var(--signal);font-weight:700;flex:0 0 auto;}
+  .scrim{display:none;}
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;}
+    .topbar{display:flex;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:300px;z-index:40;transform:translateX(-100%);transition:transform .25s;height:100vh;}
+    .sidebar.open{transform:translateX(0);}
+    .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:35;opacity:0;pointer-events:none;transition:opacity .25s;}
+    .scrim.show{opacity:1;pointer-events:auto;}
+    .loop-body{grid-template-columns:1fr;}.loop-svg{max-width:210px;margin:0 auto;}
+    .topo-view{grid-template-columns:1fr;}.topo-view svg{max-width:190px;margin:0 auto;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+
+<div class="topbar">
+  <button class="mbtn" id="menuBtn">☰ Curriculum</button>
+  <span class="tt">Multi-Agent Systems</span>
+  <span class="tp" id="topPct">0%</span>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand"><span class="dot"></span><span class="name">The Console</span></div>
+    <div class="course-switch" id="courseSwitch">
+      <button class="cs-trigger" id="csTrigger" aria-haspopup="true" aria-expanded="false">
+        <span class="cs-ic">🕸️</span>
+        <span class="cs-tx"><span class="cs-name">Multi-Agent Systems</span><span class="cs-meta">Course 03 of 03 · switch ▾</span></span>
+        <span class="cs-caret">▾</span>
+      </button>
+      <div class="cs-menu" id="csMenu">
+        <a class="cs-item" href="https://claude.ai/code/artifact/beb16fc4-2571-4fa9-991f-cbdd2adfd374" target="_blank" rel="noopener"><span class="cs-ic">🎛️</span><span class="cs-t"><b>Context Engineering</b><span>Course 01 · open →</span></span></a>
+        <a class="cs-item" href="https://claude.ai/code/artifact/f5497728-de30-4c32-9f6e-92a7db0a27ec" target="_blank" rel="noopener"><span class="cs-ic">🔁</span><span class="cs-t"><b>Agentic Patterns</b><span>Course 02 · open →</span></span></a>
+        <a class="cs-item current"><span class="cs-ic">🕸️</span><span class="cs-t"><b>Multi-Agent Systems</b><span>Course 03 · you're here</span></span><span class="cs-check">●</span></a>
+      </div>
+    </div>
+    <div class="sb-sub">full course · ~2.5 hrs · 34 lessons</div>
+    <div class="sb-progress">
+      <div class="pl"><span>Course progress</span><span><b id="pdone">0</b>/<span id="ptotal">0</span> lessons</span></div>
+      <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    </div>
+    <div class="curriculum" id="curriculum"></div>
+    <button class="theme-btn" id="themeBtn">◐ Toggle theme</button>
+  </aside>
+
+  <div class="stage">
+    <article class="lesson" id="lesson"></article>
+    <div class="lesson-footer" id="footer"></div>
+  </div>
+</div>
+
+<!-- ================= LESSON CONTENT ================= -->
+
+<script type="text/html" data-lesson="1-1">
+  <div class="obj"><div class="ol">In this course</div>You'll learn to design systems where multiple agents cooperate — how to structure them, how they communicate, how to keep them reliable and cheap, and, above all, when <em>not</em> to build one.</div>
+  <p>Welcome to course 03. It builds on the first two: multi-agent systems are the <em>Isolate</em> operation from Context Engineering plus the orchestration patterns from Agentic Patterns, taken to their full form. This is hands-on — you'll step through a live orchestrator, explore topologies interactively, and use a decision tool, with a checkpoint after every section and a final exam.</p>
+  <h2>What you'll be able to do by the end</h2>
+  <div class="hero-outcomes">
+    <div class="outcome"><span class="ck">✓</span><span>Decide honestly whether a task needs multiple agents at all.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Pick the right topology — orchestrator, pipeline, parallel, or network.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Design how agents communicate and what context travels between them.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Anticipate multi-agent failure modes, cost, and the security surface.</span></div>
+  </div>
+  <h2>The one rule that governs everything here</h2>
+  <div class="callout key"><span class="ic">!</span><p><strong>Multi-agent is a cost you pay to buy something a single agent can't give you.</strong> More agents means more calls, more latency, more coordination, more ways to fail. This course teaches you to reach for it deliberately — and to recognize when one good agent would have been better.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-2">
+  <div class="obj"><div class="ol">Objective</div>Define a multi-agent system precisely, and separate it from a single agent with many tools.</div>
+  <p>A <strong>multi-agent system</strong> is one where two or more agents — each with its own context, and often its own role, tools, and even model — work together toward a goal, coordinating through some form of communication.</p>
+  <p>The key word is <em>own context</em>. A single agent with fifty tools is still one agent: one window, one reasoning loop. Multi-agent means <strong>multiple independent windows</strong>, each reasoning separately, whose outputs are combined.</p>
+  <table class="tbl">
+    <tr><th></th><th>Single agent (many tools)</th><th>Multi-agent</th></tr>
+    <tr><td><b>Windows</b></td><td>One shared context</td><td>Several independent contexts</td></tr>
+    <tr><td><b>Reasoning</b></td><td>One loop</td><td>Multiple loops, coordinated</td></tr>
+    <tr><td><b>Strength</b></td><td>Simple, coherent, cheap</td><td>Scales past one context; specialization</td></tr>
+    <tr><td><b>Cost</b></td><td>Low</td><td>More calls, latency, coordination</td></tr>
+  </table>
+  <div class="callout tip"><span class="ic">✓</span><p>If you can't point to <em>separate contexts doing separate reasoning</em>, you don't have a multi-agent system — you have one agent, and that's usually fine.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-3">
+  <div class="obj"><div class="ol">Objective</div>Know the real reasons to go multi-agent — and the real costs.</div>
+  <p>There are only a few <em>good</em> reasons to split into multiple agents. Learn them, because everything else is usually over-engineering.</p>
+  <h2>Legitimate reasons</h2>
+  <ul>
+    <li><strong>Context won't fit.</strong> The task involves more material than one clean window can hold without rotting. Split it (Isolate).</li>
+    <li><strong>Genuine parallelism.</strong> Independent sub-tasks can run at the same time, cutting wall-clock time.</li>
+    <li><strong>Specialization.</strong> Sub-tasks need very different tools, instructions, or even models — a coder, a researcher, a critic.</li>
+    <li><strong>Isolation of risk.</strong> You want a sandboxed agent with narrow permissions handling untrusted input, separate from a privileged one.</li>
+  </ul>
+  <h2>The costs you always pay</h2>
+  <div class="cards">
+    <div class="card"><div class="num">COST</div><h4>Latency</h4><p>Coordination round-trips add up; a chain of agents is only as fast as its slowest link.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Money</h4><p>Every agent is more model calls. Fan-out multiplies token spend.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Fragility</h4><p>More components, more coordination bugs, more places for errors to propagate.</p></div>
+    <div class="card"><div class="num">COST</div><h4>Debuggability</h4><p>A failure is now spread across several agents' traces, not one.</p></div>
+  </div>
+  <div class="callout warn"><span class="ic">▲</span><p>If none of the four legitimate reasons applies, a single agent is almost certainly the better system. "It sounds more sophisticated" is not a reason.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-4">
+  <div class="obj"><div class="ol">Objective</div>Adopt the discipline of clearing the single-agent bar first.</div>
+  <p>The most valuable habit in this entire course: before building a multi-agent system, prove a single agent can't do the job. This isn't caution for its own sake — single-agent systems are dramatically easier to build, debug, and run.</p>
+  <h2>The escalation ladder</h2>
+  <ol>
+    <li><strong>Single model call</strong> — can a well-assembled prompt do it?</li>
+    <li><strong>Workflow</strong> — a fixed chain of steps you control?</li>
+    <li><strong>Single agent (ReAct loop)</strong> — one context, a curated tool set?</li>
+    <li><strong>Multi-agent</strong> — only when 1–3 genuinely can't hold the task.</li>
+  </ol>
+  <div class="callout key"><span class="ic">=</span><p>This is the same ladder from Agentic Patterns, extended by one rung. Climb it in order. Each rung is an order of magnitude simpler to operate than the next — spend the complexity only when forced.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>A good test: try the single-agent version first, even as a throwaway. If it gets 80% of the way, you've learned the task is more tractable than it looked — and you have a baseline to beat.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 1</div>Confirm the foundations before topologies.</div>
+  <p>Three questions on what a multi-agent system is and when to reach for one.</p>
+  <div data-mount="quiz" data-quiz="s1"></div>
+</script>
+
+<script type="text/html" data-lesson="2-1">
+  <div class="obj"><div class="ol">Objective</div>See the four core topologies at a glance — the shapes almost every multi-agent system is built from.</div>
+  <p>Multi-agent designs come in a handful of recurring <strong>topologies</strong> — the wiring diagram of who talks to whom. Explore them below; the rest of this section takes each one in depth.</p>
+  <div data-mount="topology"></div>
+  <div class="callout key"><span class="ic">!</span><p>Most real systems are a <em>composition</em> of these — an orchestrator whose workers each run a small pipeline, say. Learn the four pure forms first; you'll blend them later.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-2">
+  <div class="obj"><div class="ol">Objective</div>Master orchestrator–workers, the most common and most useful topology.</div>
+  <p>In <strong>orchestrator–workers</strong> (also called supervisor/lead), one agent owns the goal. It <em>decomposes</em> the task, <em>delegates</em> sub-tasks to worker agents — each in its own isolated context — and <em>synthesizes</em> their results into the final answer.</p>
+  <h2>Step through a real orchestrator run</h2>
+  <p>Watch a lead agent build a competitive brief by dispatching three workers in parallel, then synthesizing three short summaries instead of drowning in thirty documents. Step through it:</p>
+  <div data-mount="orch"></div>
+  <div class="callout key"><span class="ic">=</span><p>This is the <em>Isolate</em> operation as an architecture: each worker sees only its slice and returns a distilled result, so the orchestrator reasons over summaries, not raw material. The whole system stays within clean windows.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-3">
+  <div class="obj"><div class="ol">Objective</div>Use the pipeline topology when order matters.</div>
+  <p>A <strong>pipeline</strong> (sequential) passes work through agents in a fixed order, each transforming the output of the last: draft → edit → fact-check → format. It's the multi-agent cousin of prompt chaining, with each stage being a full agent rather than a single call.</p>
+  <h2>When it fits</h2>
+  <ul>
+    <li>The stages are <strong>genuinely sequential</strong> — each needs the previous one's output.</li>
+    <li>Each stage benefits from its <strong>own specialized</strong> instructions/tools (a "writer" agent, then a distinct "editor" agent).</li>
+    <li>You want <strong>inspectable hand-offs</strong> between stages for debugging or human review.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">▲</span><p>The pipeline's weakness is its serial nature: total latency is the sum of all stages, and an early-stage error propagates downstream. If your stages are actually independent, you want parallel, not pipeline.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-4">
+  <div class="obj"><div class="ol">Objective</div>Use parallel / map-reduce to cut wall-clock time on independent work.</div>
+  <p>The <strong>parallel</strong> topology (fan-out / fan-in, or map-reduce) splits a task into independent pieces, runs them <em>at the same time</em>, and merges the results. Unlike orchestrator–workers, there's no dynamic planning — the split is fixed and the merge is mechanical.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">parallel.ts</span></div><pre><code><span class="tok-com">// fan-out: same task shape, different inputs, all at once</span>
+<span class="tok-key">const</span> results = <span class="tok-key">await</span> Promise.<span class="tok-fn">all</span>(
+  chunks.map(chunk => <span class="tok-fn">summarizeAgent</span>(chunk))
+);
+<span class="tok-com">// fan-in: mechanical merge</span>
+<span class="tok-key">const</span> brief = <span class="tok-fn">combine</span>(results);</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Two flavors: <strong>sectioning</strong> (different pieces of one job) and <strong>voting</strong> (the same job N times, take the best/majority for reliability). Both need a defined aggregation step — don't forget to budget for the merge.</p></div>
+  <div class="callout key"><span class="ic">=</span><p>Each parallel worker is an isolated window — so none rots under the full load. That's why parallel scales to inputs a single agent couldn't hold.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-5">
+  <div class="obj"><div class="ol">Objective</div>Understand the network topology — and why to use it sparingly.</div>
+  <p>In a <strong>network</strong> (decentralized) topology, agents talk to each other peer-to-peer, with no single boss. Any agent can hand off to any other. It's the most flexible — and by far the hardest to control.</p>
+  <h2>The trade-off</h2>
+  <table class="tbl">
+    <tr><th>Upside</th><th>Downside</th></tr>
+    <tr><td>Maximum flexibility; agents route dynamically</td><td>Hard to predict, debug, and bound</td></tr>
+    <tr><td>No single bottleneck or coordinator</td><td>Risk of loops, ping-pong, and runaway cost</td></tr>
+    <tr><td>Natural fit for true peer negotiation</td><td>Emergent behavior is hard to test</td></tr>
+  </table>
+  <div class="callout warn"><span class="ic">▲</span><p>Networks are seductive and rarely the right first choice. Most problems that <em>look</em> like they need peer-to-peer negotiation are better served by an orchestrator that mediates. Reach for a network only when there's genuinely no natural coordinator — and bound it hard.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-6">
+  <div class="obj"><div class="ol">Checkpoint · Section 2</div>The four core topologies.</div>
+  <p>Four questions — one per topology.</p>
+  <div data-mount="quiz" data-quiz="s2"></div>
+</script>
+
+<script type="text/html" data-lesson="3-1">
+  <div class="obj"><div class="ol">Objective</div>Understand handoffs — transferring control (and scoped context) between agents.</div>
+  <p>A <strong>handoff</strong> is one agent passing control to another better suited to continue. The receiving agent takes over the conversation or task. It's how routing happens <em>mid-flight</em>, not just at the entry point.</p>
+  <p>Example: a triage agent handles a support conversation, recognizes a billing dispute, and hands off to a billing specialist — passing the account and the specific question, not the entire chat history.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>The hard part of a handoff is what context travels with it.</strong> Too little and the receiver is lost; the whole history and you've rebuilt the bloated window you were avoiding. Scoping the handoff payload is the single most important design decision — and it's pure context engineering (course 01).</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-2">
+  <div class="obj"><div class="ol">Objective</div>Choose between shared state and message passing for coordination.</div>
+  <p>Agents coordinate through one of two mechanisms. Picking the right one shapes your whole architecture.</p>
+  <table class="tbl">
+    <tr><th></th><th>Shared state (blackboard)</th><th>Message passing</th></tr>
+    <tr><td><b>How</b></td><td>Agents read/write a common store</td><td>Agents send explicit messages</td></tr>
+    <tr><td><b>Good for</b></td><td>Many agents needing the same evolving facts</td><td>Clear, traceable, decoupled hand-offs</td></tr>
+    <tr><td><b>Risk</b></td><td>Contention; one agent poisoning the shared store</td><td>Message bloat; lost/ordering issues</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">=</span><p>Shared state is powerful but dangerous: a hallucination written to the blackboard becomes <em>context poisoning</em> for every agent that reads it. Validate before writing to shared state, and prefer message passing when you want isolation and traceability.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-3">
+  <div class="obj"><div class="ol">Objective</div>Scope what context travels between agents — the make-or-break skill.</div>
+  <p>Every boundary between agents is a decision about <em>what context crosses it</em>. Get this wrong and you either strand the receiving agent or recreate the bloated windows multi-agent was meant to avoid.</p>
+  <h2>Principles for context at boundaries</h2>
+  <ul>
+    <li><strong>Pass distilled results, not raw transcripts.</strong> A worker should return a summary, not its entire reasoning trace.</li>
+    <li><strong>Pass the goal, not the history.</strong> The receiver needs what to do and the facts it needs — rarely the full conversation that led here.</li>
+    <li><strong>Re-establish, don't assume.</strong> Give the receiving agent a crisp brief; don't rely on it "just knowing" what a sibling did.</li>
+    <li><strong>Keep secrets and untrusted content from spreading.</strong> A boundary is a good place to strip both.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Think of each agent as a function with a deliberately narrow signature. The art of multi-agent design is largely the art of designing those signatures — the same discipline as assembling a single window, applied at every seam.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-4">
+  <div class="obj"><div class="ol">Objective</div>Design roles and specialization that actually pull their weight.</div>
+  <p>The appeal of specialization is real: a "researcher," a "writer," a "critic," each with tailored instructions and tools. But specialization is only worth the coordination cost when the roles are <em>genuinely different</em>.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>The anti-pattern:</strong> a dozen agents whose only difference is a slightly reworded system prompt. That's not specialization — it's overhead. If two agents could share one prompt and tool set, they should be one agent.</p></div>
+  <h2>Good specialization has</h2>
+  <ul>
+    <li><strong>Distinct tools</strong> — the researcher can search; the writer can't and doesn't need to.</li>
+    <li><strong>Distinct instructions</strong> that would genuinely conflict if merged into one prompt.</li>
+    <li><strong>Distinct context needs</strong> — the critic should see the output fresh, not the writer's reasoning.</li>
+  </ul>
+</script>
+
+<script type="text/html" data-lesson="3-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 3</div>Coordination &amp; communication.</div>
+  <p>Three questions on handoffs, state, and roles.</p>
+  <div data-mount="quiz" data-quiz="s3"></div>
+</script>
+
+<script type="text/html" data-lesson="4-1">
+  <div class="obj"><div class="ol">Objective</div>Place MCP and A2A correctly — they solve different problems.</div>
+  <p>Two protocols dominate the interop conversation, and they're often confused. The distinction is simple once you see it.</p>
+  <table class="tbl">
+    <tr><th></th><th>MCP (Model Context Protocol)</th><th>A2A (Agent-to-Agent)</th></tr>
+    <tr><td><b>Connects</b></td><td>An agent to <em>tools &amp; data</em></td><td>An agent to <em>other agents</em></td></tr>
+    <tr><td><b>Metaphor</b></td><td>"USB-C for AI" — plugging in capabilities</td><td>Agents delegating to peer agents</td></tr>
+    <tr><td><b>You use it to</b></td><td>Expose a database or API to your agent</td><td>Let your agent hand a task to another team's agent</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">=</span><p>They compose: an agent might use <strong>MCP</strong> to reach its tools and <strong>A2A</strong> to delegate a sub-task to a specialist agent it doesn't own. Both now sit under the Linux Foundation's Agentic AI Foundation (AAIF).</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-2">
+  <div class="obj"><div class="ol">Objective</div>Understand the A2A idea: agents that advertise and consume capabilities.</div>
+  <p><strong>Agent-to-Agent (A2A)</strong> is a standard for agents to discover and delegate to one another across organizational boundaries. The core idea: an agent publishes a description of what it can do (often called an "agent card"), and other agents can find it and send it structured tasks.</p>
+  <h2>Why a standard matters here</h2>
+  <ul>
+    <li><strong>Cross-vendor delegation.</strong> Your agent can hand a task to an agent built by another team or company without a bespoke integration.</li>
+    <li><strong>Capability discovery.</strong> Agents advertise what they do, so orchestration can be dynamic.</li>
+    <li><strong>Structured task lifecycle.</strong> A shared notion of submitting a task, checking status, and getting results.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Think of A2A as doing for <em>agents</em> what MCP does for <em>tools</em>: turning M×N bespoke integrations into a common protocol. It's earlier in its adoption curve than MCP — worth knowing, not yet worth betting everything on.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-3">
+  <div class="obj"><div class="ol">Objective</div>Read the interop landscape without getting lost in the hype.</div>
+  <p>The protocol space is moving fast. You don't need to track every entrant — you need a stable mental model for where a new standard fits.</p>
+  <div class="callout key"><span class="ic">!</span><p>Ask two questions of any new agent standard: <strong>(1)</strong> does it connect an agent to <em>capabilities/data</em> (MCP-shaped) or to <em>other agents</em> (A2A-shaped)? <strong>(2)</strong> Is it governed neutrally with real multi-vendor adoption, or is it one company's proposal? Those two answers place almost anything.</p></div>
+  <h2>Practical stance for a builder</h2>
+  <ul>
+    <li><strong>Adopt the settled standard</strong> (MCP for tools) rather than hand-rolling integrations.</li>
+    <li><strong>Watch the emerging one</strong> (A2A for agent interop) and design boundaries so you could adopt it, without depending on it prematurely.</li>
+    <li><strong>Don't let protocol excitement drive architecture.</strong> Choose your topology from the task; use protocols to implement it, not to justify it.</li>
+  </ul>
+</script>
+
+<script type="text/html" data-lesson="4-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 4</div>Protocols &amp; interop.</div>
+  <p>Three questions on MCP vs A2A and the standards landscape.</p>
+  <div data-mount="quiz" data-quiz="s4"></div>
+</script>
+
+<script type="text/html" data-lesson="5-1">
+  <div class="obj"><div class="ol">Objective</div>Build an orchestrator loop in code — it's simpler than it sounds.</div>
+  <p>An orchestrator is just an agent whose "tools" are <em>other agents</em>. Here's the skeleton: the lead plans sub-tasks, dispatches them (in parallel where independent), and synthesizes.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">orchestrator.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">orchestrate</span>(goal: <span class="tok-key">string</span>) {
+  <span class="tok-com">// 1. Lead decomposes the goal into independent sub-tasks</span>
+  <span class="tok-key">const</span> subtasks = <span class="tok-key">await</span> <span class="tok-fn">plan</span>(goal);
+
+  <span class="tok-com">// 2. Dispatch workers — each in its OWN isolated context</span>
+  <span class="tok-key">const</span> results = <span class="tok-key">await</span> Promise.<span class="tok-fn">all</span>(
+    subtasks.map(t => <span class="tok-fn">worker</span>(t))   <span class="tok-com">// fresh window per worker</span>
+  );
+
+  <span class="tok-com">// 3. Lead synthesizes distilled results — not raw material</span>
+  <span class="tok-key">return</span> <span class="tok-key">await</span> <span class="tok-fn">synthesize</span>(goal, results);
+}</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Frameworks (LangGraph, the OpenAI Agents SDK, CrewAI, the Anthropic Agent SDK) give you orchestration primitives, but this is the shape underneath all of them: plan → dispatch to isolated workers → synthesize.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-2">
+  <div class="obj"><div class="ol">Objective</div>Give each worker a clean, isolated context — the reason multi-agent works at all.</div>
+  <p>The entire benefit of orchestration collapses if workers share a bloated context. Each worker must get a <strong>fresh window</strong> containing only its sub-task and the minimal facts it needs.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">worker.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">worker</span>(subtask: Subtask) {
+  <span class="tok-com">// A brand-new context: just this sub-task's brief + its own tools.</span>
+  <span class="tok-key">const</span> ctx = <span class="tok-fn">buildTurn</span>({
+    role: subtask.role,          <span class="tok-com">// specialized instructions</span>
+    goal: subtask.brief,         <span class="tok-com">// scoped, not the whole goal</span>
+    tools: <span class="tok-fn">toolsFor</span>(subtask.role), <span class="tok-com">// only what this role needs</span>
+  });
+  <span class="tok-key">const</span> full = <span class="tok-key">await</span> <span class="tok-fn">runAgent</span>(ctx);
+  <span class="tok-key">return</span> <span class="tok-fn">distill</span>(full);          <span class="tok-com">// return a SUMMARY, not the transcript</span>
+}</code></pre></div>
+  <div class="callout key"><span class="ic">=</span><p>Two context-engineering moves make this work: <strong>Isolate</strong> (fresh window per worker) and <strong>Compress</strong> (distill the result before it goes back). Skip the distill and the orchestrator's window fills with every worker's raw output — straight back to context rot.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-3">
+  <div class="obj"><div class="ol">Objective</div>Synthesize worker results into one coherent answer.</div>
+  <p>Synthesis is where multi-agent systems earn or lose their keep. The orchestrator receives several distilled results and must weave them into a single answer — reconciling overlaps, resolving contradictions, and producing something coherent.</p>
+  <h2>What good synthesis handles</h2>
+  <ul>
+    <li><strong>Overlap</strong> — two workers found the same fact; report it once.</li>
+    <li><strong>Contradiction</strong> — two workers disagree; the orchestrator must reconcile or flag it, not average blindly.</li>
+    <li><strong>Gaps</strong> — a sub-task came back empty; decide whether to re-dispatch or proceed.</li>
+    <li><strong>Attribution</strong> — keep track of which worker supplied what, for traceability.</li>
+  </ul>
+  <div class="callout warn"><span class="ic">▲</span><p>Naive synthesis — concatenating worker outputs — is a common failure. If contradictions from workers land unresolved in the final answer, that's <em>context clash</em> surfacing at the system level. Synthesis must actively reconcile.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-4">
+  <div class="obj"><div class="ol">Objective</div>Handle errors across agents without one failure sinking the system.</div>
+  <p>In a single agent, an error is one place. In a multi-agent system, a worker can fail, time out, or return garbage — and you need the system to degrade gracefully, not collapse.</p>
+  <ul>
+    <li><strong>Isolate failures.</strong> One worker failing shouldn't crash the run. Catch per-worker; let the others finish.</li>
+    <li><strong>Decide the fallback</strong> per sub-task: retry, skip with a noted gap, or fail the whole run if it's critical.</li>
+    <li><strong>Guard against error propagation.</strong> A worker's wrong result feeding synthesis poisons the answer — validate distilled results before combining.</li>
+    <li><strong>Bound the whole system,</strong> not just each agent: total step/cost ceilings so a misbehaving sub-tree can't run away.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Treat workers like unreliable network calls, because that's effectively what they are. The engineering discipline of timeouts, retries, and graceful degradation applies directly.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 5</div>Building it.</div>
+  <p>Three questions on orchestration, isolation, and error handling.</p>
+  <div data-mount="quiz" data-quiz="s5"></div>
+</script>
+
+<script type="text/html" data-lesson="6-1">
+  <div class="obj"><div class="ol">Objective</div>Recognize the failure modes unique to multi-agent systems.</div>
+  <p>Multi-agent systems fail in ways single agents can't. Knowing the names makes them findable.</p>
+  <div class="cards">
+    <div class="card"><div class="num">FAIL</div><h4>Error propagation</h4><p>An early agent's mistake flows downstream and compounds. Common in pipelines.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Ping-pong / loops</h4><p>Agents hand off back and forth without progress. Common in networks.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Shared-state poisoning</h4><p>One agent writes a bad fact; every reader inherits it.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Lost-in-synthesis</h4><p>Good worker results get garbled or dropped when the lead combines them.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Coordination deadlock</h4><p>Agents wait on each other; nothing finishes.</p></div>
+    <div class="card"><div class="num">FAIL</div><h4>Cost blowout</h4><p>Fan-out or loops multiply calls beyond what the result is worth.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Nearly all of these trace back to two things: <strong>unbounded coordination</strong> and <strong>context crossing boundaries badly</strong>. Bound the system and scope every hand-off, and most of these never appear.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-2">
+  <div class="obj"><div class="ol">Objective</div>Reason about the cost and latency of fan-out before it surprises you.</div>
+  <p>Multi-agent economics are easy to get wrong. A five-worker fan-out isn't 5× one call — each worker is itself an agent running a multi-step loop, so costs multiply fast.</p>
+  <table class="tbl">
+    <tr><th>Shape</th><th>Latency</th><th>Cost</th></tr>
+    <tr><td><b>Pipeline</b> (serial)</td><td>Sum of all stages — slow</td><td>Sum of stages</td></tr>
+    <tr><td><b>Parallel</b> (fan-out)</td><td>The slowest single worker — fast</td><td>Sum of all workers (high)</td></tr>
+    <tr><td><b>Orchestrator</b></td><td>Plan + slowest worker + synthesize</td><td>Lead + all workers</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p>Parallelism buys <em>latency</em>, never <em>cost</em> — you still pay for every worker. If a task is cost-sensitive rather than time-sensitive, fewer agents (or one) may win even when parallel is "faster."</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Model routing helps: use a cheap, fast model for workers and simple triage, and reserve a strong model for planning and synthesis where judgment matters.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-3">
+  <div class="obj"><div class="ol">Objective</div>Get observability and evals across a whole agent tree — not just one loop.</div>
+  <p>Everything from Agentic Patterns' production section still applies, but now the trace spans <em>multiple</em> agents. You need to see the whole tree.</p>
+  <ul>
+    <li><strong>Trace the tree, not the node.</strong> Capture the orchestrator's plan, each worker's full sub-trace, and the synthesis — linked, so you can drill from the final answer down to the worker that caused a problem.</li>
+    <li><strong>Attribute failures.</strong> When the answer is wrong, observability should tell you <em>which agent</em> introduced the error.</li>
+    <li><strong>Eval at both levels.</strong> Evaluate individual workers (did the researcher find the right facts?) <em>and</em> the end-to-end system (was the final brief correct?).</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>Without tree-level tracing, a multi-agent system is nearly undebuggable — a wrong answer with no way to localize the cause. Build the observability before you scale the agents.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-4">
+  <div class="obj"><div class="ol">Objective</div>Understand the expanded security surface when agents trust each other.</div>
+  <p>Multi-agent systems widen the attack surface: now agents pass content to <em>each other</em>, and a compromise in one can spread.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>Injection propagation:</strong> if a worker ingests untrusted content and gets hijacked, the malicious instructions can ride its "result" into the orchestrator or a sibling — turning one poisoned agent into a system-wide compromise.</p></div>
+  <h2>Defenses across agents</h2>
+  <ul>
+    <li><strong>Treat inter-agent messages as untrusted too.</strong> A worker's output is data, not a command the orchestrator must obey.</li>
+    <li><strong>Least privilege per agent.</strong> The agent handling untrusted input should have the fewest, safest tools. Keep privileged actions in a separate, sandboxed agent.</li>
+    <li><strong>Gate side effects centrally.</strong> Route destructive actions through a single checkpoint with policy checks, not scattered across every agent.</li>
+    <li><strong>Validate at boundaries.</strong> Every seam is a place to sanitize and drop anything that looks like an instruction.</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>This is where multi-agent design meets your Azure security work: the trust boundaries between agents are exactly the kind of privilege-separation an appsec review reasons about.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 6</div>Reliability, cost &amp; security.</div>
+  <p>Three questions on failure modes, economics, and the security surface.</p>
+  <div data-mount="quiz" data-quiz="s6"></div>
+</script>
+
+<script type="text/html" data-lesson="7-1">
+  <div class="obj"><div class="ol">Objective</div>Choose a topology from the task, with a decision tool.</div>
+  <p>Topology should fall out of the task's shape, not personal preference. Answer up to two questions and get a starting recommendation — then read the <em>why</em>.</p>
+  <div data-mount="picker"></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Notice the tool never lands on "network" lightly — decentralized systems are powerful but the hardest to control. Most problems that seem to need peer-to-peer are better mediated by an orchestrator.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-2">
+  <div class="obj"><div class="ol">Objective</div>Avoid the multi-agent anti-patterns that sink real projects.</div>
+  <div class="cards">
+    <div class="card"><div class="num">ANTI</div><h4>Multi-agent when one would do</h4><p>The cardinal sin. If a single agent clears the bar, stop there.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Cosmetic specialization</h4><p>A swarm of agents that differ only by a reworded prompt. Merge them.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Fat hand-offs</h4><p>Passing full histories between agents, rebuilding the bloated window.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Unbounded networks</h4><p>Peer-to-peer with no ceilings — loops and cost blowouts waiting to happen.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Concatenate-as-synthesis</h4><p>Gluing worker outputs together instead of reconciling them.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>No tree observability</h4><p>Scaling agents before you can trace them. Undebuggable by design.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Every one of these has the same cure as the rest of the series: <em>start simple, bound everything, keep each context lean, scope every boundary.</em></p></div>
+</script>
+
+<script type="text/html" data-lesson="7-3">
+  <div class="obj"><div class="ol">Final exam</div>Eight questions across the whole course. Answer all to see your score.</div>
+  <p>A self-check spanning when to go multi-agent, the topologies, coordination, protocols, building, and reliability. Missed one? The explanation names the lesson to revisit.</p>
+  <div data-mount="quiz" data-quiz="final"></div>
+</script>
+
+<script type="text/html" data-lesson="7-4">
+  <div class="obj"><div class="ol">You've finished the series</div>Three courses, one system.</div>
+  <p>You can now decide whether a task needs multiple agents, pick and wire the right topology, design how they coordinate and what context crosses each boundary, and keep the whole thing reliable, affordable, and secure.</p>
+  <h2>The through-line across all three courses</h2>
+  <p>Multi-agent systems aren't a separate skill — they're the first two courses composed. Every worker is a <strong>context</strong> you assemble (course 01). Every agent runs a <strong>pattern</strong> — usually ReAct with Reflexion (course 02). And the system that wires them is <strong>Isolate</strong> turned into architecture. If you've done all three, you hold the whole stack.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>The one sentence to remember:</strong> a multi-agent system is many lean contexts, each running a bounded pattern, coordinated through carefully scoped boundaries — reached for only when a single agent genuinely can't hold the task.</p></div>
+  <h2>Revisit the companions</h2>
+  <a class="nextcourse" href="https://claude.ai/code/artifact/beb16fc4-2571-4fa9-991f-cbdd2adfd374" target="_blank" rel="noopener">
+    <span class="nb">🎛️</span>
+    <span class="body"><span class="k">Course 01 of 03</span><span class="tt">Context Engineering</span><span class="d">Every worker window is assembled with these four operations.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <a class="nextcourse" href="https://claude.ai/code/artifact/f5497728-de30-4c32-9f6e-92a7db0a27ec" target="_blank" rel="noopener">
+    <span class="nb">🔁</span>
+    <span class="body"><span class="k">Course 02 of 03</span><span class="tt">Agentic Patterns</span><span class="d">Every agent in the system runs one of these patterns.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <h2>Go deeper</h2>
+  <div class="reading">
+    <a href="https://www.anthropic.com/engineering/multi-agent-research-system" target="_blank" rel="noopener"><span class="src">Anthropic</span><span class="ti">How we built a multi-agent research system</span></a>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><span class="src">Anthropic</span><span class="ti">Building Effective Agents — orchestrator-workers & more</span></a>
+    <a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener"><span class="src">LangGraph</span><span class="ti">Multi-agent orchestration in code</span></a>
+    <a href="https://aaif.io/" target="_blank" rel="noopener"><span class="src">AAIF</span><span class="ti">Agentic AI Foundation — MCP & A2A governance</span></a>
+  </div>
+  <div class="callout key"><span class="ic">→</span><p><strong>Your move now:</strong> take a task you think needs multiple agents. Build the single-agent version first. Only if it genuinely can't hold the task, split it — starting with an orchestrator, isolating each worker's context, and tracing the whole tree.</p></div>
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var SECTIONS=[
+    {t:"Foundations",lessons:[
+      {id:"1-1",t:"Welcome & how this course works",m:5,tag:"start"},
+      {id:"1-2",t:"What a multi-agent system is",m:6},
+      {id:"1-3",t:"Why — and why not — multi-agent",m:7},
+      {id:"1-4",t:"Single-agent first: the bar to clear",m:6},
+      {id:"1-5",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Core Topologies",lessons:[
+      {id:"2-1",t:"The topology map",m:7,tag:"lab"},
+      {id:"2-2",t:"Orchestrator–workers",m:9,tag:"lab"},
+      {id:"2-3",t:"Pipeline (sequential)",m:6},
+      {id:"2-4",t:"Parallel / map-reduce",m:7},
+      {id:"2-5",t:"Network (decentralized)",m:6},
+      {id:"2-6",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Coordination & Communication",lessons:[
+      {id:"3-1",t:"Handoffs",m:6},
+      {id:"3-2",t:"Shared state vs message passing",m:7},
+      {id:"3-3",t:"What context travels",m:7},
+      {id:"3-4",t:"Roles & specialization",m:6},
+      {id:"3-5",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Protocols & Interop",lessons:[
+      {id:"4-1",t:"MCP vs A2A",m:6},
+      {id:"4-2",t:"The A2A idea",m:6},
+      {id:"4-3",t:"Reading the landscape",m:6},
+      {id:"4-4",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Building It",lessons:[
+      {id:"5-1",t:"The orchestrator loop in code",m:7},
+      {id:"5-2",t:"Isolating worker context",m:7},
+      {id:"5-3",t:"Synthesizing results",m:6},
+      {id:"5-4",t:"Error handling across agents",m:6},
+      {id:"5-5",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Reliability, Cost & Security",lessons:[
+      {id:"6-1",t:"Multi-agent failure modes",m:6},
+      {id:"6-2",t:"Cost & latency of fan-out",m:6},
+      {id:"6-3",t:"Observability & evals for a tree",m:6},
+      {id:"6-4",t:"Security across agents",m:7},
+      {id:"6-5",t:"Checkpoint",m:4,tag:"quiz"},
+    ]},
+    {t:"Design & Capstone",lessons:[
+      {id:"7-1",t:"Choosing a topology (decision tool)",m:6,tag:"lab"},
+      {id:"7-2",t:"Anti-patterns",m:6},
+      {id:"7-3",t:"Final exam",m:8,tag:"exam"},
+      {id:"7-4",t:"Wrap-up & the through-line",m:5},
+    ]},
+  ];
+
+  var QUIZZES={
+    s1:[
+      {q:"What actually makes a system 'multi-agent' rather than one agent with many tools?",o:["It uses a bigger model","Multiple independent contexts each doing separate reasoning, coordinated together","It has more than 10 tools","It runs in the cloud"],c:1,e:"Separate windows doing separate reasoning is the defining trait. One window = one agent. (Lesson 1-2)"},
+      {q:"Which is a legitimate reason to go multi-agent?",o:["It sounds more sophisticated","The task genuinely exceeds one clean context, or sub-tasks are independent/specialized","You have spare compute","To use a new framework"],c:1,e:"Context overflow, real parallelism, specialization, or risk isolation. Otherwise stay single-agent. (Lesson 1-3)"},
+      {q:"The escalation ladder for choosing an architecture is:",o:["Multi-agent → agent → workflow → call","Call → workflow → single agent → multi-agent, only climbing when forced","Always multi-agent","Random"],c:1,e:"Climb only when the current rung genuinely can't hold the task. (Lesson 1-4)"},
+    ],
+    s2:[
+      {q:"A lead agent decomposes a task, delegates to isolated workers, and synthesizes. Topology?",o:["Pipeline","Orchestrator–workers","Network","Single agent"],c:1,e:"Orchestrator–workers — Isolate as an architecture. (Lesson 2-2)"},
+      {q:"Stages must run in a fixed order, each feeding the next (draft→edit→format). Topology?",o:["Parallel","Network","Pipeline","Orchestrator"],c:2,e:"Pipeline: sequential, specialized stages. Weakness: latency is the sum, errors propagate. (Lesson 2-3)"},
+      {q:"Independent pieces run at the same time and are merged mechanically. Topology?",o:["Parallel / map-reduce","Pipeline","Network","Single agent"],c:0,e:"Fan-out/fan-in. Buys latency, not cost — you still pay for every worker. (Lesson 2-4)"},
+      {q:"Agents talk peer-to-peer with no coordinator. Topology — and the main risk?",o:["Pipeline — slow","Network — loops, ping-pong, hard to bound","Orchestrator — bottleneck","Parallel — merge cost"],c:1,e:"Network: maximum flexibility, hardest to control. Use sparingly and bound hard. (Lesson 2-5)"},
+    ],
+    s3:[
+      {q:"The single most important design decision in a handoff is…",o:["Which model the receiver uses","What scoped context travels with it — too little strands, too much rebloats","The UI color","How many tools exist"],c:1,e:"Scoping the handoff payload is pure context engineering. (Lesson 3-1)"},
+      {q:"The main danger of a shared-state (blackboard) coordination model is…",o:["It's too fast","One agent writing a bad fact poisons every reader","It can't hold data","It needs no validation"],c:1,e:"Shared-state poisoning. Validate before writing; prefer message passing for isolation. (Lesson 3-2)"},
+      {q:"Good specialization between agents requires…",o:["Slightly reworded prompts","Genuinely distinct tools, instructions, and context needs","At least ten agents","The same tools for all"],c:1,e:"If two agents could share one prompt and tool set, they should be one agent. (Lesson 3-4)"},
+    ],
+    s4:[
+      {q:"MCP connects an agent to ___; A2A connects an agent to ___.",o:["other agents; tools","tools & data; other agents","the internet; the model","nothing; everything"],c:1,e:"MCP = tools/data ('USB-C for AI'); A2A = agent-to-agent delegation. (Lesson 4-1)"},
+      {q:"The core idea of A2A is…",o:["Bigger context windows","Agents advertise capabilities and can discover & delegate to each other across boundaries","Replacing MCP","Training agents"],c:1,e:"Capability discovery + structured task delegation between agents. (Lesson 4-2)"},
+      {q:"A useful first question about any new agent standard is…",o:["Who marketed it loudest","Does it connect to capabilities/data (MCP-shaped) or to other agents (A2A-shaped)?","How new it is","Its logo"],c:1,e:"Placing it as MCP-shaped vs A2A-shaped, plus governance, orients you fast. (Lesson 4-3)"},
+    ],
+    s5:[
+      {q:"An orchestrator is essentially…",o:["A bigger model","An agent whose 'tools' are other agents: plan → dispatch to isolated workers → synthesize","A database","A single prompt"],c:1,e:"That three-step shape underlies every orchestration framework. (Lesson 5-1)"},
+      {q:"Why must a worker return a DISTILLED result, not its full transcript?",o:["To save disk","Or the orchestrator's window fills with raw output — back to context rot","The API requires it","It doesn't matter"],c:1,e:"Isolate + Compress. Skip the distill and you rebuild the bloated window. (Lesson 5-2)"},
+      {q:"Best practice when one worker fails mid-run?",o:["Crash the whole system","Isolate the failure — catch per-worker, decide retry/skip/abort, don't let it sink the others","Ignore all errors","Retry forever"],c:1,e:"Treat workers like unreliable network calls: timeouts, retries, graceful degradation. (Lesson 5-4)"},
+    ],
+    s6:[
+      {q:"Parallel fan-out primarily buys you…",o:["Lower cost","Lower latency — but you still pay for every worker","Fewer bugs","A smaller model"],c:1,e:"Parallelism cuts wall-clock time, never total cost. Cost-sensitive? Fewer agents may win. (Lesson 6-2)"},
+      {q:"Without tree-level tracing, a multi-agent system is…",o:["Faster","Nearly undebuggable — a wrong answer with no way to localize the cause","More secure","Cheaper"],c:1,e:"Build observability across the whole agent tree before scaling agents. (Lesson 6-3)"},
+      {q:"'Injection propagation' in a multi-agent system means…",o:["Agents run faster","A hijacked worker's malicious output rides into the orchestrator or siblings","Better parallelism","Nothing"],c:1,e:"Treat inter-agent messages as untrusted; least privilege; gate side effects centrally. (Lesson 6-4)"},
+    ],
+    final:[
+      {q:"The one rule governing multi-agent design is:",o:["More agents is better","It's a cost you pay only to buy what a single agent can't give you","Always use a network","Avoid orchestrators"],c:1,e:"Reach for it deliberately; clear the single-agent bar first. (Lessons 1-3, 1-4)"},
+      {q:"A task needs a lead to plan and synthesize dynamically. Best topology?",o:["Pipeline","Orchestrator–workers","Network","Parallel with fixed merge"],c:1,e:"Dynamic planning + synthesis = orchestrator. (Lesson 2-2)"},
+      {q:"Independent sub-tasks, no dynamic planning, mechanical merge. Best topology?",o:["Orchestrator","Pipeline","Parallel / map-reduce","Network"],c:2,e:"Fixed split + merge = parallel. (Lesson 2-4)"},
+      {q:"The make-or-break skill at every agent boundary is…",o:["Choosing the model","Scoping what context crosses it","Naming the agents","Picking a framework"],c:1,e:"Pass distilled results and the goal, not raw transcripts. (Lessons 3-1, 3-3)"},
+      {q:"MCP is to tools as A2A is to…",o:["models","other agents","databases","prompts"],c:1,e:"A2A standardizes agent-to-agent delegation the way MCP standardizes tool access. (Lesson 4-1)"},
+      {q:"Skipping the 'distill' step when workers return results causes…",o:["Faster runs","Context rot in the orchestrator's window","Better accuracy","Lower cost"],c:1,e:"The orchestrator drowns in raw output — Isolate without Compress. (Lesson 5-2)"},
+      {q:"Parallel fan-out and cost:",o:["It lowers cost","You still pay for every worker; it only lowers latency","It's always free","Cost is unpredictable"],c:1,e:"Parallelism buys time, not money. (Lesson 6-2)"},
+      {q:"The cardinal multi-agent anti-pattern is:",o:["Using an orchestrator","Building multi-agent when a single agent would do","Tracing the tree","Isolating contexts"],c:1,e:"Start simple; the single-agent version first. (Lessons 1-4, 7-2)"},
+    ],
+  };
+
+  var ORDER=[];SECTIONS.forEach(function(s){s.lessons.forEach(function(l){ORDER.push(l.id);});});
+  var TOTAL=ORDER.length;
+
+  var KEY="console_ma_full_v1";
+  var store={done:{},last:null};
+  try{var r=localStorage.getItem(KEY);if(r)store=JSON.parse(r);if(!store.done)store.done={};}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+
+  var root=document.documentElement;
+  function curTheme(){return root.getAttribute("data-theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}
+  document.getElementById("themeBtn").addEventListener("click",function(){var n=curTheme()==="dark"?"light":"dark";root.setAttribute("data-theme",n);try{localStorage.setItem("console_theme",n);}catch(e){}});
+  try{var t=localStorage.getItem("console_theme");if(t)root.setAttribute("data-theme",t);}catch(e){}
+
+  var curriculum=document.getElementById("curriculum");
+  var collapsed={};
+  function buildSidebar(){
+    curriculum.innerHTML="";
+    SECTIONS.forEach(function(sec,si){
+      var dc=sec.lessons.filter(function(l){return store.done[l.id];}).length;
+      var secEl=document.createElement("div");secEl.className="sec"+(collapsed[si]?" collapsed":"");
+      var head=document.createElement("button");head.className="sec-head";
+      head.innerHTML='<span class="caret">▼</span><span class="sx">S'+(si+1)+'</span><span class="st">'+sec.t+'</span><span class="sc">'+dc+'/'+sec.lessons.length+'</span>';
+      head.addEventListener("click",function(){collapsed[si]=!collapsed[si];secEl.classList.toggle("collapsed");});
+      secEl.appendChild(head);
+      var list=document.createElement("div");list.className="lessons";
+      sec.lessons.forEach(function(l){
+        var b=document.createElement("button");b.className="lrow"+(store.done[l.id]?" done":"")+(l.id===current?" current":"");
+        var badge=l.tag?'<span class="badge">'+l.tag+'</span>':'<span class="lm">'+l.m+'m</span>';
+        b.innerHTML='<span class="tick">✓</span><span class="lt">'+l.t+'</span>'+badge;
+        b.addEventListener("click",function(){go(l.id);closeMenu();});
+        list.appendChild(b);
+      });
+      secEl.appendChild(list);curriculum.appendChild(secEl);
+    });
+  }
+  function refreshProgress(){
+    var done=ORDER.filter(function(id){return store.done[id];}).length,pct=Math.round(done/TOTAL*100);
+    document.getElementById("pfill").style.width=pct+"%";
+    document.getElementById("pdone").textContent=done;
+    document.getElementById("ptotal").textContent=TOTAL;
+    document.getElementById("topPct").textContent=pct+"%";
+  }
+
+  var current=null,lessonEl=document.getElementById("lesson"),footerEl=document.getElementById("footer");
+  function meta(id){for(var i=0;i<SECTIONS.length;i++){var s=SECTIONS[i];for(var j=0;j<s.lessons.length;j++){if(s.lessons[j].id===id)return{sec:i,idx:j,l:s.lessons[j],secTitle:s.t};}}return null;}
+  function go(id){
+    current=id;store.last=id;save();
+    var m=meta(id),tpl=document.querySelector('script[data-lesson="'+id+'"]');
+    var crumb='<div class="crumb"><span>Section '+(m.sec+1)+' · '+m.secTitle+'</span><span class="sep">/</span><span>Lesson '+(m.idx+1)+'</span><span class="sep">·</span><span class="dur">'+m.l.m+' min</span></div>';
+    lessonEl.innerHTML=crumb+'<h1>'+m.l.t+'</h1>'+(tpl?tpl.innerHTML:'<p>Coming soon.</p>');
+    mountWidgets();buildFooter(id);buildSidebar();refreshProgress();
+    window.scrollTo({top:0,behavior:"auto"});lessonEl.scrollIntoView({block:"start"});
+  }
+  function buildFooter(id){
+    var i=ORDER.indexOf(id),prev=i>0?ORDER[i-1]:null,next=i<TOTAL-1?ORDER[i+1]:null;
+    footerEl.innerHTML="";
+    var prevBtn=document.createElement(prev?"button":"span");
+    if(prev){prevBtn.className="btn";prevBtn.innerHTML="← Previous";prevBtn.addEventListener("click",function(){go(prev);});}
+    footerEl.appendChild(prevBtn);
+    var sp=document.createElement("span");sp.className="spacer";footerEl.appendChild(sp);
+    var mainBtn=document.createElement("button");mainBtn.className="btn primary";var da=store.done[id];
+    if(next)mainBtn.innerHTML=(da?"Next lesson →":"Mark complete & continue →");
+    else mainBtn.innerHTML=(da?"✓ Course complete":"✓ Finish course");
+    mainBtn.addEventListener("click",function(){store.done[id]=true;save();if(next)go(next);else{buildSidebar();refreshProgress();buildFooter(id);}});
+    footerEl.appendChild(mainBtn);
+    var lf=document.createElement("span");lf.className="lfmeta";lf.textContent="Lesson "+(i+1)+" of "+TOTAL;footerEl.appendChild(lf);
+  }
+
+  function mountWidgets(){
+    Array.prototype.slice.call(lessonEl.querySelectorAll("[data-mount]")).forEach(function(el){
+      var k=el.getAttribute("data-mount");
+      if(k==="orch")buildOrch(el);
+      else if(k==="topology")buildTopology(el);
+      else if(k==="picker")buildPicker(el);
+      else if(k==="quiz")buildQuiz(el,el.getAttribute("data-quiz"));
+    });
+  }
+
+  /* ----- ORCHESTRATOR STEPPER ----- */
+  function buildOrch(host){
+    var steps=[
+      {node:"lead",cls:"lead",k:"Lead · receive",v:"Task: build a competitive brief on Acme's new product. Too broad for one clean context — I'll decompose and delegate."},
+      {node:"lead",cls:"lead",k:"Lead · plan",v:"Three independent sub-tasks: (A) pricing, (B) feature comparison, (C) recent market news."},
+      {node:"wA",cls:"worker",k:"Dispatch → Worker A",v:"Worker A gets ONLY the pricing sub-task, in its own fresh context."},
+      {node:"wB",cls:"worker",k:"Dispatch → Worker B",v:"Worker B researches features — isolated context, no pricing noise."},
+      {node:"wC",cls:"worker",k:"Dispatch → Worker C",v:"Worker C scans market news — running in parallel with A and B."},
+      {node:"wA",done:["wA"],cls:"ret",k:"Worker A → returns",v:"Distilled: \"Acme undercuts us ~12% on the base tier; premium is comparable.\""},
+      {node:"wB",done:["wB"],cls:"ret",k:"Worker B → returns",v:"Distilled: \"They lead on integrations, lag on reporting.\""},
+      {node:"wC",done:["wC"],cls:"ret",k:"Worker C → returns",v:"Distilled: \"Launch covered by 3 trade outlets; sentiment mixed on price.\""},
+      {node:"lead",done:["lead","wA","wB","wC"],cls:"final",k:"Lead · synthesize",v:"Combine three short summaries — not thirty documents — into one brief. Done."},
+    ];
+    host.innerHTML='<div class="instrument"><div class="ihead"><span class="t">orchestrator_run · worked example</span></div><div class="ibody"><div class="loop-body">'
+      +'<svg class="loop-svg" viewBox="0 0 200 170" role="img" aria-label="Orchestrator dispatching three workers">'
+      +'<line class="edge" id="e-wA" x1="100" y1="42" x2="40" y2="120"></line>'
+      +'<line class="edge" id="e-wB" x1="100" y1="46" x2="100" y2="118"></line>'
+      +'<line class="edge" id="e-wC" x1="100" y1="42" x2="160" y2="120"></line>'
+      +'<g class="node" id="n-lead" transform="translate(100,32)"><circle class="ring" r="24"></circle><text text-anchor="middle" dy="3">LEAD</text></g>'
+      +'<g class="node" id="n-wA" transform="translate(40,132)"><circle class="ring" r="19"></circle><text text-anchor="middle" dy="3">A</text></g>'
+      +'<g class="node" id="n-wB" transform="translate(100,132)"><circle class="ring" r="19"></circle><text text-anchor="middle" dy="3">B</text></g>'
+      +'<g class="node" id="n-wC" transform="translate(160,132)"><circle class="ring" r="19"></circle><text text-anchor="middle" dy="3">C</text></g>'
+      +'</svg><div class="loop-log" id="orch-log"></div></div></div>'
+      +'<div class="loop-controls"><button class="btn primary" id="orch-next">Step →</button><button class="btn" id="orch-reset">↺ Reset</button><span class="cnt" id="orch-cnt">step 0 / '+steps.length+'</span></div></div>';
+    var log=host.querySelector("#orch-log"),nb=host.querySelector("#orch-next"),rb=host.querySelector("#orch-reset"),cnt=host.querySelector("#orch-cnt"),shown=0;
+    function render(){
+      log.innerHTML="";
+      var doneSet={};for(var i=0;i<shown;i++){(steps[i].done||[]).forEach(function(n){doneSet[n]=true;});}
+      var active=shown>0?steps[shown-1].node:null;
+      ["lead","wA","wB","wC"].forEach(function(n){
+        var el=host.querySelector("#n-"+n);el.classList.remove("active","done");
+        if(doneSet[n])el.classList.add("done");else if(n===active)el.classList.add("active");
+      });
+      ["wA","wB","wC"].forEach(function(n){var e=host.querySelector("#e-"+n);if(e){e.classList.toggle("hot",n===active);}});
+      for(var j=0;j<shown;j++){var s=steps[j];var d=document.createElement("div");d.className="loop-step shown "+s.cls;d.innerHTML='<div class="lk">'+s.k+'</div><div class="lv">'+s.v+'</div>';log.appendChild(d);}
+      log.scrollTop=log.scrollHeight;
+      cnt.textContent="step "+shown+" / "+steps.length;nb.disabled=shown>=steps.length;nb.textContent=shown>=steps.length?"✓ Synthesized":"Step →";
+    }
+    nb.addEventListener("click",function(){if(shown<steps.length){shown++;render();}});
+    rb.addEventListener("click",function(){shown=0;render();});
+    render();
+  }
+
+  /* ----- TOPOLOGY EXPLORER ----- */
+  function buildTopology(host){
+    var svgOrch='<svg viewBox="0 0 160 130"><line class="edge" x1="80" y1="30" x2="30" y2="95"></line><line class="edge" x1="80" y1="30" x2="80" y2="92"></line><line class="edge" x1="80" y1="30" x2="130" y2="95"></line><g class="node active"><circle class="ring" cx="80" cy="24" r="18"></circle><text x="80" y="27" text-anchor="middle">LEAD</text></g><g class="node"><circle class="ring" cx="30" cy="104" r="15"></circle><text x="30" y="107" text-anchor="middle">W</text></g><g class="node"><circle class="ring" cx="80" cy="104" r="15"></circle><text x="80" y="107" text-anchor="middle">W</text></g><g class="node"><circle class="ring" cx="130" cy="104" r="15"></circle><text x="130" y="107" text-anchor="middle">W</text></g></svg>';
+    var svgPipe='<svg viewBox="0 0 160 130"><line class="edge" x1="34" y1="65" x2="62" y2="65"></line><line class="edge" x1="94" y1="65" x2="122" y2="65"></line><g class="node"><circle class="ring" cx="24" cy="65" r="16"></circle><text x="24" y="68" text-anchor="middle">A</text></g><g class="node active"><circle class="ring" cx="80" cy="65" r="16"></circle><text x="80" y="68" text-anchor="middle">B</text></g><g class="node"><circle class="ring" cx="136" cy="65" r="16"></circle><text x="136" y="68" text-anchor="middle">C</text></g></svg>';
+    var svgPar='<svg viewBox="0 0 160 130"><line class="edge" x1="24" y1="65" x2="60" y2="30"></line><line class="edge" x1="24" y1="65" x2="60" y2="65"></line><line class="edge" x1="24" y1="65" x2="60" y2="100"></line><line class="edge" x1="100" y1="30" x2="136" y2="65"></line><line class="edge" x1="100" y1="65" x2="136" y2="65"></line><line class="edge" x1="100" y1="100" x2="136" y2="65"></line><g class="node"><circle class="ring" cx="20" cy="65" r="14"></circle><text x="20" y="68" text-anchor="middle">IN</text></g><g class="node active"><circle class="ring" cx="80" cy="30" r="13"></circle><text x="80" y="33" text-anchor="middle">W</text></g><g class="node active"><circle class="ring" cx="80" cy="65" r="13"></circle><text x="80" y="68" text-anchor="middle">W</text></g><g class="node active"><circle class="ring" cx="80" cy="100" r="13"></circle><text x="80" y="103" text-anchor="middle">W</text></g><g class="node"><circle class="ring" cx="140" cy="65" r="14"></circle><text x="140" y="68" text-anchor="middle">Σ</text></g></svg>';
+    var svgNet='<svg viewBox="0 0 160 130"><line class="edge" x1="45" y1="35" x2="115" y2="35"></line><line class="edge" x1="45" y1="35" x2="45" y2="95"></line><line class="edge" x1="115" y1="35" x2="115" y2="95"></line><line class="edge" x1="45" y1="95" x2="115" y2="95"></line><line class="edge" x1="45" y1="35" x2="115" y2="95"></line><line class="edge" x1="115" y1="35" x2="45" y2="95"></line><g class="node"><circle class="ring" cx="45" cy="35" r="15"></circle><text x="45" y="38" text-anchor="middle">A</text></g><g class="node"><circle class="ring" cx="115" cy="35" r="15"></circle><text x="115" y="38" text-anchor="middle">B</text></g><g class="node"><circle class="ring" cx="45" cy="95" r="15"></circle><text x="45" y="98" text-anchor="middle">C</text></g><g class="node"><circle class="ring" cx="115" cy="95" r="15"></circle><text x="115" y="98" text-anchor="middle">D</text></g></svg>';
+    var topos=[
+      {id:"orch",tab:"Orchestrator",svg:svgOrch,h:"Orchestrator–workers",p:"A lead agent plans, delegates sub-tasks to isolated workers, and synthesizes their distilled results.",best:"BEST FOR: dynamic decomposition, research, most tasks",avoid:"WATCH: the lead is a bottleneck & single point of failure"},
+      {id:"pipe",tab:"Pipeline",svg:svgPipe,h:"Pipeline (sequential)",p:"Work flows through specialized agents in a fixed order, each transforming the previous output.",best:"BEST FOR: genuinely sequential, staged transformations",avoid:"WATCH: latency is the sum; early errors propagate"},
+      {id:"par",tab:"Parallel",svg:svgPar,h:"Parallel / map-reduce",p:"An input is split into independent pieces, processed simultaneously, then merged (Σ).",best:"BEST FOR: independent work; cutting wall-clock time; voting",avoid:"WATCH: you pay for every worker; needs a real merge step"},
+      {id:"net",tab:"Network",svg:svgNet,h:"Network (decentralized)",p:"Agents talk peer-to-peer with no single coordinator; any agent can hand off to any other.",best:"BEST FOR: true peer negotiation with no natural boss",avoid:"WATCH: loops, ping-pong, hard to bound — use sparingly"},
+    ];
+    host.innerHTML='<div class="instrument"><div class="ihead"><span class="t">topology_explorer</span></div><div class="ibody"><div class="topo-tabs" id="topo-tabs"></div><div class="topo-view" id="topo-view"></div></div></div>';
+    var tabs=host.querySelector("#topo-tabs"),view=host.querySelector("#topo-view");
+    topos.forEach(function(t,i){var b=document.createElement("button");b.className="topo-tab"+(i===0?" active":"");b.textContent=t.tab;b.addEventListener("click",function(){Array.prototype.slice.call(tabs.children).forEach(function(x){x.classList.remove("active");});b.classList.add("active");show(t);});tabs.appendChild(b);});
+    function show(t){view.innerHTML=t.svg+'<div class="topo-desc"><h4>'+t.h+'</h4><p>'+t.p+'</p><span class="topo-best">'+t.best+'</span><span class="topo-avoid">'+t.avoid+'</span></div>';}
+    show(topos[0]);
+  }
+
+  /* ----- TOPOLOGY PICKER ----- */
+  function buildPicker(host){
+    var recs={
+      pipe:{n:"Pipeline (sequential)",w:"Your steps have a fixed order and each feeds the next. Wire them as staged agents — predictable and inspectable. Don't parallelize what's genuinely sequential."},
+      orch:{n:"Orchestrator–workers",w:"A lead needs to decide the sub-tasks at runtime and weave the results together. Delegate to isolated workers and synthesize — the most broadly useful topology."},
+      par:{n:"Parallel / map-reduce",w:"The split is fixed and the merge is mechanical — no runtime planning needed. Fan out for speed, then aggregate. Remember you pay for every worker."},
+      net:{n:"Network (decentralized)",w:"There's genuinely no natural coordinator and agents must negotiate peer-to-peer. Powerful but the hardest to control — bound it hard, and double-check an orchestrator wouldn't do."},
+    };
+    var q=1;
+    host.innerHTML='<div class="instrument picker"><div class="ihead"><span class="t">topology_selector</span></div><div class="ibody"><div id="pk-q"><div class="pq" id="pk-text"></div><div class="pq-sub" id="pk-sub"></div><div class="pick-opts" id="pk-opts"></div></div><div class="pick-result" id="pk-res"><div class="rt">Recommended starting topology</div><div class="rn" id="pk-name"></div><p id="pk-why"></p><button class="btn pick-reset" id="pk-reset">↺ Start over</button></div></div></div>';
+    var res=host.querySelector("#pk-res");
+    function opts(list,cb){var o=host.querySelector("#pk-opts");o.innerHTML="";list.forEach(function(it){var b=document.createElement("button");b.className="pick-opt";b.textContent=it.t;b.addEventListener("click",function(){cb(it.v);});o.appendChild(b);});}
+    function show(r){host.querySelector("#pk-name").textContent=r.n;host.querySelector("#pk-why").textContent=r.w;res.classList.add("show");}
+    function render(){
+      res.classList.remove("show");
+      if(q===1){host.querySelector("#pk-text").textContent="Must the steps happen in a fixed order, each feeding the next?";host.querySelector("#pk-sub").textContent="question 1 of 2";
+        opts([{t:"Yes — it's a sequence of stages",v:"seq"},{t:"No — the sub-tasks are independent",v:"ind"}],function(v){if(v==="seq")show(recs.pipe);else{q=2;render();}});
+      }else{host.querySelector("#pk-text").textContent="How is the work coordinated?";host.querySelector("#pk-sub").textContent="question 2 of 2";
+        opts([{t:"A lead plans the split & synthesizes at runtime",v:"orch"},{t:"A fixed split then a mechanical merge",v:"par"},{t:"Agents negotiate peer-to-peer, no single boss",v:"net"}],function(v){show(recs[v]);});
+      }
+    }
+    host.querySelector("#pk-reset").addEventListener("click",function(){q=1;render();});
+    render();
+  }
+
+  /* ----- QUIZ ----- */
+  function buildQuiz(host,qid){
+    var qs=QUIZZES[qid]||[],isFinal=qid==="final",answered={},score=0,letters=["A","B","C","D"];
+    host.innerHTML='<div class="quiz'+(isFinal?" quiz-final":"")+'"><div class="qhead"><span class="t">'+(isFinal?"final_exam":"checkpoint")+'</span><span class="score" id="qs">0 / '+qs.length+'</span></div><div class="qbody" id="qb"></div>'+(isFinal?'<div class="verdict" id="qv"></div>':'')+'</div>';
+    var qb=host.querySelector("#qb");
+    qs.forEach(function(item,qi){var w=document.createElement("div");w.className="qitem";w.innerHTML='<div class="qn"><span class="qx">Q'+(qi+1)+'</span>'+item.q+'</div><div class="qopts">'+item.o.map(function(o,oi){return '<button class="qopt" data-qi="'+qi+'" data-oi="'+oi+'"><span class="mk">'+letters[oi]+'</span><span>'+o+'</span></button>';}).join("")+'</div><div class="qexpl" id="qe-'+qi+'"></div>';qb.appendChild(w);});
+    qb.addEventListener("click",function(e){
+      var btn=e.target.closest(".qopt");if(!btn)return;
+      var qi=parseInt(btn.getAttribute("data-qi"),10),oi=parseInt(btn.getAttribute("data-oi"),10);
+      if(answered[qi])return;answered[qi]=true;var item=qs[qi];
+      Array.prototype.slice.call(btn.parentElement.querySelectorAll(".qopt")).forEach(function(b,k){b.disabled=true;if(k===item.c)b.classList.add("correct");});
+      if(oi===item.c)score++;else btn.classList.add("wrong");
+      host.querySelector("#qs").textContent=score+" / "+qs.length;
+      var ex=host.querySelector("#qe-"+qi);ex.innerHTML=(oi===item.c?"<b>Correct.</b> ":"<b>Not quite.</b> ")+item.e;ex.classList.add("show");
+      if(Object.keys(answered).length===qs.length&&isFinal){
+        var v=host.querySelector("#qv"),pv=Math.round(score/qs.length*100);
+        var msg=pv>=87?"<b>Excellent.</b> You can design multi-agent systems — and, just as importantly, know when not to.":pv>=50?"<b>Solid.</b> Revisit the lessons flagged in the answers you missed.":"<b>Worth another pass.</b> Re-run Sections 1–2 (when to go multi-agent + the topologies), then retry.";
+        v.innerHTML="You scored "+score+" / "+qs.length+" ("+pv+"%). "+msg;v.classList.add("show");
+      }
+    });
+  }
+
+  var sidebar=document.getElementById("sidebar"),scrim=document.getElementById("scrim");
+  function closeMenu(){sidebar.classList.remove("open");scrim.classList.remove("show");}
+  document.getElementById("menuBtn").addEventListener("click",function(){sidebar.classList.toggle("open");scrim.classList.toggle("show");});
+  scrim.addEventListener("click",closeMenu);
+
+  var cs=document.getElementById("courseSwitch"),csT=document.getElementById("csTrigger");
+  if(cs&&csT){
+    csT.addEventListener("click",function(e){e.stopPropagation();var open=cs.classList.toggle("open");csT.setAttribute("aria-expanded",open?"true":"false");});
+    document.addEventListener("click",function(e){if(!cs.contains(e.target)){cs.classList.remove("open");csT.setAttribute("aria-expanded","false");}});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"){cs.classList.remove("open");csT.setAttribute("aria-expanded","false");}});
+  }
+
+  buildSidebar();refreshProgress();
+  go(store.last&&meta(store.last)?store.last:ORDER[0]);
+})();
+</script>
+
+</body></html>

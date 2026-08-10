@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evals & Observability — Full Course · Agentcraft</title>
+<meta name="description" content="How you know any of it works. Eval sets, LLM-as-judge, tracing, regression gates and production drift.">
+<meta name="theme-color" content="#0E1216">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="stylesheet" href="./shared/console.css">
+<link rel="stylesheet" href="./shared/instruments.css">
+<link rel="stylesheet" href="./courses/evals-and-observability/theme.css">
+</head>
+<body>
+
+<button class="theme-fab" id="themeFab" aria-label="Toggle dark / light theme" title="Toggle dark / light theme">
+  <span class="ic-light">🌙</span><span class="ic-dark">☀️</span>
+</button>
+
+<div class="topbar">
+  <button class="mbtn" id="menuBtn">☰ Curriculum</button>
+  <span class="tt">Evals & Observability</span>
+  <span class="tp" id="topPct">0%</span>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="sb-brand" href="./index.html" style="text-decoration:none;color:inherit"><span class="dot"></span><span class="name">Agentcraft</span></a>
+    <div class="course-switch" id="courseSwitch">
+      <button class="cs-trigger" id="csTrigger" aria-haspopup="true" aria-expanded="false">
+        <span class="cs-ic">📊</span>
+        <span class="cs-tx"><span class="cs-name">Evals & Observability</span><span class="cs-meta">Course 04 of 04 · switch ▾</span></span>
+        <span class="cs-caret">▾</span>
+      </button>
+      <div class="cs-menu" id="csMenu">
+        <a class="cs-item" href="./context-engineering.html"><span class="cs-ic">🎛️</span><span class="cs-t"><b>Context Engineering</b><span>Course 01 · open →</span></span></a>
+        <a class="cs-item" href="./agentic-patterns.html"><span class="cs-ic">🔁</span><span class="cs-t"><b>Agentic Patterns</b><span>Course 02 · open →</span></span></a>
+        <a class="cs-item" href="./multi-agent-systems.html"><span class="cs-ic">🕸️</span><span class="cs-t"><b>Multi-Agent Systems</b><span>Course 03 · open →</span></span></a>
+        <a class="cs-item current"><span class="cs-ic">📊</span><span class="cs-t"><b>Evals & Observability</b><span>Course 04 · you're here</span></span><span class="cs-check">●</span></a>
+      </div>
+    </div>
+    <div class="sb-sub">full course · ~3 hrs · 33 lessons</div>
+    <div class="sb-progress">
+      <div class="pl"><span>Course progress</span><span><b id="pdone">0</b>/<span id="ptotal">0</span> lessons</span></div>
+      <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    </div>
+    <div class="curriculum" id="curriculum"></div>
+    <button class="theme-btn" id="themeBtn">◐ Toggle theme</button>
+    <div id="backup"></div>
+  </aside>
+
+  <div class="stage">
+    <article class="lesson" id="lesson"></article>
+    <div class="lesson-footer" id="footer"></div>
+  </div>
+</div>
+
+<!-- ================= LESSON CONTENT ================= -->
+
+<script type="text/html" data-lesson="1-1">
+  <div class="obj"><div class="ol">In this course</div>You'll learn how to know whether an AI system actually works — and whether the change you just made improved it or quietly broke something. This is the skill the other three courses assume you have.</div>
+  <p>The first three courses in Agentcraft teach you to <em>build</em>: assemble a context, run an agent loop, coordinate several agents. This one teaches you to <strong>measure</strong>. It's the least glamorous of the four and the one that decides whether anything you build survives contact with real users.</p>
+  <h2>What you'll be able to do by the end</h2>
+  <div class="hero-outcomes">
+    <div class="outcome"><span class="ck">✓</span><span>Build an eval set from production traffic that predicts real behaviour.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Pick the cheapest scorer that can answer your question — and calibrate a judge before trusting it.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Read an agent trace and find where the truth got lost, not just where it showed.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Set a regression gate people trust instead of bypass.</span></div>
+  </div>
+  <h2>The one claim this course rests on</h2>
+  <div class="callout key"><span class="ic">!</span><p><strong>An AI feature you can't measure is a feature you can't improve.</strong> Without a measurement loop, every change is a coin flip you can't score — and the failures you never look at are the ones that decide whether users stay.</p></div>
+  <p>Hands-on, like the others: a gate simulator you can push until it breaks, a real trace to debug, a judge-diagnosis drill, a checkpoint after every section and a final exam. Progress saves on this device.</p>
+  <div class="callout tip"><span class="ic">i</span><p>Code is TypeScript, and the examples assume an agent roughly like the one from <strong>Agentic Patterns</strong> — a model, a few tools, a loop. Nothing here depends on a particular eval framework; the ideas outlive the tools.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-2">
+  <div class="obj"><div class="ol">Objective</div>See precisely why "it looks better to me" fails as a quality signal — and what it's actually measuring.</div>
+  <p>Here's how almost every LLM feature is tested in its first months. You change the prompt. You type in two or three inputs you have in your head. You read the answers. They look good. You ship.</p>
+  <p>Call it the <strong>vibe check</strong>. It isn't worthless — it catches catastrophes, and a developer's taste is real information. But it has three properties that make it unsafe as your only signal.</p>
+  <table class="tbl">
+    <tr><th>Property</th><th>Why it hurts</th></tr>
+    <tr><td><b>Tiny sample</b></td><td>Three cases can't distinguish a 5-point quality change from noise. Most regressions are smaller than they feel.</td></tr>
+    <tr><td><b>Biased sample</b></td><td>You test the cases you were thinking about — which are exactly the ones your change was designed to fix.</td></tr>
+    <tr><td><b>No memory</b></td><td>Nothing compares today's output to last month's. Slow drift is invisible by construction.</td></tr>
+  </table>
+  <p>That last one is the quiet killer. A feature rarely dies from one bad deploy; it dies from twenty small prompt tweaks, each of which looked fine, that together moved the behaviour somewhere nobody chose.</p>
+  <div class="callout warn"><span class="ic">▲</span><p>The most dangerous version of this is <em>fixing a complaint</em>. A user reports a bad answer, you patch the prompt, the bad answer goes away, you ship. You have no idea what else that patch changed — and the cases it broke aren't the ones you'll look at.</p></div>
+  <div class="keyterms">
+    <div class="tt">Key terms</div>
+    <dl>
+      <dt>Vibe check</dt><dd>Reading a handful of outputs and forming an impression. Fine as a smoke test, unsafe as a gate.</dd>
+      <dt>Regression</dt><dd>A change that makes previously-good behaviour worse. The thing evals exist to catch.</dd>
+      <dt>Drift</dt><dd>Quality moving gradually, with no single change to blame.</dd>
+    </dl>
+  </div>
+</script>
+
+<script type="text/html" data-lesson="1-3">
+  <div class="obj"><div class="ol">Objective</div>Define an eval concretely enough to build one this afternoon.</div>
+  <p>Strip away the tooling and an eval is three things:</p>
+  <div class="cards">
+    <div class="card"><div class="num">01</div><h4>Cases</h4><p>Inputs you care about, each with some expectation of what a good output looks like.</p></div>
+    <div class="card"><div class="num">02</div><h4>A runner</h4><p>Something that pushes every case through the system the same way, every time.</p></div>
+    <div class="card"><div class="num">03</div><h4>A scorer</h4><p>A function turning one output into a comparable number or label.</p></div>
+  </div>
+  <p>That's it. If you have those three, you can answer the only question that matters — <em>is this version better or worse than that version?</em> — and you can answer it the same way next month.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">eval.ts</span></div><pre><code><span class="tok-key">type</span> Case = {
+  id: <span class="tok-key">string</span>;
+  input: <span class="tok-key">string</span>;
+  <span class="tok-com">// What "good" means for THIS case — checkable, not aspirational.</span>
+  expect: { mustInclude?: <span class="tok-key">string</span>[]; mustNotInclude?: <span class="tok-key">string</span>[]; rubric?: <span class="tok-key">string</span> };
+};
+
+<span class="tok-key">async function</span> <span class="tok-fn">runEval</span>(cases: Case[], system: (i: <span class="tok-key">string</span>) => Promise&lt;<span class="tok-key">string</span>&gt;) {
+  <span class="tok-key">const</span> rows = [];
+  <span class="tok-key">for</span> (<span class="tok-key">const</span> c <span class="tok-key">of</span> cases) {
+    <span class="tok-key">const</span> output = <span class="tok-key">await</span> <span class="tok-fn">system</span>(c.input);
+    rows.push({ id: c.id, output, score: <span class="tok-key">await</span> <span class="tok-fn">score</span>(c, output) });
+  }
+  <span class="tok-key">return</span> rows;   <span class="tok-com">// keep every row — the aggregate hides the interesting part</span>
+}</code></pre></div>
+  <div class="callout key"><span class="ic">=</span><p><strong>Keep the rows, not just the average.</strong> "82%" tells you nothing you can act on. The list of which cases failed, and how, is the entire value — the number is just the headline.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Your first eval should take an afternoon and have twenty cases in a JSON file. A crude eval that runs on every change beats a beautiful one you're still designing.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-4">
+  <div class="obj"><div class="ol">Objective</div>Place the three feedback loops, and know which question each one answers.</div>
+  <p>"Evals" gets used for three different activities with different data, cadences and purposes. Confusing them is why teams build one and wonder why they're still surprised in production.</p>
+  <table class="tbl">
+    <tr><th>Loop</th><th>Question it answers</th><th>Data</th><th>When it runs</th></tr>
+    <tr><td><b>Offline evals</b></td><td>Did this change break anything?</td><td>A fixed set of cases with expectations</td><td>Every PR / before merge</td></tr>
+    <tr><td><b>Online monitoring</b></td><td>Is it working right now, on real traffic?</td><td>Live requests, mostly unlabelled</td><td>Continuously</td></tr>
+    <tr><td><b>Human review</b></td><td>What does "good" even mean here?</td><td>A small sample, read carefully</td><td>Weekly-ish, and whenever the others disagree</td></tr>
+  </table>
+  <p>They feed each other in a cycle. Monitoring surfaces a failure nobody predicted → a human reads it and decides what should have happened → it becomes a case in the offline set → the gate stops that class of failure recurring. Skip the human loop and your eval set slowly stops describing anything anyone cares about.</p>
+  <div class="callout key"><span class="ic">!</span><p><strong>Offline evals prevent regressions; monitoring finds surprises; humans define quality.</strong> No one loop substitutes for another, and the pipeline between them is what makes the system improve rather than just change.</p></div>
+  <div class="callout warn"><span class="ic">▲</span><p>The common failure is building only the first: a green eval suite, and no idea that 8% of real users are getting refusals on a phrasing nobody thought to include.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 1</div>Confirm the foundations before we start building a set.</div>
+  <p>Three questions on what you've covered. Pick an answer to see whether it lands and why.</p>
+  <div data-mount="quiz" data-quiz="s1"></div>
+</script>
+
+<script type="text/html" data-lesson="2-1">
+  <div class="obj"><div class="ol">Objective</div>Get your first cases from the only place that reflects reality.</div>
+  <p>The instinct is to sit down and invent test cases. Resist it. Cases you invent share your assumptions about how people will phrase things — and users are relentlessly creative about phrasing.</p>
+  <h2>Where the good cases actually are</h2>
+  <ul>
+    <li><strong>Production logs.</strong> Real requests, real distribution. If you have traffic, this is your set.</li>
+    <li><strong>Complaints and thumbs-down.</strong> Pre-labelled failures. The highest-value cases you will ever get, free.</li>
+    <li><strong>Support tickets.</strong> Where users go when the product failed and they still needed the answer.</li>
+    <li><strong>Retries and edits.</strong> A user rephrasing the same question is telling you the first answer was bad without filing anything.</li>
+  </ul>
+  <p>No traffic yet? Then invent cases — but write down that they're guesses, and replace them with real ones the week you have real ones. An eval set built entirely from imagination measures your imagination.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>Weight toward what already went wrong.</strong> A set of a hundred cases that all pass tells you nothing today and nothing tomorrow. Cases live near the boundary of what your system can do.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Practical habit: whenever you debug a bad output by hand, the last step is adding it to the eval set. Debugging without that step means fixing the same class of bug repeatedly.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-2">
+  <div class="obj"><div class="ol">Objective</div>Write a case whose expectation a scorer can actually check.</div>
+  <p>Most broken eval sets are broken here. The case has an input and an "expected output" that's a beautifully written ideal answer — and nothing can grade against it, because there are a thousand equally good answers and none of them match the string.</p>
+  <p>The fix is to <strong>operationalize</strong> the expectation: state what must be true of a good answer rather than what a good answer is.</p>
+  <table class="tbl">
+    <tr><th>Instead of</th><th>Write</th></tr>
+    <tr><td>"A helpful, accurate reply"</td><td><b>must include</b> the 14-day window; <b>must not</b> promise a refund unconditionally</td></tr>
+    <tr><td>A full model answer to string-match</td><td><b>rubric</b>: names the correct policy version, states the deadline, offers the next step</td></tr>
+    <tr><td>"Valid output"</td><td><b>schema</b>: parses as JSON, has <code>orderId</code> and <code>eligible: boolean</code></td></tr>
+    <tr><td>"Doesn't do anything bad"</td><td><b>must not</b> call a write tool; <b>must not</b> quote a price</td></tr>
+  </table>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">cases.json</span></div><pre><code>{
+  <span class="tok-str">"id"</span>: <span class="tok-str">"refund-window-pro"</span>,
+  <span class="tok-str">"input"</span>: <span class="tok-str">"can I still get my money back? bought it two weeks ago"</span>,
+  <span class="tok-str">"tags"</span>: [<span class="tok-str">"policy"</span>, <span class="tok-str">"from-ticket-4471"</span>],
+  <span class="tok-str">"expect"</span>: {
+    <span class="tok-str">"mustInclude"</span>: [<span class="tok-str">"14 days"</span>],
+    <span class="tok-str">"mustNotInclude"</span>: [<span class="tok-str">"30 days"</span>],       <span class="tok-com">// the old policy — a real past failure</span>
+    <span class="tok-str">"rubric"</span>: <span class="tok-str">"States the 14-day window and that 12 days is still inside it."</span>
+  }
+}</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p><strong>Tag every case.</strong> Tags are what later let you say "refusals are up on <code>policy</code> cases but factual accuracy is flat" — the difference between a number and a diagnosis.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-3">
+  <div class="obj"><div class="ol">Objective</div>Stop chasing one aggregate number and start tracking kinds of wrong.</div>
+  <p>A single score compresses everything you need to know into something unactionable. Your suite went from 84% to 79% — what do you do on Monday? You don't know, because "worse" isn't a diagnosis.</p>
+  <p>A <strong>failure taxonomy</strong> is a small, stable list of the ways your system goes wrong. You label each failure with one, and you track them separately.</p>
+  <div class="cards">
+    <div class="card"><div class="num">TYPE</div><h4>Factually wrong</h4><p>Confident and incorrect. Usually a retrieval or freshness problem, not a model one.</p></div>
+    <div class="card"><div class="num">TYPE</div><h4>Refused</h4><p>Declined something reasonable. Often over-cautious instructions.</p></div>
+    <div class="card"><div class="num">TYPE</div><h4>Format broken</h4><p>Unparseable, wrong schema, missing field. Cheap to detect deterministically.</p></div>
+    <div class="card"><div class="num">TYPE</div><h4>Wrong tool</h4><p>Called the wrong thing, or nothing when it should have. A context-selection issue.</p></div>
+    <div class="card"><div class="num">TYPE</div><h4>Incomplete</h4><p>Answered half the question. The failure users notice most and report least.</p></div>
+    <div class="card"><div class="num">TYPE</div><h4>Off-voice</h4><p>Right content, wrong register. Matters more than engineers expect.</p></div>
+  </div>
+  <p>Keep it to a handful of categories and keep the names stable across months, or your history stops being comparable. This list should come from reading your own failures, not from a blog post — including this one.</p>
+  <div class="callout key"><span class="ic">!</span><p><strong>A score tells you that you got worse. A taxonomy tells you which fix to make.</strong> Track the categories over time and the graph becomes a work queue.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-4">
+  <div class="obj"><div class="ol">Objective</div>Size your set for the size of change you need to detect.</div>
+  <p>"How many cases?" has a real answer, and it depends on one thing: <em>how small a regression do you need to catch?</em> Detecting a 20-point collapse takes a handful of cases. Detecting a 3-point slide takes hundreds, because sampling noise on a small set is wider than the effect you're hunting.</p>
+  <table class="tbl">
+    <tr><th>Cases</th><th>Change you can see in one run</th><th>Good for</th></tr>
+    <tr><td><b>20–30</b></td><td>Large, obvious breakage only</td><td>Day one. A smoke test on every commit.</td></tr>
+    <tr><td><b>100</b></td><td>~8–10 points</td><td>Spotting that a prompt change did something bad.</td></tr>
+    <tr><td><b>300</b></td><td>~5 points</td><td>A useful signal you read by hand.</td></tr>
+    <tr><td><b>1,000</b></td><td>~3 points</td><td>A gate you can actually block merges on.</td></tr>
+  </table>
+  <div class="callout warn"><span class="ic">▲</span><p>Two adjustments make the real requirement harsher than that table. A gate <em>compares two runs</em>, and both carry sampling noise — so budget roughly √2× the cases. And a flaky scorer both adds noise and shrinks the gap you're measuring. Section 5 has an instrument that lets you feel exactly how much: reliably catching a 5-point regression takes closer to a thousand cases than a hundred.</p></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Don't grow the set by padding it with easy cases to make the number look better. A hundred cases that all pass have the same diagnostic power as zero — and they cost real money on every run.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Practical split: a fast subset (20–40 cases, seconds, every commit) and the full set (hundreds, minutes, before merge and nightly). Speed is what makes an eval get used.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-5">
+  <div class="obj"><div class="ol">Objective</div>Keep the set trustworthy as you spend months optimizing against it.</div>
+  <p>An eval set decays. Three mechanisms, all of them quiet:</p>
+  <h2>Overfitting</h2>
+  <p>You tune prompts until the suite is green. That is <em>optimization against a benchmark</em> — you've made the set training data. Scores rise, production complaints don't fall. The tell is exactly that divergence.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>Hold out a slice.</strong> Keep 20% of cases you never look at while iterating, and check it before releases. If held-out and working scores diverge, you've been fitting the set instead of the problem.</p></div>
+  <h2>Staleness</h2>
+  <p>Your product changed. The policy is 14 days now, not 30; the tone guide moved; a feature shipped. Cases encoding old truths start failing correct behaviour — and a suite with known-bad failures is a suite people stop reading.</p>
+  <h2>Leakage</h2>
+  <p>The expected answer ends up somewhere the system can see — pasted into a prompt, or living in the same document retrieval pulls from. The case passes for the wrong reason, and you've measured nothing.</p>
+  <div class="callout tip"><span class="ic">✓</span><p>Put a standing 30-minute slot on the calendar: read ten recent production failures, add the good ones as cases, delete cases that no longer describe your product. An eval set is a garden, not a monument.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-6">
+  <div class="obj"><div class="ol">Checkpoint · Section 2</div>Confirm you can build a set that stays honest.</div>
+  <p>Four questions on sourcing cases, writing checkable expectations and keeping the set alive.</p>
+  <div data-mount="quiz" data-quiz="s2"></div>
+</script>
+
+<script type="text/html" data-lesson="3-1">
+  <div class="obj"><div class="ol">Objective</div>Learn the ladder, and the discipline of climbing no higher than you must.</div>
+  <p>Scoring an output can be almost free or genuinely expensive. The rungs, cheapest first:</p>
+  <table class="tbl">
+    <tr><th>Rung</th><th>What it is</th><th>Cost</th><th>Use when</th></tr>
+    <tr><td><b>1 · Exact / schema</b></td><td>String equality, regex, JSON parse, field assertions</td><td>Free, instant, perfectly repeatable</td><td>There's one right shape or a forbidden string</td></tr>
+    <tr><td><b>2 · Heuristic</b></td><td>Overlap metrics, embedding similarity, keyword coverage</td><td>Cheap</td><td>You need a rough "is this in the neighbourhood"</td></tr>
+    <tr><td><b>3 · LLM judge</b></td><td>A model grading against a written rubric</td><td>Money + latency + noise</td><td>Quality is semantic and no cheaper rung can see it</td></tr>
+    <tr><td><b>4 · Human</b></td><td>A person reading it</td><td>Slow and expensive</td><td>Defining "good", and calibrating rung 3</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p><strong>Climb only as far as the question forces you.</strong> Teams reach for a judge on things a five-line assertion would settle perfectly — paying money for a noisier answer. If code can decide it, code should decide it.</p></div>
+  <p>Most mature suites are mostly rung 1, with judges reserved for the genuinely semantic checks. That mix is what makes a suite fast and cheap enough to run on every change.</p>
+</script>
+
+<script type="text/html" data-lesson="3-2">
+  <div class="obj"><div class="ol">Objective</div>Notice how much of "quality" is actually deterministic.</div>
+  <p>Before writing a judge, ask what fraction of your failures a deterministic check would have caught. It's usually higher than expected — because the failures that hurt most are often structural, not subtle.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">scorers.ts</span></div><pre><code><span class="tok-com">// Free, instant, and it never disagrees with itself.</span>
+<span class="tok-key">const</span> deterministic = {
+  <span class="tok-fn">parses</span>: (out: <span class="tok-key">string</span>) => { <span class="tok-key">try</span> { JSON.<span class="tok-fn">parse</span>(out); <span class="tok-key">return</span> <span class="tok-num">1</span>; } <span class="tok-key">catch</span> { <span class="tok-key">return</span> <span class="tok-num">0</span>; } },
+  <span class="tok-fn">hasFields</span>: (out, fields) => fields.<span class="tok-fn">every</span>(f => f <span class="tok-key">in</span> JSON.<span class="tok-fn">parse</span>(out)),
+  <span class="tok-fn">mentions</span>: (out, needles) => needles.<span class="tok-fn">every</span>(n => out.<span class="tok-fn">toLowerCase</span>().<span class="tok-fn">includes</span>(n)),
+  <span class="tok-fn">avoids</span>: (out, banned) => !banned.<span class="tok-fn">some</span>(b => out.<span class="tok-fn">toLowerCase</span>().<span class="tok-fn">includes</span>(b)),
+  <span class="tok-fn">calledOnly</span>: (trace, allowed) => trace.toolCalls.<span class="tok-fn">every</span>(c => allowed.<span class="tok-fn">includes</span>(c.name)),
+  <span class="tok-fn">underBudget</span>: (trace) => trace.costUsd &lt; <span class="tok-num">0.02</span> &amp;&amp; trace.ms &lt; <span class="tok-num">4000</span>,
+};</code></pre></div>
+  <p>Note the last two. Once you have traces (Section 4), things like "did it call a write tool it shouldn't have" and "did it stay inside its budget" become ordinary assertions — and they catch a category of failure a judge reading the final text can't even see.</p>
+  <div class="callout tip"><span class="ic">✓</span><p>A forbidden-string check on a real past failure is the highest-value scorer in existence: near-zero cost, and it makes one specific embarrassment permanently unrepeatable. Add one every time you fix a bug.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-3">
+  <div class="obj"><div class="ol">Objective</div>Write a judge that produces a signal rather than an opinion.</div>
+  <p>When a check is genuinely semantic — is this summary faithful, does this answer address the question, is the tone right — you need a model to grade it. A judge is just a model call with a rubric, but the details decide whether the output is usable.</p>
+  <h2>What separates a working judge from a useless one</h2>
+  <ul>
+    <li><strong>Few discrete levels, not a 1–10 scale.</strong> Models don't use the ends of long scales. <code>fail | weak | pass</code> gives you resolution you can actually act on.</li>
+    <li><strong>Criteria, not adjectives.</strong> "Is this good?" invites a vibe. "Does it state the deadline, and is the deadline correct?" invites a judgement.</li>
+    <li><strong>One dimension per call.</strong> Ask separately about factuality and tone; a blended verdict can't tell you which one moved.</li>
+    <li><strong>Reasons before verdict.</strong> Have it state the evidence first — the reasons are what you read when you're debugging the judge itself.</li>
+    <li><strong>Reference material in the prompt.</strong> A judge with the source document grades faithfulness. Without it, it grades plausibility.</li>
+  </ul>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">judge.ts</span></div><pre><code><span class="tok-key">const</span> JUDGE = `You are grading one answer against a rubric. Be strict.
+
+SOURCE OF TRUTH:
+{{reference}}
+
+QUESTION: {{input}}
+ANSWER: {{output}}
+
+Grade ONLY factual correctness against the source. Ignore style and length.
+
+First list every factual claim in the answer and mark it supported /
+contradicted / unsupported. Then give a verdict.
+
+Reply as JSON: { "claims": [...], "verdict": "fail" | "weak" | "pass" }`;
+
+<span class="tok-com">// Deterministic temperature, pinned model version: a scorer that drifts</span>
+<span class="tok-com">// makes every historical number incomparable.</span>
+<span class="tok-key">const</span> grade = <span class="tok-key">await</span> <span class="tok-fn">model</span>({ model: <span class="tok-str">"pinned-judge-v3"</span>, temperature: <span class="tok-num">0</span>, prompt: <span class="tok-fn">fill</span>(JUDGE, c) });</code></pre></div>
+  <div class="callout key"><span class="ic">=</span><p><strong>Pin the judge and version it.</strong> The judge is part of your measuring instrument. Change it and every number before the change becomes incomparable — so when you must change it, re-run history and say so.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-4">
+  <div class="obj"><div class="ol">Objective</div>Learn the specific ways a judge produces confident nonsense.</div>
+  <p>A judge is a model, which means it has the failure modes of a model — pointed at your measurement layer, where they're much harder to notice. These are the ones that will actually bite you.</p>
+  <table class="tbl">
+    <tr><th>Failure</th><th>What you see</th><th>Mitigation</th></tr>
+    <tr><td><b>Position bias</b></td><td>In A/B comparisons it favours one slot regardless of content</td><td>Run both orders, average; or grade each answer alone</td></tr>
+    <tr><td><b>Verbosity bias</b></td><td>Longer, hedged answers score higher than shorter correct ones</td><td>Say "ignore length" in the rubric; score correctness separately from style</td></tr>
+    <tr><td><b>Self-preference</b></td><td>Outputs from the judge's own model family win too often</td><td>Judge with a different model; anchor against human labels</td></tr>
+    <tr><td><b>Score clustering</b></td><td>Almost everything gets a 7/10; real differences vanish</td><td>Few discrete levels, or pairwise comparison</td></tr>
+    <tr><td><b>Rubric gaps</b></td><td>Correct answers marked wrong on a technicality</td><td>Enumerate acceptable variants; treat disagreement as a rubric bug</td></tr>
+    <tr><td><b>Sycophancy</b></td><td>Anything asserted confidently reads as correct</td><td>Give it the source of truth and require claim-by-claim marking</td></tr>
+  </table>
+  <div class="callout warn"><span class="ic">▲</span><p>The compounding danger: a biased judge doesn't just mismeasure, it <em>steers</em>. Optimize against a judge with verbosity bias for a month and you will ship a product that pads every answer — because that's what you rewarded.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Cheap sanity test: feed the judge the same output twice under different names. It should give the same verdict. Then feed it a deliberately padded version of a correct short answer — if the padded one wins, you've found your bias.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-5">
+  <div class="obj"><div class="ol">Lab</div>Diagnose judges from their symptoms — the pattern-matching that makes these failures recognizable in the wild.</div>
+  <p>Five judges are misbehaving. For each, name what's going wrong. Same shape as the failure drill in Context Engineering: read the symptom, commit to an answer, then read why.</p>
+  <div data-mount="bias"></div>
+  <div class="callout key"><span class="ic">!</span><p>Notice that the last one isn't a bias at all — the judge did exactly what it was told. <strong>Most judge disagreements are rubric bugs before they're model bugs</strong>, and that's the first place to look.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-6">
+  <div class="obj"><div class="ol">Objective</div>Establish whether your judge deserves to be believed.</div>
+  <p>A judge is a measuring instrument, and an uncalibrated instrument produces numbers, not measurements. Calibration is one loop, and it's cheap:</p>
+  <ol>
+    <li>Sample 50–100 outputs spanning good, bad and borderline.</li>
+    <li>Have a human label them with the same rubric the judge gets.</li>
+    <li>Compare. Report plain <strong>agreement</strong> — what fraction match — and look at every disagreement individually.</li>
+    <li>Fix the <em>rubric</em> first. Most gaps are ambiguity, not model weakness.</li>
+    <li>Repeat until agreement is high enough for the decisions you'll base on it.</li>
+  </ol>
+  <div class="callout key"><span class="ic">=</span><p><strong>Your judge cannot be more trustworthy than its agreement with humans.</strong> If it agrees 70% of the time, a 5-point movement in its scores is inside its own error bar — and treating that as signal is how teams chase ghosts for a quarter.</p></div>
+  <p>Two humans labelling the same set rarely agree perfectly either. That human-to-human number is your realistic ceiling: if your reviewers agree 85% of the time, a judge at 83% is doing well, and "the judge is wrong" is often "the task is genuinely ambiguous".</p>
+  <div class="callout tip"><span class="ic">✓</span><p>Keep the human-labelled sample forever as a <em>judge regression set</em>. When you change models or rubrics, re-run it first — it tells you whether your instrument moved before you conclude your product did.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-7">
+  <div class="obj"><div class="ol">Checkpoint · Section 3</div>Confirm you can score things without fooling yourself.</div>
+  <p>Four questions on the ladder, judge design and calibration.</p>
+  <div data-mount="quiz" data-quiz="s3"></div>
+</script>
+
+<script type="text/html" data-lesson="4-1">
+  <div class="obj"><div class="ol">Objective</div>Understand why agents need traces and not log lines.</div>
+  <p>An eval tells you <em>that</em> something got worse. It almost never tells you <em>where</em>. For a single model call that gap is small. For an agent — plan, retrieve, call a tool, read a result, decide again, compose — the gap is the whole problem.</p>
+  <p>A <strong>trace</strong> is a record of one run as a tree of nested, timed operations. Each node is a <strong>span</strong>: a name, a duration, and attributes. The nesting is the point — it preserves what produced the input to what.</p>
+  <div class="callout key"><span class="ic">!</span><p><strong>Flat logs destroy the causal structure that an agent bug lives in.</strong> Fifteen interleaved lines can't tell you which retrieval fed which generation. The tree can.</p></div>
+  <h2>The pattern you'll see over and over</h2>
+  <p>The symptom is in the last span — the final answer is wrong. The cause is upstream: a retrieval returned a stale document, a tool returned an error the agent read as data, a summarization dropped the constraint. Reading a trace is walking backwards from the damage to the point where the truth got lost.</p>
+  <div class="keyterms">
+    <div class="tt">Key terms</div>
+    <dl>
+      <dt>Span</dt><dd>One timed operation — a model call, a tool call, a retrieval — with attributes attached.</dd>
+      <dt>Trace</dt><dd>The tree of spans for a single end-to-end run.</dd>
+      <dt>Attribute</dt><dd>A key/value on a span: model version, token counts, cost, the actual prompt.</dd>
+    </dl>
+  </div>
+</script>
+
+<script type="text/html" data-lesson="4-2">
+  <div class="obj"><div class="ol">Objective</div>Instrument an agent so its traces are worth reading.</div>
+  <p>The mechanics are unglamorous: wrap each meaningful operation, record what you'll wish you had. The judgement is in what counts as meaningful and what you attach.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">tracing.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">span</span>&lt;T&gt;(name: <span class="tok-key">string</span>, attrs: Attrs, fn: () => Promise&lt;T&gt;): Promise&lt;T&gt; {
+  <span class="tok-key">const</span> started = performance.<span class="tok-fn">now</span>();
+  <span class="tok-key">const</span> id = <span class="tok-fn">push</span>(name, attrs);           <span class="tok-com">// nests under the current span</span>
+  <span class="tok-key">try</span> {
+    <span class="tok-key">const</span> out = <span class="tok-key">await</span> <span class="tok-fn">fn</span>();
+    <span class="tok-fn">close</span>(id, { ms: performance.<span class="tok-fn">now</span>() - started, ok: <span class="tok-key">true</span> });
+    <span class="tok-key">return</span> out;
+  } <span class="tok-key">catch</span> (err) {
+    <span class="tok-fn">close</span>(id, { ms: performance.<span class="tok-fn">now</span>() - started, ok: <span class="tok-key">false</span>, err: <span class="tok-fn">String</span>(err) });
+    <span class="tok-key">throw</span> err;                          <span class="tok-com">// never swallow it to keep the trace tidy</span>
+  }
+}
+
+<span class="tok-com">// At the call sites, the tree writes itself.</span>
+<span class="tok-key">await</span> <span class="tok-fn">span</span>(<span class="tok-str">"agent.run"</span>, { userId, requestId }, <span class="tok-key">async</span> () => {
+  <span class="tok-key">const</span> docs = <span class="tok-key">await</span> <span class="tok-fn">span</span>(<span class="tok-str">"retrieve.docs"</span>, { query, k: <span class="tok-num">4</span> }, () => <span class="tok-fn">search</span>(query));
+  <span class="tok-key">return</span> <span class="tok-key">await</span> <span class="tok-fn">span</span>(<span class="tok-str">"llm.compose"</span>, { model, docIds: docs.<span class="tok-fn">map</span>(d => d.id) }, () => <span class="tok-fn">generate</span>(docs));
+});</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Record the <strong>document ids and versions</strong> retrieval returned, not just the query. "Which chunk did it actually read?" is the single most common question you'll ask a trace, and it's unanswerable after the fact if you didn't store it.</p></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Traces contain user data and full prompts. Decide retention and redaction on day one — a debugging tool that quietly becomes your largest store of personal data is a problem you don't want to discover later.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-3">
+  <div class="obj"><div class="ol">Lab</div>Debug a real failure: walk a trace, then commit to a root cause.</div>
+  <p>A user asked about the refund window and got the wrong number. The eval suite didn't catch it and the judge passed it. Step through the trace one span at a time, then pick the span where the failure actually originated.</p>
+  <div data-mount="trace"></div>
+  <div class="callout key"><span class="ic">=</span><p>Two lessons in one trace. The obvious one: <strong>the symptom's span is rarely the culprit's span</strong>. The subtler one: the judge <em>passed</em> a factually wrong answer, because its rubric only scored tone. A scorer can only catch what it was told to look for.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-4">
+  <div class="obj"><div class="ol">Objective</div>Decide what to record so that future-you can explain a regression.</div>
+  <p>You will one day need to explain a quality change that happened three weeks ago. Whether you can depends entirely on what you recorded then. This is the list worth having on every model call:</p>
+  <table class="tbl">
+    <tr><th>Field</th><th>Why you'll want it</th></tr>
+    <tr><td><b>Model id + version</b></td><td>The most common cause of an unexplained change is a model that moved under you</td></tr>
+    <tr><td><b>Prompt / assembled context</b></td><td>To see what the model actually saw — usually where the bug is</td></tr>
+    <tr><td><b>Tokens in / out</b></td><td>Cost attribution, and a leading indicator of context bloat</td></tr>
+    <tr><td><b>Cost + latency</b></td><td>Regressions here are as real as accuracy ones, and much easier to miss</td></tr>
+    <tr><td><b>Tool calls + results</b></td><td>Wrong-tool and bad-result failures are invisible in the final text</td></tr>
+    <tr><td><b>Retrieved doc ids + versions</b></td><td>Answers "was it given the right material?"</td></tr>
+    <tr><td><b>Prompt / config version</b></td><td>Lets you line quality up against your own deploys</td></tr>
+    <tr><td><b>Outcome signals</b></td><td>Retry, edit, thumbs, escalation — the labels users give you for free</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p><strong>Version everything that can change the output.</strong> Model, prompt, tool schemas, retrieval index. A quality graph you can't align to a version history is a mystery novel with the last chapter missing.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-5">
+  <div class="obj"><div class="ol">Objective</div>Treat cost and latency as first-class quality metrics.</div>
+  <p>Accuracy gets the attention, but the two regressions most likely to actually hurt you are cheaper to measure and easier to miss: the change that tripled your bill, and the change that made responses slow enough that users stopped waiting.</p>
+  <p>Both are usually side effects of an accuracy improvement. You add a reflection step and quality rises 3 points — while cost doubles and p95 latency goes from 2s to 6s. That's not obviously a good trade, and if your eval only reports accuracy you'll never be asked to make the call.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>Report accuracy, cost and latency together, always.</strong> A quality gain bought with a 2× bill is a decision for a human, not a silent default.</p></div>
+  <div class="cards">
+    <div class="card"><div class="num">WATCH</div><h4>Cost per request</h4><p>Mean and p95. The tail is where runaway agent loops hide.</p></div>
+    <div class="card"><div class="num">WATCH</div><h4>Latency p50 / p95</h4><p>Means lie. Users experience the tail.</p></div>
+    <div class="card"><div class="num">WATCH</div><h4>Steps per run</h4><p>An agent quietly taking more turns is a regression before it's a cost problem.</p></div>
+    <div class="card"><div class="num">WATCH</div><h4>Cache hit rate</h4><p>A dropped prefix cache shows up here long before you notice the invoice.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Set budget assertions as ordinary eval cases: <em>no case may exceed $0.05 or 8 seconds</em>. A hard ceiling in the suite catches the pathological run that averages would smooth away.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-6">
+  <div class="obj"><div class="ol">Checkpoint · Section 4</div>Confirm you can find a cause, not just a symptom.</div>
+  <p>Three questions on traces, spans and what to record.</p>
+  <div data-mount="quiz" data-quiz="s4"></div>
+</script>
+
+<script type="text/html" data-lesson="5-1">
+  <div class="obj"><div class="ol">Objective</div>Turn your eval set into a gate that protects the product.</div>
+  <p>An eval you run when you remember to isn't a safety net. A <strong>regression gate</strong> runs automatically on every change and fails the build when quality drops — the same way a test suite does.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">ci.yml</span></div><pre><code><span class="tok-com">// The three decisions that make or break a gate</span>
+gate:
+  cases: <span class="tok-num">300</span>              <span class="tok-com"># enough to see the change you care about</span>
+  compare: main         <span class="tok-com"># against the baseline branch, not an absolute ideal</span>
+  fail_if:
+    pass_rate_drop: <span class="tok-num">3</span>    <span class="tok-com"># points below baseline</span>
+    any_tag_drop: <span class="tok-num">10</span>     <span class="tok-com"># a category collapsing while the average holds</span>
+    p95_latency_ms: <span class="tok-num">8000</span>
+    cost_per_case_usd: <span class="tok-num">0.05</span></code></pre></div>
+  <h2>Three things worth copying</h2>
+  <ul>
+    <li><strong>Compare to a baseline, not an absolute.</strong> "Don't get worse than main" is a question your set can answer. "Be 90% good" is a number you invented.</li>
+    <li><strong>Gate per category as well as overall.</strong> Refusals tripling while the average holds is exactly the failure an aggregate hides.</li>
+    <li><strong>Gate cost and latency too.</strong> They regress more often than accuracy and nobody notices for weeks.</li>
+  </ul>
+  <div class="callout key"><span class="ic">!</span><p><strong>A gate's real currency is trust.</strong> Its false-alarm rate decides whether a red build means "stop" or "run it again". You get to feel exactly where that line sits in the next lesson.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-2">
+  <div class="obj"><div class="ol">Lab</div>Operate the tradeoff yourself: set size, drop tolerance, scorer noise, and the size of regression you're hunting.</div>
+  <p>The setup: a build whose true pass rate is 90%, compared against a baseline run measured the same way, failing when the measured drop exceeds your tolerance. Two questions. How often does the gate go red on a change that broke <em>nothing</em>? And how often does it catch a genuine drop?</p>
+  <p>Start with the first preset — 50 cases, allow a 3-point drop. That's roughly what every team writes first.</p>
+  <div data-mount="gate"></div>
+  <p>Those defaults give you about a <strong>1-in-3 chance of a red build on a clean PR</strong>, while catching a real 5-point regression barely half the time. Both numbers are bad, and they're bad for the same reason: on 50 cases the noise in the comparison is wider than the regression you're hunting. Widening the tolerance to quiet the false alarms just trades them for misses — you slide along the same curve.</p>
+  <p>Now try the second preset. The only thing that genuinely moves the curve is more cases and a scorer that agrees with itself.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>You cannot fix a noisy gate by tightening it.</strong> Tightening trades misses for false alarms along the same curve. Moving the curve takes more cases or a less flaky scorer — which is exactly why Section 2 cared about set size and Section 3 cared about calibration.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Now drag flakiness to 14% and watch both numbers rot at once. A scorer that disagrees with itself doesn't just add noise — it caps how good your gate can ever be, no matter how many cases you buy.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-3">
+  <div class="obj"><div class="ol">Objective</div>Read the labels real users give you without being asked.</div>
+  <p>Offline evals only cover what you thought to include. Production has infinite variety, no labels — and a stream of behavioural signals that are almost as good as labels if you record them.</p>
+  <div class="cards">
+    <div class="card"><div class="num">SIGNAL</div><h4>Retry / rephrase</h4><p>The same question asked again means the first answer failed. Strong, abundant, unambiguous.</p></div>
+    <div class="card"><div class="num">SIGNAL</div><h4>Edit before use</h4><p>If users always fix the output, your "done" isn't done.</p></div>
+    <div class="card"><div class="num">SIGNAL</div><h4>Abandonment</h4><p>Left mid-flow. Often latency, sometimes despair.</p></div>
+    <div class="card"><div class="num">SIGNAL</div><h4>Escalation</h4><p>Asked for a human. The clearest failure label you'll ever get.</p></div>
+    <div class="card"><div class="num">SIGNAL</div><h4>Thumbs</h4><p>Explicit but rare and skewed negative. Useful as a trend, not a rate.</p></div>
+    <div class="card"><div class="num">SIGNAL</div><h4>Refusal rate</h4><p>Cheap to compute from your own output, and it spikes fast when a prompt turns cautious.</p></div>
+  </div>
+  <p>Use them as a <em>trend</em>, not an absolute. "Retry rate went from 6% to 11% after Tuesday's deploy" is one of the most actionable sentences in production AI — and it needs no labelling at all.</p>
+  <div class="callout key"><span class="ic">!</span><p><strong>Every proxy signal you record becomes a source of eval cases.</strong> Sample the retried requests, read them, and the good ones go into the offline set. That's the loop from Lesson 1-4, closing.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-4">
+  <div class="obj"><div class="ol">Objective</div>Catch the regressions that arrive without a deploy.</div>
+  <p>Normal software only changes when you change it. An AI system has moving parts you don't own, and they can shift while your code sits still.</p>
+  <table class="tbl">
+    <tr><th>Source of silent change</th><th>What it looks like</th></tr>
+    <tr><td><b>The model moved</b></td><td>A provider updates a version behind an alias. Same code, different behaviour.</td></tr>
+    <tr><td><b>Your data moved</b></td><td>New documents in the index change what retrieval returns. Answers shift with no code change.</td></tr>
+    <tr><td><b>Input distribution moved</b></td><td>A marketing push brings users who ask different questions than your set covers.</td></tr>
+    <tr><td><b>A dependency moved</b></td><td>A tool's API changes shape; the agent reads the error as data and carries on.</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">=</span><p><strong>Pin model versions, and run the suite on a schedule — not only on your commits.</strong> A nightly run against pinned versions is what separates "the model changed" from "we changed something" when the graph moves.</p></div>
+  <h2>When you do choose to upgrade</h2>
+  <p>Run the full suite on both versions and compare per category, not just overall. Then check cost, latency, and format or tone drift — a new model that scores the same on accuracy can be more verbose, differently formatted or noticeably slower. And remember your set never covered everything: sample some real traffic through the new version and read it with your eyes before trusting the aggregate.</p>
+</script>
+
+<script type="text/html" data-lesson="5-5">
+  <div class="obj"><div class="ol">Objective</div>Recognize what an eval set becomes once a team relies on it.</div>
+  <p>Something happens after a few months of running a real gate: the eval set becomes the most precise specification of your product that exists. Not the PRD, not the prompt — the cases. They're the only artifact that says, concretely and checkably, what this system is supposed to do.</p>
+  <p>That's mostly good. It means "what should happen here?" has an answer you can point at, and disagreements about quality become disagreements about a specific case, which is a much better argument to have.</p>
+  <div class="callout warn"><span class="ic">▲</span><p>It's also the trap. Whatever the set doesn't measure quietly stops mattering — nobody's gate goes red for it, so nobody defends it. Voice, accessibility, the long tail of rare-but-awful failures: absent from the set means absent from the product's definition of good.</p></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>Treat the eval set as product surface, not test infrastructure.</strong> Review it like a spec, argue about what belongs in it, and keep asking the uncomfortable question: what are we not measuring, and would we notice if it broke?</p></div>
+  <p>Which brings the four courses together. Context engineering decides what the model sees; agentic patterns decide how it acts; multi-agent design decides how the work is divided. Evals are how you find out whether any of those decisions were right — and they're the only one of the four that tells you when you were wrong.</p>
+</script>
+
+<script type="text/html" data-lesson="5-6">
+  <div class="obj"><div class="ol">Checkpoint · Section 5</div>Confirm you can ship behind a gate people trust.</div>
+  <p>Four questions on gates, thresholds, proxy signals and drift.</p>
+  <div data-mount="quiz" data-quiz="s5"></div>
+</script>
+
+<script type="text/html" data-lesson="6-1">
+  <div class="obj"><div class="ol">Objective</div>A checklist you can run against a real project this week.</div>
+  <p>Not theory — the questions worth asking of any AI feature you own.</p>
+  <h2>The set</h2>
+  <ul>
+    <li>Do the cases come from production traffic, weighted toward what failed?</li>
+    <li>Is every expectation something a scorer can actually check?</li>
+    <li>Are cases tagged, so a category collapsing is visible?</li>
+    <li>Is there a held-out slice you don't iterate against?</li>
+    <li>Is it big enough for the size of regression you need to catch?</li>
+  </ul>
+  <h2>The scoring</h2>
+  <ul>
+    <li>Is every check on the cheapest rung that can answer it?</li>
+    <li>If there's a judge: is it pinned, versioned, and calibrated against human labels?</li>
+    <li>Do you know its agreement rate — and is the movement you act on bigger than that error bar?</li>
+    <li>Are cost and latency scored alongside accuracy?</li>
+  </ul>
+  <h2>The visibility</h2>
+  <ul>
+    <li>Can you pull up the full trace of any single production run?</li>
+    <li>Does a trace record the assembled prompt, model version, tool calls and retrieved doc versions?</li>
+    <li>Can you align a quality change to your own deploys?</li>
+  </ul>
+  <h2>The loop</h2>
+  <ul>
+    <li>Does the gate run automatically, and does anyone bypass it?</li>
+    <li>Do proxy signals from production flow back into the set?</li>
+    <li>Does someone read real outputs on a schedule?</li>
+    <li>Do you know what you're <em>not</em> measuring?</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>If most answers are "no", start with two things: twenty cases from real failures, and traces on every call. Everything else in this course builds on those two.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-2">
+  <div class="obj"><div class="ol">Final exam</div>Eight questions across the whole course.</div>
+  <p>Same format as the checkpoints, drawn from all five sections. Answers cite the lesson to revisit.</p>
+  <div data-mount="quiz" data-quiz="final"></div>
+</script>
+
+<script type="text/html" data-lesson="6-3">
+  <div class="obj"><div class="ol">Wrap-up</div>What to do with this, and where the four courses leave you.</div>
+  <p>The through-line of this course was a single discipline: <strong>decide what "working" means, measure it cheaply enough to measure often, and look at the failures</strong>. Everything else — judges, traces, gates — is machinery in service of that.</p>
+  <h2>The five ideas worth keeping</h2>
+  <div class="cards">
+    <div class="card"><div class="num">01</div><h4>Cases from reality</h4><p>Production traffic, weighted toward failures. Never your imagination alone.</p></div>
+    <div class="card"><div class="num">02</div><h4>Cheapest rung</h4><p>Deterministic when possible, judge when necessary, human to define and calibrate.</p></div>
+    <div class="card"><div class="num">03</div><h4>Kinds, not scores</h4><p>A taxonomy is a work queue. An average is a headline.</p></div>
+    <div class="card"><div class="num">04</div><h4>Symptom ≠ cause</h4><p>Read the trace upstream to where the truth got lost.</p></div>
+    <div class="card"><div class="num">05</div><h4>Trust over strictness</h4><p>A gate that cries wolf protects nothing.</p></div>
+  </div>
+  <h2>This week</h2>
+  <p>Pick one feature you own. Pull twenty real failures from logs and write them as cases with checkable expectations. Add deterministic scorers for the structural ones. Run it against your current build and read every failure. You'll learn more about that feature in an afternoon than a month of vibe checks gave you — and you'll have the beginning of a gate.</p>
+  <div class="callout key"><span class="ic">!</span><p><strong>The four courses in order:</strong> assemble the context, choose the pattern, divide the work, and measure the result. The last one is what makes the first three improvable instead of merely adjustable.</p></div>
+  <div class="reading">
+    <a href="./context-engineering.html"><span class="src">COURSE 01</span><span class="ti">Context Engineering — what the model sees, on every turn</span></a>
+    <a href="./agentic-patterns.html"><span class="src">COURSE 02</span><span class="ti">Agentic Patterns — the loop, and the patterns built on it</span></a>
+    <a href="./multi-agent-systems.html"><span class="src">COURSE 03</span><span class="ti">Multi-Agent Systems — topologies, coordination, and when not to</span></a>
+  </div>
+</script>
+
+<script src="./shared/shell.js"></script>
+<script src="./courses/evals-and-observability/course.js"></script>
+</body>
+</html>

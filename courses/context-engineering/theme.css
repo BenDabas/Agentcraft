@@ -1,0 +1,44 @@
+/* context-engineering — accent palette and styles unique to this course's instruments.
+   Loads after shared/console.css and shared/instruments.css. */
+
+:root {
+    --bg:#ECEEF1; --grid:rgba(20,40,70,.045); --surface:#F8F9FB; --surface-2:#E7EBF0; --surface-3:#DEE3EA;
+    --ink:#14181D; --ink-soft:#47515C; --ink-faint:#7A8592; --line:#D2D8E0; --line-strong:#B9C1CC;
+    --accent:#E14328; --accent-2:#FF5A3C; --accent-ink:#FFFFFF;
+    --signal:#0C8C7E; --signal-bg:rgba(12,140,126,.10); --warn:#B57C00; --warn-bg:rgba(230,161,0,.12);
+    --bad:#C7331F; --bad-bg:rgba(199,51,31,.10);
+    --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,"Liberation Mono",monospace;
+    --shadow:0 1px 2px rgba(12,20,33,.06),0 8px 24px rgba(12,20,33,.06); --radius:6px;
+  }
+@media (prefers-color-scheme:dark) {
+:root{
+    --bg:#0E1216; --grid:rgba(120,170,230,.05); --surface:#161C22; --surface-2:#1C242C; --surface-3:#232D36;
+    --ink:#E7ECF1; --ink-soft:#A6B0BB; --ink-faint:#6C7883; --line:#2A343D; --line-strong:#3A4753;
+    --accent:#FF6B4F; --accent-2:#FF7E64; --accent-ink:#14181D; --signal:#2AC7B5; --signal-bg:rgba(42,199,181,.12);
+    --warn:#F0B429; --warn-bg:rgba(240,180,41,.13); --bad:#F0503E; --bad-bg:rgba(240,80,62,.13);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{--bg:#ECEEF1;--grid:rgba(20,40,70,.045);--surface:#F8F9FB;--surface-2:#E7EBF0;--surface-3:#DEE3EA;--ink:#14181D;--ink-soft:#47515C;--ink-faint:#7A8592;--line:#D2D8E0;--line-strong:#B9C1CC;--accent:#E14328;--accent-2:#FF5A3C;--accent-ink:#FFFFFF;--signal:#0C8C7E;--signal-bg:rgba(12,140,126,.10);--warn:#B57C00;--warn-bg:rgba(230,161,0,.12);--bad:#C7331F;--bad-bg:rgba(199,51,31,.10);--shadow:0 1px 2px rgba(12,20,33,.06),0 8px 24px rgba(12,20,33,.06);}
+:root[data-theme="dark"]{--bg:#0E1216;--grid:rgba(120,170,230,.05);--surface:#161C22;--surface-2:#1C242C;--surface-3:#232D36;--ink:#E7ECF1;--ink-soft:#A6B0BB;--ink-faint:#6C7883;--line:#2A343D;--line-strong:#3A4753;--accent:#FF6B4F;--accent-2:#FF7E64;--accent-ink:#14181D;--signal:#2AC7B5;--signal-bg:rgba(42,199,181,.12);--warn:#F0B429;--warn-bg:rgba(240,180,41,.13);--bad:#F0503E;--bad-bg:rgba(240,80,62,.13);--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);}
+.instrument .ihead .t b{color:var(--ink);}
+.status.ok{background:var(--signal-bg);color:var(--signal);}
+.status.tight{background:var(--warn-bg);color:var(--warn);}
+.status.over{background:var(--bad-bg);color:var(--bad);}
+.sliders{display:grid;gap:11px;margin-top:16px;}
+.slider-row{display:grid;grid-template-columns:14px 1fr;gap:11px;align-items:center;}
+.slider-row .swatch{width:12px;height:12px;border-radius:3px;}
+.slider-row .rlabel{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;}
+.slider-row .rlabel .nm{color:var(--ink);font-weight:600;}
+.slider-row .rlabel .val{font-family:var(--font-mono);color:var(--ink-soft);font-variant-numeric:tabular-nums;font-size:11.5px;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:var(--surface-3);outline:none;margin:5px 0 0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);cursor:pointer;box-shadow:var(--shadow);}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);cursor:pointer;}
+.readout{margin-top:16px;padding:12px 14px;border-radius:6px;border:1px solid var(--line);font-size:.9rem;background:var(--surface-2);}
+.readout .rt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);}
+.readout .rmsg{margin-top:5px;color:var(--ink);}
+.preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.preset{font-family:var(--font-mono);font-size:11px;padding:6px 11px;border:1px solid var(--line);border-radius:5px;background:var(--surface-2);color:var(--ink-soft);cursor:pointer;transition:all .15s;}
+.preset:hover{border-color:var(--accent);color:var(--ink);}
+.qopt{display:flex;align-items:flex-start;gap:10px;width:100%;}

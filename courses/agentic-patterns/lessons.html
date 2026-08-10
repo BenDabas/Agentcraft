@@ -1,0 +1,392 @@
+<script type="text/html" data-lesson="1-1">
+  <div class="obj"><div class="ol">In this course</div>You'll learn the "agentic flow" — the repertoire of reasoning and control patterns that turn a raw model into an agent that acts, checks itself, recovers from errors, and coordinates with other agents.</div>
+  <p>Welcome to course 02. This is hands-on: you'll <strong>step through a live ReAct loop</strong>, run a <strong>pattern-selection tool</strong>, and take a checkpoint quiz after every section, finishing with a final exam. Progress saves on this device.</p>
+  <h2>What you'll be able to do by the end</h2>
+  <div class="hero-outcomes">
+    <div class="outcome"><span class="ck">✓</span><span>Explain precisely what makes something an agent versus a workflow or a single call.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Implement the core loop (ReAct) with sane stopping conditions and error recovery.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Apply reliability patterns — Reflexion, evaluator–optimizer, planning.</span></div>
+    <div class="outcome"><span class="ck">✓</span><span>Choose and compose the right pattern for a task, and avoid multi-agent over-engineering.</span></div>
+  </div>
+  <h2>The one prerequisite</h2>
+  <p>Every pattern here runs <em>on</em> a context window. If you haven't taken the companion course, <strong>Context Engineering</strong>, that's fine — but you'll see it referenced whenever a pattern leans on how the window is assembled (which is often). Link's in the sidebar.</p>
+  <div class="callout tip"><span class="ic">i</span><p>Rule of the course: <strong>start simple</strong>. We build up to multi-agent systems, but the recurring lesson is that most tasks need far less machinery than people reach for.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-2">
+  <div class="obj"><div class="ol">Objective</div>Draw the sharp line between a model call, a workflow, and an agent.</div>
+  <p>These three words get used interchangeably and shouldn't be. The difference is <em>who decides the next step</em>.</p>
+  <table class="tbl">
+    <tr><th>Type</th><th>Who controls the flow</th><th>Example</th></tr>
+    <tr><td><b>Single call</b></td><td>Nobody — one shot in, one out</td><td>"Summarize this text"</td></tr>
+    <tr><td><b>Workflow</b></td><td><b>You</b>, in code — a fixed path</td><td>Translate → summarize → email</td></tr>
+    <tr><td><b>Agent</b></td><td><b>The model</b>, at runtime — chooses steps/tools dynamically</td><td>"Resolve this support ticket"</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p><strong>An agent decides its own control flow.</strong> A workflow's path is fixed by you at design time; an agent's path is chosen by the model as it goes, based on what it observes. That autonomy is the power — and the risk.</p></div>
+  <p>This distinction is the backbone of the whole course. Sections 4 and 5 will show you when a boring, predictable <em>workflow</em> beats an autonomous agent — often. The skill isn't "always build an agent"; it's knowing where on this table your task belongs.</p>
+</script>
+
+<script type="text/html" data-lesson="1-3">
+  <div class="obj"><div class="ol">Objective</div>Learn the equation that defines an agent: <em>Model + Harness</em>.</div>
+  <p>An agent is not a smarter model. It's a model wrapped in a <strong>harness</strong> — the code that runs the loop, executes tools, tracks state, and decides when to stop.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>Agent = Model + Harness.</strong> The model provides intelligence <em>per step</em>. The harness provides the loop, tool execution, memory, and stopping rules that turn isolated smart steps into reliable end-to-end behavior.</p></div>
+  <h2>What the harness owns</h2>
+  <ul>
+    <li><strong>The loop</strong> — call the model, execute what it asks for, feed the result back, repeat.</li>
+    <li><strong>Tool binding &amp; execution</strong> — turning a model's "call get_weather(…)" into an actual function call and returning the result.</li>
+    <li><strong>State &amp; memory</strong> — what carries across steps (this is where context engineering lives).</li>
+    <li><strong>Stopping conditions</strong> — max steps, budget, a "done" signal, guardrails.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>The term "harness" is having a moment because it captures a real truth: <strong>a strong model with a weak harness is an unreliable agent</strong>, and a great harness can make a modest model shine. When you build agents, you're mostly building harness.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-4">
+  <div class="obj"><div class="ol">Objective</div>Understand tools as the agent's only way to affect the world.</div>
+  <p>A model on its own can only produce text. <strong>Tools</strong> are the functions you expose that let it <em>do</em> things — search, query a database, send a request, run code. When the model "calls a tool," it emits a structured request; your harness executes the real function and returns the result into the next turn.</p>
+  <h2>Anatomy of a tool</h2>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">tool.ts</span></div><pre><code><span class="tok-key">const</span> getWeather = {
+  name: <span class="tok-str">"get_weather"</span>,
+  description: <span class="tok-str">"Current forecast for a city on a given day."</span>,  <span class="tok-com">// the model reads this</span>
+  parameters: {
+    city: { type: <span class="tok-str">"string"</span> },
+    when: { type: <span class="tok-str">"string"</span>, enum: [<span class="tok-str">"today"</span>, <span class="tok-str">"tomorrow"</span>] },
+  },
+  <span class="tok-fn">run</span>: <span class="tok-key">async</span> (args) => <span class="tok-fn">weatherApi</span>(args.city, args.when),  <span class="tok-com">// harness executes this</span>
+};</code></pre></div>
+  <div class="callout key"><span class="ic">!</span><p>The tool's <code>name</code> and <code>description</code> are <strong>context</strong> — the model reads them every turn tools are available to decide what to call. This is exactly where the two courses meet: good tool design is good context engineering. Fewer, sharper tools; descriptions written like prompts.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 1</div>Confirm the foundations before the core loop.</div>
+  <p>Three questions on agents, harnesses, and tools.</p>
+  <div data-mount="quiz" data-quiz="s1"></div>
+</script>
+
+<script type="text/html" data-lesson="2-1">
+  <div class="obj"><div class="ol">Objective</div>Understand ReAct — the base pattern every other one builds on.</div>
+  <p><strong>ReAct</strong> (Reason + Act) is the foundational agent loop. The model alternates three moves: a <em>Thought</em> (reasoning about what to do), an <em>Action</em> (a tool call), and reads an <em>Observation</em> (the result) — then loops, until it can give a final answer.</p>
+  <p>The magic isn't any single step; it's the <strong>observe-before-continue</strong> rhythm. The model doesn't plan everything up front and charge ahead — it acts once, sees what actually happened, and lets that reshape its next thought. That's what makes an agent adaptive instead of brittle.</p>
+  <h2>Instrument — step through a real ReAct trace</h2>
+  <p>"Should I bring an umbrella to my meeting in Tel Aviv?" Step the loop and watch the diagram light up each phase. Notice how the second tool call is <em>only</em> decided after reading the first observation.</p>
+  <div data-mount="loop"></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Everything later in this course is a variation or composition of this loop: add a critique step and you get Reflexion; add a planner and you get plan-then-execute; run several in parallel under a lead and you get orchestration.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-2">
+  <div class="obj"><div class="ol">Objective</div>See the ReAct loop as harness code, not magic.</div>
+  <p>Here's the loop from the last lesson written out. It's genuinely this small — the model's tool-call output drives a <code>while</code> loop until it stops asking for tools.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">reactLoop.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">runAgent</span>(task: <span class="tok-key">string</span>, tools: Tool[], maxSteps = <span class="tok-num">10</span>) {
+  <span class="tok-key">const</span> messages = [{ role: <span class="tok-str">"user"</span>, content: task }];
+
+  <span class="tok-key">for</span> (<span class="tok-key">let</span> step = <span class="tok-num">0</span>; step &lt; maxSteps; step++) {
+    <span class="tok-key">const</span> res = <span class="tok-key">await</span> <span class="tok-fn">model</span>({ messages, tools });   <span class="tok-com">// THINK</span>
+    messages.push(res.message);
+
+    <span class="tok-key">if</span> (!res.toolCalls?.length) <span class="tok-key">return</span> res.text;   <span class="tok-com">// no tool → done</span>
+
+    <span class="tok-key">for</span> (<span class="tok-key">const</span> call <span class="tok-key">of</span> res.toolCalls) {         <span class="tok-com">// ACT</span>
+      <span class="tok-key">const</span> out = <span class="tok-key">await</span> <span class="tok-fn">exec</span>(tools, call);
+      messages.push({ role: <span class="tok-str">"tool"</span>, content: out }); <span class="tok-com">// OBSERVE</span>
+    }
+  }
+  <span class="tok-key">throw new</span> <span class="tok-fn">Error</span>(<span class="tok-str">"hit step limit"</span>);        <span class="tok-com">// stopping condition</span>
+}</code></pre></div>
+  <div class="callout key"><span class="ic">!</span><p>Look at what the harness owns: the message list (context/state), tool execution, and — critically — the <code>maxSteps</code> guard. Frameworks (Vercel AI SDK, Anthropic Agent SDK, Mastra) give you this loop for free, but knowing it's just this demystifies the whole field.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-3">
+  <div class="obj"><div class="ol">Objective</div>Stop agents from looping forever or going off the rails.</div>
+  <p>An autonomous loop needs boundaries, or it will occasionally spin, repeat, or wander. Stopping conditions and guardrails are what make an agent safe to deploy.</p>
+  <h2>The essential guards</h2>
+  <ul>
+    <li><strong>Max steps / max tokens.</strong> A hard ceiling so a stuck agent fails loudly instead of burning budget.</li>
+    <li><strong>A clear "done" signal.</strong> A final-answer tool or a stop condition, so the model has an explicit way to end.</li>
+    <li><strong>Loop detection.</strong> If the agent calls the same tool with the same args twice, intervene — it's stuck.</li>
+    <li><strong>Permission boundaries.</strong> Destructive or costly tools require confirmation or are gated. (This is the seam where the security topic on your list lives.)</li>
+  </ul>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>Never ship an unbounded loop.</strong> "It usually finishes in 4 steps" is not a stopping condition. The one time it doesn't, an unbounded agent can rack up cost or take an irreversible action. Bounds first, then behavior.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 2</div>The core loop.</div>
+  <p>Three questions on ReAct and its guardrails.</p>
+  <div data-mount="quiz" data-quiz="s2"></div>
+</script>
+
+<script type="text/html" data-lesson="3-1">
+  <div class="obj"><div class="ol">Objective</div>Add self-correction with Reflexion — the biggest quality lever after ReAct.</div>
+  <p><strong>Reflexion</strong> is a loop where the agent <em>critiques its own output</em> and retries using that critique. Generate an answer, grade it against the goal, and if it falls short, try again — but now with the critique in context so the retry is informed, not random.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">reflexion.ts</span></div><pre><code><span class="tok-key">async function</span> <span class="tok-fn">solveWithReflection</span>(task: <span class="tok-key">string</span>, maxTries = <span class="tok-num">3</span>) {
+  <span class="tok-key">let</span> answer = <span class="tok-key">await</span> <span class="tok-fn">generate</span>(task);
+  <span class="tok-key">for</span> (<span class="tok-key">let</span> i = <span class="tok-num">0</span>; i &lt; maxTries; i++) {
+    <span class="tok-key">const</span> critique = <span class="tok-key">await</span> <span class="tok-fn">reflect</span>(task, answer);   <span class="tok-com">// grade own work</span>
+    <span class="tok-key">if</span> (critique.passes) <span class="tok-key">return</span> answer;
+    answer = <span class="tok-key">await</span> <span class="tok-fn">generate</span>(task, { feedback: critique.notes }); <span class="tok-com">// informed retry</span>
+  }
+  <span class="tok-key">return</span> answer;
+}</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Reflexion works <em>because</em> the critique is written back <strong>into the context</strong> for the retry. That's the companion course in action — a pattern is only as good as the context it runs on.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-2">
+  <div class="obj"><div class="ol">Objective</div>Split generation from judgment with evaluator–optimizer.</div>
+  <p><strong>Evaluator–optimizer</strong> is Reflexion split across two roles: one model (or prompt) <em>generates</em>, a separate one <em>evaluates</em> against explicit criteria and returns feedback, and the generator revises. Loop until the evaluator passes it.</p>
+  <p>Why separate the roles? A dedicated evaluator with a crisp rubric is often a harsher, more consistent critic than a model grading itself — and you can use a cheaper/faster model for one side. It shines when you have <em>clear quality criteria</em>: does this code compile and pass tests, does this translation preserve tone, does this answer cite sources.</p>
+  <table class="tbl">
+    <tr><th>Role</th><th>Job</th><th>Good when</th></tr>
+    <tr><td><b>Generator</b></td><td>Produce a candidate</td><td>Always</td></tr>
+    <tr><td><b>Evaluator</b></td><td>Score vs criteria, give actionable feedback</td><td>Criteria are explicit and checkable</td></tr>
+  </table>
+  <div class="callout warn"><span class="ic">▲</span><p>If your criteria are vague ("make it good"), the evaluator adds cost without much signal. Use this pattern when you can state what "pass" means.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-3">
+  <div class="obj"><div class="ol">Objective</div>Keep long tasks coherent with planning and decomposition.</div>
+  <p>For multi-step tasks, having the model draft a <strong>plan</strong> before acting keeps it coherent. Instead of deciding each step in isolation (and drifting), the agent decomposes the goal into sub-steps up front, then executes — often re-planning as it learns.</p>
+  <h2>Two flavors</h2>
+  <ul>
+    <li><strong>Plan-then-execute.</strong> Generate the full plan, then work through it. Predictable; great when the shape of the task is knowable.</li>
+    <li><strong>Interleaved / re-planning.</strong> Plan, act, observe, then revise the plan. More adaptive when early steps reveal surprises.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Planning also helps <em>you</em>: a written plan is inspectable and interruptible. You can review or edit the plan before the agent spends real actions on it — a natural human-in-the-loop checkpoint.</p></div>
+  <div class="callout key"><span class="ic">=</span><p>A plan is also a context-engineering tool: it's a compact, high-signal artifact you <em>Write</em> once and keep in the window, instead of re-deriving intent every turn.</p></div>
+</script>
+
+<script type="text/html" data-lesson="3-4">
+  <div class="obj"><div class="ol">Objective</div>Make agents robust with retries, fallbacks, and error recovery.</div>
+  <p>Tools fail. APIs time out. The model occasionally emits a malformed call. Reliable agents plan for this rather than assuming the happy path.</p>
+  <ul>
+    <li><strong>Feed errors back as observations.</strong> When a tool throws, return the error message into the loop — a capable model will often correct its own call. Don't crash the whole run on a recoverable error.</li>
+    <li><strong>Retry with backoff</strong> for transient failures (timeouts, rate limits).</li>
+    <li><strong>Fallbacks.</strong> If the primary tool is down, a degraded path may still complete the task.</li>
+    <li><strong>Validate tool outputs</strong> before trusting them — this is also how you prevent context <em>poisoning</em> (companion course).</li>
+  </ul>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">recover.ts</span></div><pre><code><span class="tok-key">try</span> {
+  out = <span class="tok-key">await</span> <span class="tok-fn">exec</span>(tools, call);
+} <span class="tok-key">catch</span> (err) {
+  <span class="tok-com">// Feed the failure back — let the agent adapt, don't crash</span>
+  out = <span class="tok-str">"ERROR: "</span> + err.message + <span class="tok-str">" — try a different approach."</span>;
+}
+messages.push({ role: <span class="tok-str">"tool"</span>, content: out });</code></pre></div>
+</script>
+
+<script type="text/html" data-lesson="3-5">
+  <div class="obj"><div class="ol">Checkpoint · Section 3</div>Reliability patterns.</div>
+  <p>Three questions on Reflexion, evaluator–optimizer, and recovery.</p>
+  <div data-mount="quiz" data-quiz="s3"></div>
+</script>
+
+<script type="text/html" data-lesson="4-1">
+  <div class="obj"><div class="ol">Objective</div>Use prompt chaining — the simplest, most underrated pattern.</div>
+  <p>Not everything needs agency. When the sequence of steps is <em>known in advance</em>, don't make the model decide the flow — wire it yourself. <strong>Prompt chaining</strong> breaks a task into fixed steps, each feeding the next.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">chain.ts</span></div><pre><code><span class="tok-key">const</span> outline = <span class="tok-key">await</span> <span class="tok-fn">model</span>(<span class="tok-str">"Outline an article on: "</span> + topic);
+<span class="tok-key">const</span> draft   = <span class="tok-key">await</span> <span class="tok-fn">model</span>(<span class="tok-str">"Write the article from this outline:\n"</span> + outline);
+<span class="tok-key">const</span> final   = <span class="tok-key">await</span> <span class="tok-fn">model</span>(<span class="tok-str">"Tighten and fix grammar:\n"</span> + draft);</code></pre></div>
+  <div class="callout key"><span class="ic">!</span><p>Chaining is predictable, cheap, and trivially debuggable — you can inspect every intermediate. Reach for it <em>before</em> an agent whenever the path is fixed. "Could this be a chain instead of an agent?" is a question worth asking on every design.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-2">
+  <div class="obj"><div class="ol">Objective</div>Send work to the right handler with routing.</div>
+  <p><strong>Routing</strong> classifies the input first, then dispatches to a specialized handler, prompt, or model. A cheap, fast model (or a classifier) triages; the specialized path does the real work.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">route.ts</span></div><pre><code><span class="tok-key">const</span> kind = <span class="tok-key">await</span> <span class="tok-fn">classify</span>(userMsg); <span class="tok-com">// "billing" | "technical" | "sales"</span>
+<span class="tok-key">switch</span> (kind) {
+  <span class="tok-key">case</span> <span class="tok-str">"billing"</span>:   <span class="tok-key">return</span> <span class="tok-fn">billingAgent</span>(userMsg);
+  <span class="tok-key">case</span> <span class="tok-str">"technical"</span>: <span class="tok-key">return</span> <span class="tok-fn">techAgent</span>(userMsg);   <span class="tok-com">// each gets a lean, focused context</span>
+  <span class="tok-key">default</span>:          <span class="tok-key">return</span> <span class="tok-fn">salesAgent</span>(userMsg);
+}</code></pre></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Routing is also a context win: each specialized handler gets only the tools and instructions relevant to its category — smaller, sharper windows than one mega-agent trying to do everything.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-3">
+  <div class="obj"><div class="ol">Objective</div>Do more at once — or more reliably — with parallelization.</div>
+  <p><strong>Parallelization</strong> runs multiple model calls simultaneously. Two distinct uses:</p>
+  <ul>
+    <li><strong>Sectioning.</strong> Split an independent task into parts, run them at once, aggregate. (Review a PR for security, style, and tests in parallel.)</li>
+    <li><strong>Voting.</strong> Run the <em>same</em> task N times and take a majority or best answer — trading cost for reliability on high-stakes calls.</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>Sectioning ties back to <em>Isolate</em> from the companion course: each parallel worker gets its own clean window, so none of them rots under the full load.</p></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Parallel work needs an <em>aggregation</em> step — someone has to merge or pick. Don't forget to budget for the synthesis; it's where parallel results become one coherent answer.</p></div>
+</script>
+
+<script type="text/html" data-lesson="4-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 4</div>Workflow patterns.</div>
+  <p>Three questions on chaining, routing, and parallelization.</p>
+  <div data-mount="quiz" data-quiz="s4"></div>
+</script>
+
+<script type="text/html" data-lesson="5-1">
+  <div class="obj"><div class="ol">Objective</div>Scale beyond one context with orchestrator–workers.</div>
+  <p>When a task is too big for a single clean window, the <strong>orchestrator–workers</strong> pattern splits it. A lead agent <em>decomposes</em> the task, delegates sub-tasks to worker agents — each running in its own isolated context — and then <em>synthesizes</em> their distilled results.</p>
+  <div class="callout key"><span class="ic">=</span><p>This is the <em>Isolate</em> operation turned into an architecture. Each worker sees only its slice, stays lean, and returns a summary — so the orchestrator reasons over a handful of summaries instead of a mountain of raw material.</p></div>
+  <table class="tbl">
+    <tr><th>Role</th><th>Context</th><th>Returns</th></tr>
+    <tr><td><b>Orchestrator</b></td><td>The goal + workers' summaries</td><td>The synthesized final answer</td></tr>
+    <tr><td><b>Worker</b></td><td>One scoped sub-task only</td><td>A distilled result</td></tr>
+  </table>
+  <p>It's the pattern behind many "deep research" systems: one lead, several researchers each investigating a branch, results woven together.</p>
+</script>
+
+<script type="text/html" data-lesson="5-2">
+  <div class="obj"><div class="ol">Objective</div>Pass control cleanly between agents with handoffs.</div>
+  <p>A <strong>handoff</strong> is one agent transferring control — and a scoped slice of context — to another agent better suited to continue. It's routing applied <em>mid-conversation</em> rather than only at the entry point.</p>
+  <p>Example: a general assistant handles small talk, then the user asks a deep billing question. The assistant hands off to a billing specialist, passing only the relevant context (the account, the question) — not the entire chat history.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>The hard part of a handoff is what context travels with it.</strong> Pass too little and the receiving agent is lost; pass the whole history and you've recreated the bloated window you were trying to avoid. Scoping the handoff payload is a context-engineering decision.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-3">
+  <div class="obj"><div class="ol">Objective</div>Know when multi-agent genuinely helps — and when it hurts.</div>
+  <p>Multi-agent systems are powerful and <em>frequently over-applied</em>. More agents means more calls, more latency, more places for coordination to break, and more windows to keep clean. Reach for them only when the benefits are real.</p>
+  <table class="tbl">
+    <tr><th>Multi-agent helps when…</th><th>Multi-agent hurts when…</th></tr>
+    <tr><td>The task genuinely exceeds one clean context</td><td>A single ReAct loop would fit fine</td></tr>
+    <tr><td>Sub-tasks are independent and parallelizable</td><td>Steps are tightly sequential and dependent</td></tr>
+    <tr><td>Specialists need very different tools/instructions</td><td>You're adding agents for their own sake</td></tr>
+    <tr><td>You can afford the extra latency &amp; cost</td><td>Latency or cost is tight</td></tr>
+  </table>
+  <div class="callout key"><span class="ic">!</span><p><strong>Default to the simplest thing that works.</strong> Single call → workflow → single agent → multi-agent, in that order. Only climb a rung when the current one demonstrably can't do the job.</p></div>
+</script>
+
+<script type="text/html" data-lesson="5-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 5</div>Multi-agent systems.</div>
+  <p>Three questions on orchestration, handoffs, and restraint.</p>
+  <div data-mount="quiz" data-quiz="s5"></div>
+</script>
+
+<script type="text/html" data-lesson="6-1">
+  <div class="obj"><div class="ol">Objective</div>Turn everything into a decision you can make quickly.</div>
+  <p>Patterns aren't ranked — they fit situations. This tool encodes the decision. Answer up to two questions, then read the <em>why</em> (the reasoning is the real lesson).</p>
+  <div data-mount="picker"></div>
+  <div class="callout warn"><span class="ic">▲</span><p>Notice the tool never recommends "multi-agent" unless the task truly can't fit one context. That bias toward simplicity is deliberate — it's the most common thing teams get wrong.</p></div>
+</script>
+
+<script type="text/html" data-lesson="6-2">
+  <div class="obj"><div class="ol">Objective</div>Compose patterns — real systems are always blends.</div>
+  <p>You rarely use one pattern in isolation. A production system layers them. Read this as a worked example of composition:</p>
+  <div class="callout key"><span class="ic">=</span><p>A support system might: <strong>route</strong> the ticket by type → hand it to a specialist <strong>agent</strong> running a <strong>ReAct</strong> loop → which uses <strong>Reflexion</strong> before replying → and for a gnarly research question, spins up <strong>orchestrator–workers</strong> to gather facts. Five patterns, one system.</p></div>
+  <h2>How to compose without chaos</h2>
+  <ul>
+    <li><strong>Simplest shell first.</strong> Start with the outermost simple structure (often routing or a chain) and only add agency in the parts that need it.</li>
+    <li><strong>Isolate contexts at every boundary.</strong> Each sub-agent, each worker, each route gets its own lean window.</li>
+    <li><strong>One reliability loop where it counts.</strong> Put Reflexion/evaluation around the step whose quality actually matters, not everywhere.</li>
+  </ul>
+</script>
+
+<script type="text/html" data-lesson="6-3">
+  <div class="obj"><div class="ol">Objective</div>Recognize the anti-patterns before they cost you.</div>
+  <p>Knowing what <em>not</em> to do is half the skill. The common failure modes:</p>
+  <div class="cards">
+    <div class="card"><div class="num">ANTI</div><h4>Agent when a chain would do</h4><p>Giving the model control of a flow you already know. Fragile and slow for no benefit.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Multi-agent theater</h4><p>Five agents where one loop fits. More coordination surface, more failure.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Unbounded loops</h4><p>No max steps, no done signal. Works until the day it spins or acts irreversibly.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Reflexion everywhere</h4><p>Critique loops on every step, tripling cost where quality didn't need it.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Fat handoffs</h4><p>Passing the whole history between agents, recreating the bloated window.</p></div>
+    <div class="card"><div class="num">ANTI</div><h4>Ignoring failures</h4><p>Assuming the happy path; one tool error crashes the whole run.</p></div>
+  </div>
+  <div class="callout tip"><span class="ic">✓</span><p>Every anti-pattern here has the same cure: <em>start simple, bound everything, keep each context lean.</em></p></div>
+</script>
+
+<script type="text/html" data-lesson="6-4">
+  <div class="obj"><div class="ol">Final exam</div>Eight questions across the whole course. Answer all to see your score.</div>
+  <p>A self-check spanning agents, ReAct, reliability, workflows, multi-agent, MCP, and production concerns. Missed one? The explanation names the lesson to revisit.</p>
+  <div data-mount="quiz" data-quiz="final"></div>
+</script>
+
+<script type="text/html" data-lesson="6-5">
+  <div class="obj"><div class="ol">You've finished the set</div>Both courses complete — here's the through-line.</div>
+  <p>You can now define an agent precisely, build the core loop with real guardrails, layer reliability patterns, and choose the simplest shape that fits — reaching for multi-agent only when a single context genuinely can't hold the task.</p>
+  <h2>The two courses, one idea</h2>
+  <p>Patterns and context aren't separate skills — they're two views of the same system. Every pattern here <em>ran on a context</em>: Reflexion wrote critique back into it, orchestration isolated it across workers, handoffs scoped what traveled. If you did both courses, you now hold both halves.</p>
+  <a class="nextcourse" href="https://claude.ai/code/artifact/beb16fc4-2571-4fa9-991f-cbdd2adfd374" target="_blank" rel="noopener">
+    <span class="nb">🎛️</span>
+    <span class="body"><span class="k">Companion · course 01 of 02</span><span class="tt">Context Engineering</span><span class="d">The other half: the context budget, the four operations, and the failure modes — with a live token simulator and a diagnosis drill.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <h2>Where to go next</h2>
+  <p>You've now covered the agent loop, the pattern catalog, MCP, evals, observability, and security. The frontier from here:</p>
+  <div class="cards">
+    <div class="card"><h4>Agent interop (A2A)</h4><p>Emerging standards for agents coordinating with other agents, alongside MCP.</p></div>
+    <div class="card"><h4>Cost &amp; latency</h4><p>Model routing, prompt caching, and budget control at production scale.</p></div>
+    <div class="card"><h4>Human-in-the-loop</h4><p>Approval gates, editable plans, and UX patterns for oversight.</p></div>
+    <div class="card"><h4>Memory &amp; long-running</h4><p>Agents that pause, resume, and persist across days — deep-dived in the companion course.</p></div>
+  </div>
+  <h2>Go deeper</h2>
+  <div class="reading">
+    <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><span class="src">Anthropic</span><span class="ti">Building Effective Agents — the canonical pattern catalog</span></a>
+    <a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener"><span class="src">Yao et al.</span><span class="ti">ReAct — Synergizing Reasoning and Acting in LLMs</span></a>
+    <a href="https://arxiv.org/abs/2303.11366" target="_blank" rel="noopener"><span class="src">Shinn et al.</span><span class="ti">Reflexion — verbal reinforcement learning</span></a>
+    <a href="https://sdk.vercel.ai/docs" target="_blank" rel="noopener"><span class="src">Vercel</span><span class="ti">AI SDK — build these loops in TypeScript</span></a>
+  </div>
+  <div class="callout key"><span class="ic">→</span><p><strong>Your move now:</strong> take one real task, build it as a single ReAct loop with a bounded harness, a deliberately assembled context, and one Reflexion retry around the step that matters. Ship that before you add a second agent.</p></div>
+</script>
+
+<script type="text/html" data-lesson="1-mcp">
+  <div class="obj"><div class="ol">Objective</div>Understand MCP — the emerging standard for how agents connect to tools and data.</div>
+  <p>Before MCP, every agent framework wired up tools its own way. Connect M apps to N data sources and you had an M×N mess of bespoke integrations. <strong>MCP (the Model Context Protocol)</strong> fixes that with one open standard — often called <em>"USB-C for AI"</em>.</p>
+  <h2>How it works</h2>
+  <p>MCP is client–server. Your agent app is an <strong>MCP client</strong>; a tool or data source is exposed by an <strong>MCP server</strong>. Servers offer three standard primitives: <strong>tools</strong> (actions the agent can call), <strong>resources</strong> (data it can read), and <strong>prompts</strong> (reusable templates). Any MCP-compatible client can use any MCP server — write an integration once, reuse it everywhere.</p>
+  <div class="callout key"><span class="ic">=</span><p>MCP is the plumbing for the <em>Select</em> step from the companion course: it's <em>how</em> tools and data reach the window. It doesn't decide <em>which</em> to expose on a given turn — that's still your context-engineering call. Least-privilege still applies: don't wire in an MCP server's full surface if the task needs three tools.</p></div>
+  <h2>Why it matters now</h2>
+  <p>Created by Anthropic in late 2024, MCP was donated to the <strong>Linux Foundation's Agentic AI Foundation (AAIF)</strong> in December 2025, with backing from AWS, Google, Microsoft, OpenAI, Cloudflare and others — and tens of thousands of community servers. It's crossed from "a vendor's idea" to a genuine industry standard, which is why it's worth learning as infrastructure rather than a fad.</p>
+  <div class="callout tip"><span class="ic">✓</span><p>Practical take: prefer an existing MCP server over hand-rolling an integration, and expose your own capabilities as an MCP server if other agents will consume them. It also centralizes the <em>auth and permission</em> boundary — relevant to the security lesson later in this course.</p></div>
+</script>
+
+<script type="text/html" data-lesson="2-rag">
+  <div class="obj"><div class="ol">Objective</div>Put retrieval under the agent's control — turning one-shot RAG into an adaptive loop.</div>
+  <p>Classic RAG retrieves once, up front, then answers. It works when a single lookup surfaces the answer — and fails on complex or multi-hop questions where you don't know the right query until you've seen some results.</p>
+  <p><strong>Agentic RAG</strong> makes retrieval a <em>tool the agent calls inside the loop</em>, whenever it decides it needs more. Now the agent can reformulate a weak query, search again, drill into a sub-topic, or notice "I still don't have the number" and try a different angle — all within ReAct.</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">agenticRag.ts</span></div><pre><code><span class="tok-com">// 'search' is just another tool in the ReAct loop</span>
+<span class="tok-key">const</span> tools = [ search, readDoc, calculator ];
+<span class="tok-key">await</span> <span class="tok-fn">runAgent</span>(<span class="tok-str">"What changed in our refund policy since last quarter?"</span>, tools);
+<span class="tok-com">// The agent may search("refund policy 2026"), read a hit,</span>
+<span class="tok-com">// realize it needs the OLD policy too, then search again — its call.</span></code></pre></div>
+  <div class="callout key"><span class="ic">=</span><p>Retrieval <em>quality</em> still governs the outcome (chunking, hybrid search, reranking — covered in the companion course). Agentic RAG changes <em>who</em> triggers retrieval and <em>how often</em>, not whether retrieval needs to be good.</p></div>
+  <div class="callout warn"><span class="ic">▲</span><p>The cost of the power: more model calls and the risk of endless searching. Bound it — cap retrieval rounds and give the agent a clear "answer now" path, same discipline as any loop.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-1">
+  <div class="obj"><div class="ol">Objective</div>Measure agent quality instead of trusting vibes — because agents are non-deterministic.</div>
+  <p>The same agent can succeed and fail on the same task across runs. "It looked good in my three tries" is not evidence. <strong>Evals</strong> are how you turn agent quality into something you can measure, track, and defend against regressions.</p>
+  <h2>Building an eval</h2>
+  <ul>
+    <li><strong>An eval set</strong> — a collection of representative tasks with expected outcomes or pass criteria. Grow it from real traces and past failures.</li>
+    <li><strong>Programmatic checks</strong> where possible — did the code compile, did it call the right tool, is the JSON valid, does the number match. Cheap and objective; prefer them.</li>
+    <li><strong>LLM-as-judge</strong> for open-ended outputs — a grader model scores a response against a rubric (accurate? complete? on-tone?). Scalable, but <em>validate the judge against human labels</em> or you're trusting one model to grade another blindly.</li>
+    <li><strong>Component evals</strong> — score retrieval, tool-selection, and final answer separately, so you know <em>which</em> stage regressed.</li>
+  </ul>
+  <div class="callout key"><span class="ic">!</span><p>Run evals in CI, like tests. A change that "feels better" but silently drops accuracy on 10% of your eval set is a regression you want to catch before your users do.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-2">
+  <div class="obj"><div class="ol">Objective</div>See inside a running agent — because you can't fix what you can't observe.</div>
+  <p>An agent that takes twelve steps and eight tool calls is a black box until you instrument it. <strong>Observability</strong> means recording a full <em>trace</em> of every run so you can reconstruct exactly what happened.</p>
+  <h2>What a good trace captures, per step</h2>
+  <ul>
+    <li>The <strong>assembled context</strong> sent to the model (this is the companion course's "log the window" habit, made systematic).</li>
+    <li>Every <strong>tool call</strong> — name, arguments, and the result returned.</li>
+    <li>The model's <strong>output</strong> and which branch it took.</li>
+    <li><strong>Tokens, latency, and cost</strong> per step and per run.</li>
+  </ul>
+  <div class="callout tip"><span class="ic">✓</span><p>Tracing pays off four ways: debugging (see what the model actually saw), spotting loops and runaway cost, monitoring latency, and <em>harvesting real traces into your eval set</em>. Tools like LangSmith and OpenTelemetry-based tracing give you this; the principle matters more than the vendor.</p></div>
+  <div class="callout key"><span class="ic">=</span><p>Evals tell you <em>whether</em> quality dropped; observability tells you <em>where</em> and <em>why</em>. You want both — they're the feedback loop that turns a demo into a dependable system.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-3">
+  <div class="obj"><div class="ol">Objective</div>Keep an autonomous, tool-wielding agent safe — with guardrails and injection defense.</div>
+  <p>Autonomy + tools + untrusted input is a genuinely risky combination. An agent that can act in the world can be <em>tricked</em> into acting badly. Guardrails are the controls that keep it inside safe bounds.</p>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>Prompt injection</strong> is the signature threat: malicious instructions hidden in content the agent reads hijack its behavior. <em>Indirect</em> injection is the scary case — the payload rides in through a retrieved document, a web page, or a tool result the agent fetched itself. No human typed it.</p></div>
+  <h2>Layered defenses</h2>
+  <ul>
+    <li><strong>Trust boundary.</strong> Treat all external content as <em>data, not instructions</em>. Fence it with clear delimiters and never let it silently redirect the agent.</li>
+    <li><strong>Least privilege.</strong> Expose only the tools a task needs. An agent that can't email or delete can't be made to.</li>
+    <li><strong>Gate side effects.</strong> Destructive or outbound actions (send, pay, delete, change settings) require confirmation, a policy check, or human approval — never fire straight off untrusted text.</li>
+    <li><strong>Output validation.</strong> Check the agent's proposed action before executing it, not after.</li>
+    <li><strong>Secrets stay out of the window;</strong> permission boundaries are first-class (this is exactly where MCP's auth model and your Azure security work meet).</li>
+  </ul>
+  <div class="callout key"><span class="ic">=</span><p>Guardrails aren't a bolt-on. The safest agent is one designed from the start with a small tool surface and gated actions — the same "start simple, bound everything" discipline as the rest of this course, applied to safety.</p></div>
+</script>
+
+<script type="text/html" data-lesson="7-4">
+  <div class="obj"><div class="ol">Checkpoint · Section 6</div>Production concerns.</div>
+  <p>Three questions on evals, observability, and security.</p>
+  <div data-mount="quiz" data-quiz="s6"></div>
+</script>
