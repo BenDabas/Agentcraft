@@ -14,6 +14,8 @@
   --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --font-mono:"Cascadia Code","JetBrains Mono","SF Mono",ui-monospace,Consolas,"Liberation Mono",monospace;
   --shadow:0 1px 2px rgba(12,20,33,.06),0 8px 24px rgba(12,20,33,.06); --radius:8px;
+  --safe-t:env(safe-area-inset-top,0px); --safe-r:env(safe-area-inset-right,0px);
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-l:env(safe-area-inset-left,0px);
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#0E1216; --grid:rgba(120,170,230,.05); --surface:#161C22; --surface-2:#1C242C; --surface-3:#232D36;
@@ -26,7 +28,7 @@
 :root[data-theme="dark"]{--bg:#0E1216;--grid:rgba(120,170,230,.05);--surface:#161C22;--surface-2:#1C242C;--surface-3:#232D36;--ink:#E7ECF1;--ink-soft:#A6B0BB;--ink-faint:#6C7883;--line:#2A343D;--line-strong:#3A4753;--accent:#6E9BFF;--accent-2:#86AEFF;--accent-ink:#0E1216;--signal:#2AC7B5;--signal-bg:rgba(42,199,181,.12);--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);}
 
 /* ---- floating theme toggle: same widget as the course pages ---- */
-.theme-fab{position:fixed;top:16px;right:16px;z-index:50;width:40px;height:40px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);cursor:pointer;display:grid;place-items:center;font-size:17px;line-height:1;}
+.theme-fab{position:fixed;top:calc(16px + var(--safe-t));right:calc(16px + var(--safe-r));z-index:50;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);cursor:pointer;display:grid;place-items:center;font-size:18px;line-height:1;}
 .theme-fab:hover{border-color:var(--accent);}
 .theme-fab .ic-dark{display:none;}
 :root[data-theme="dark"] .theme-fab .ic-light{display:none;}
@@ -41,7 +43,7 @@ body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--
 ::selection{background:var(--accent);color:var(--accent-ink);}
 a{color:var(--accent);}
 
-.wrap{max-width:940px;margin:0 auto;padding:clamp(28px,6vw,64px) clamp(18px,5vw,32px) 80px;}
+.wrap{max-width:940px;margin:0 auto;padding:clamp(28px,6vw,64px) calc(clamp(18px,5vw,32px) + var(--safe-r)) calc(80px + var(--safe-b)) calc(clamp(18px,5vw,32px) + var(--safe-l));}
 
 /* ---- masthead ---- */
 .brand{display:flex;align-items:center;gap:11px;}
@@ -81,7 +83,7 @@ h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05;letter-spacing:-.03em;font-we
 .note{margin:26px 0 0;padding:15px 17px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);background:var(--surface);font-size:.92rem;color:var(--ink-soft);}
 .note b{color:var(--ink);}
 footer{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
-.btn{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:8px 13px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;}
+.btn{font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;min-height:44px;padding:8px 13px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;}
 .btn:hover{background:var(--surface-2);color:var(--ink);border-color:var(--line-strong);}
 footer .sp{flex:1;}
 footer .fine{font-family:var(--font-mono);font-size:10px;color:var(--ink-faint);}
