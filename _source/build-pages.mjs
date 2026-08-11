@@ -23,6 +23,7 @@ const root = join(here, '..');
  */
 export const BRAND = 'Agentcraft';
 export const TAGLINE = 'AI Agent Engineering';
+export const AUTHOR = 'Ben Dabas';
 export const STORAGE_PREFIX = 'agentcraft_';
 export const DESCRIPTION =
   'Five hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, evals & observability, and building agents.';
@@ -78,20 +79,41 @@ export const COURSES = [
     hours: '~4 hrs',
     blurb: 'Build one yourself — the loop, tools, MCP, permissions — plus the vocabulary: skills, subagents, hooks, plugins.',
   },
+  {
+    n: '06',
+    slug: 'workbench',
+    name: 'The Workbench',
+    icon: '🔧',
+    key: STORAGE_PREFIX + 'wb_full_v1',
+    lessons: 12,
+    unit: 'entries',
+    kicker: 'Practice',
+    hours: '~1.5 hrs',
+    blurb: 'Practice range: ten broken agents, the evidence a real on-call engineer would have, and your diagnosis — scored across all five courses.',
+  },
 ];
+
+/** Courses proper, i.e. everything except the practice range. */
+const COURSE_COUNT = COURSES.filter((c) => !c.kicker).length;
+const kickerOf = (c) => c.kicker || `Course ${c.n}`;
+const unitOf = (c) => c.unit || 'lessons';
 
 function switcher(current) {
   const items = COURSES.map((c) => {
     if (c.slug === current.slug) {
-      return `        <a class="cs-item current"><span class="cs-ic">${c.icon}</span><span class="cs-t"><b>${c.name}</b><span>Course ${c.n} · you're here</span></span><span class="cs-check">●</span></a>`;
+      return `        <a class="cs-item current"><span class="cs-ic">${c.icon}</span><span class="cs-t"><b>${c.name}</b><span>${kickerOf(c)} · you're here</span></span><span class="cs-check">●</span></a>`;
     }
-    return `        <a class="cs-item" href="./${c.slug}.html"><span class="cs-ic">${c.icon}</span><span class="cs-t"><b>${c.name}</b><span>Course ${c.n} · open →</span></span></a>`;
+    return `        <a class="cs-item" href="./${c.slug}.html"><span class="cs-ic">${c.icon}</span><span class="cs-t"><b>${c.name}</b><span>${kickerOf(c)} · open →</span></span></a>`;
   }).join('\n');
+
+  const meta = current.kicker
+    ? `${current.kicker} · switch ▾`
+    : `Course ${current.n} of 0${COURSE_COUNT} · switch ▾`;
 
   return `    <div class="course-switch" id="courseSwitch">
       <button class="cs-trigger" id="csTrigger" aria-haspopup="true" aria-expanded="false">
         <span class="cs-ic">${current.icon}</span>
-        <span class="cs-tx"><span class="cs-name">${current.name}</span><span class="cs-meta">Course ${current.n} of 0${COURSES.length} · switch ▾</span></span>
+        <span class="cs-tx"><span class="cs-name">${current.name}</span><span class="cs-meta">${meta}</span></span>
         <span class="cs-caret">▾</span>
       </button>
       <div class="cs-menu" id="csMenu">
@@ -108,6 +130,7 @@ function page(course, lessons) {
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${course.name} — Full Course · ${BRAND}</title>
 <meta name="description" content="${course.blurb}">
+<meta name="author" content="${AUTHOR}">
 <meta name="theme-color" content="#0E1216">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -135,7 +158,7 @@ function page(course, lessons) {
 
 <div class="layout">
   <aside class="sidebar" id="sidebar">
-    <a class="sb-brand" href="./index.html" style="text-decoration:none;color:inherit"><span class="dot"></span><span class="name">${BRAND}</span></a>
+    <a class="sb-brand" href="./index.html" style="text-decoration:none;color:inherit"><span class="dot"></span><span class="name">${BRAND}</span><span class="by">by ${AUTHOR}</span></a>
 ${switcher(course)}
     <div class="sb-sub">full course · ${course.hours} · ${course.lessons} lessons</div>
     <div class="sb-progress">
@@ -169,10 +192,10 @@ function hub() {
     (c) => `      <a class="course" href="./${c.slug}.html" data-key="${c.key}" data-total="${c.lessons}">
         <span class="ic">${c.icon}</span>
         <span>
-          <span class="num">Course ${c.n}</span>
+          <span class="num">${kickerOf(c)}</span>
           <h2>${c.name}</h2>
           <p>${c.blurb}</p>
-          <span class="meta"><span>${c.lessons} lessons</span><span>${c.hours}</span><span class="done-note"></span></span>
+          <span class="meta"><span>${c.lessons} ${unitOf(c)}</span><span>${c.hours}</span><span class="done-note"></span></span>
         </span>
         <span class="cta"><span class="pct none">0%</span><span class="go">Start →</span></span>
         <span class="ctrack"><span class="cfill"></span></span>
@@ -188,6 +211,7 @@ function hub() {
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${BRAND} — ${TAGLINE}</title>
 <meta name="description" content="${DESCRIPTION}">
+<meta name="author" content="${AUTHOR}">
 <meta name="theme-color" content="#0E1216">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -206,12 +230,12 @@ function hub() {
 
 <div class="wrap">
 
-  <div class="brand"><span class="dot"></span><span class="name">${BRAND}</span></div>
+  <div class="brand"><span class="dot"></span><span class="name">${BRAND}</span><span class="by">by ${AUTHOR}</span></div>
   <h1>Build AI systems that actually work.</h1>
-  <p class="lede">Five hands-on courses, ${totalLessons} lessons. Each one has live instruments to play with, a checkpoint quiz per section and a final exam. Progress saves on this device — nothing is uploaded anywhere.</p>
+  <p class="lede">Five hands-on courses and a practice range. Every course has live instruments to play with, a checkpoint quiz per section and a final exam; the workbench hands you ten broken agents to diagnose. Progress saves on this device — nothing is uploaded anywhere.</p>
 
   <div class="overall">
-    <div class="row"><span>Total progress</span><span><b id="ov-done">0</b> / ${totalLessons} lessons</span></div>
+    <div class="row"><span>Total progress</span><span><b id="ov-done">0</b> / ${totalLessons} done</span></div>
     <div class="track"><div class="fill" id="ov-fill"></div></div>
   </div>
 
@@ -219,7 +243,7 @@ function hub() {
 ${cards}
   </div>
 
-  <div class="note"><b>Suggested order:</b> 01 → 02 → 03 → 04 → 05, or start at 05 if you'd rather build first and theorize after. Each course stands alone, but they build: context engineering is the ground the patterns run on, multi-agent design is those patterns scaled out, evals are how you find out whether any of it worked, and 05 is the machine all of it runs on — the loop, the tools, the permissions, and the vocabulary (skills, MCP, hooks, plugins) the rest of the ecosystem assumes you know. If you only take one, take 01. If you want to ship an agent this week, take 05.</div>
+  <div class="note"><b>Suggested order:</b> 01 → 02 → 03 → 04 → 05, or start at 05 if you'd rather build first and theorize after. Each course stands alone, but they build: context engineering is the ground the patterns run on, multi-agent design is those patterns scaled out, evals are how you find out whether any of it worked, and 05 is the machine all of it runs on — the loop, the tools, the permissions, and the vocabulary (skills, MCP, hooks, plugins) the rest of the ecosystem assumes you know. Then the <b>Workbench</b>: ten broken agents, no hints about which course the answer is in. If you only take one, take 01. If you want to ship an agent this week, take 05.</div>
 
   <footer>
     <button class="btn" id="themeBtn">◐ Theme</button>

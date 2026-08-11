@@ -1,23 +1,34 @@
 # Agentcraft
 
-Five hands-on courses on building AI systems that work — 170 lessons, live
-interactive instruments, checkpoint quizzes and a final exam per course.
+By Ben Dabas.
 
-| # | Course | Lessons | Instruments |
+Five hands-on courses on building AI systems that work — 170 lessons, live
+interactive instruments, checkpoint quizzes and a final exam per course — plus
+a practice range where you diagnose ten broken agents.
+
+| # | Course | Entries | Instruments |
 |---|--------|---------|-------------|
 | 01 | Context Engineering | 30 | context-budget simulator, failure-diagnosis drill |
 | 02 | Agentic Patterns | 33 | ReAct loop stepper, pattern selector |
 | 03 | Multi-Agent Systems | 34 | orchestrator stepper, topology explorer, topology selector |
 | 04 | Evals & Observability | 33 | regression-gate simulator, trace explorer, judge-bias drill |
 | 05 | Building Agents | 40 | buzzword decoder, wire-view stepper, agent spec builder |
+| 06 | The Workbench | 12 | case-file engine (10 scenarios), scored debrief |
 
 Courses 01–03 began life as Claude artifacts and were moved here verbatim.
-Courses 04 and 05 were written for this site.
+Courses 04 and 05, and the Workbench, were written for this site.
 
 Course 05 is the hands-on counterpart to the other four: write the agent loop
 yourself, design a tool surface, lock down permissions, and learn the ecosystem
 vocabulary (tools, MCP, skills, subagents, hooks, plugins) including how the
 same primitives map across Claude Code, GitHub Copilot and Cursor.
+
+The Workbench is the practice range for all five. Each case hands you the
+artifacts a real on-call engineer would have — a prompt diff, a trace, a tool
+schema, a usage line — and asks you to name the failure and pick the fix.
+Answers are scored per course, so the debrief tells you which lens is weakest
+rather than just a percentage. Results live in `agentcraft_wb_results` and ride
+along with the existing progress export.
 
 ## Running it
 

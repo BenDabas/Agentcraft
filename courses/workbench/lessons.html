@@ -1,0 +1,105 @@
+<script type="text/html" data-lesson="w-0">
+  <div class="obj"><div class="ol">The Workbench</div>Ten broken agents. You get the evidence a real on-call engineer would have — a prompt diff, a trace, a tool schema, a usage line — and you have to say what went wrong and what to do about it.</div>
+  <p>The five courses teach you to recognize failure modes. This is where you practise finding them when nobody has told you which chapter the answer is in — which is the only way they ever arrive in real life.</p>
+  <h2>How a case works</h2>
+  <ul>
+    <li><strong>Evidence first.</strong> Every case opens with the artifacts. Read them before the questions; everything you need is in there, and nothing decorative has been added.</li>
+    <li><strong>Two or three decisions.</strong> Usually <em>name the failure</em>, then <em>pick the fix</em>. The wrong options aren't filler — most of them are things teams genuinely ship, and each one explains why it doesn't hold.</li>
+    <li><strong>Then the after.</strong> You see what the fixed system does, and the transferable rule.</li>
+  </ul>
+  <p>Only your <strong>first</strong> answer on each decision is scored, so there's no gaming it — but you can re-run any case from the button at the end, and clear everything from the debrief.</p>
+  <h2>What it's measuring</h2>
+  <p>Each case is tagged with the courses it exercises. The debrief at the end rolls your answers up per course and tells you which lens you're weakest in — which is more useful than a single percentage, because "I can't read a trace" and "I can't design a permission policy" need different homework.</p>
+  <div class="callout key"><span class="ic">=</span><p><strong>The one skill being drilled:</strong> given a misbehaving agent and no explanation, work out which layer it broke in — the context, the loop, the tool surface, the topology, or the measurement. Everything else is lookup.</p></div>
+  <div class="callout tip"><span class="ic">✓</span><p>Take them in any order. Progress and results are stored on this device and travel with the <strong>Export progress</strong> button, same as the courses.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-cost">
+  <div class="obj"><div class="ol">Case 01</div>Your support agent's cost per conversation tripled overnight. Nothing about the product changed, and users haven't noticed anything different.</div>
+  <p>Finance flagged it on Thursday. The agent answers exactly as well as it did last week — the evals are unmoved — but every conversation now costs three times as much. Someone deployed on Tuesday.</p>
+  <div data-mount="wbcase" data-case="cost"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> prompt caching is a prefix match, so cost bugs hide at the <em>top</em> of your prompt, not in the expensive-looking parts. Order everything static → dynamic and treat <code>cache_read_input_tokens: 0</code> as an alarm.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-refund">
+  <div class="obj"><div class="ol">Case 02</div>A customer received two refunds for the same order. The agent's transcript shows it asked for one.</div>
+  <p>Support escalated it as "the AI double-refunded someone". Before you go looking at the model's reasoning, read the harness trace and the payments log side by side — the timestamps are the case.</p>
+  <div data-mount="wbcase" data-case="refund"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> an agent loop is a distributed system whose client is nondeterministic. Timeouts fire, harnesses retry, sessions resume — so every mutating tool needs an idempotency key, not a promise.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-search">
+  <div class="obj"><div class="ol">Case 03</div>Someone tidied up the tool definitions. A week later, support is fielding complaints about outdated answers.</div>
+  <p>The cleanup PR was approved without much thought — it only touched strings. No code, no schema changes, no model change.</p>
+  <div data-mount="wbcase" data-case="search"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> a tool description is the interface, not documentation. Under-description is the more common failure — and the reflex fix, shouting at the model, is the one that backfires on current models.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-evals">
+  <div class="obj"><div class="ol">Case 04</div>Your eval suite says the agent is excellent. Your support queue disagrees, loudly.</div>
+  <p>This one is uncomfortable because the numbers look good, and someone will defend them. Read the eval set, the judge rubric and the ticket clusters together — the gap between them is the finding.</p>
+  <div data-mount="wbcase" data-case="evals"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> your eval cases live in production, not in a workshop. A suite that can't reproduce a single real complaint is measuring an imaginary product — and a score that goes <em>down</em> when you fix the suite is progress.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-inject">
+  <div class="obj"><div class="ol">Case 05</div>A coding agent was asked to update a dependency. It ran a shell command nobody asked for.</div>
+  <p>Three decisions on this one: name the failure, pick the control that would actually have stopped it, then identify the structural property that made it exploitable in the first place.</p>
+  <div data-mount="wbcase" data-case="inject"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> you cannot prompt your way out of injection. Everything the agent reads is untrusted input, so the defences are architectural — least privilege, allow-listed egress, gates on side effects — and the shape to design against is the lethal trifecta.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-loop">
+  <div class="obj"><div class="ol">Case 06</div>A research system has been running for eleven minutes on a question that should take one.</div>
+  <p>Every individual message in the trace is sensible, which is exactly what makes this failure mode survive code review. Look at the shape of the exchange rather than any single turn.</p>
+  <div data-mount="wbcase" data-case="loop"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> peer-to-peer agent topologies loop, because nobody owns "done". Prefer a coordinator — and bound the run regardless, because the bound is the stop condition the model doesn't control.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-clash">
+  <div class="obj"><div class="ol">Case 07</div>The agent gave a customer two different prices in the same paragraph.</div>
+  <p>A pure context case. Name the failure mode precisely — the four are easy to confuse under pressure — then decide which layer of the pipeline the fix belongs in.</p>
+  <div data-mount="wbcase" data-case="clash"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> a Select is only as good as its retrieval. When two sources contradict, the model has no way to adjudicate — reconcile, rerank or drop before assembly, and don't ask the prompt to fix a pipeline problem.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-worker">
+  <div class="obj"><div class="ol">Case 08</div>The lead agent reported a clean run. CI went red four minutes later.</div>
+  <p>Read the worker's actual sentence carefully before you assign blame — the exact words matter, and they're the whole case.</p>
+  <div data-mount="wbcase" data-case="worker"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> detail dies at the summary boundary, and confidence gets invented to fill the gap. Require progress claims to cite evidence, and keep verification in the main loop rather than delegating it into another isolated window.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-approve">
+  <div class="obj"><div class="ol">Case 09</div>Every tool call asks for approval. A $4,120 refund was approved in under two seconds.</div>
+  <p>The safety layer is present, configured, and doing nothing at all. Work out why before deciding what to change — the instinct to add more gates is the trap here.</p>
+  <div data-mount="wbcase" data-case="approve"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> a gate that fires 214 times a month and shows nothing to decide on is worse than no gate — you pay the cost and bank the safety you don't have. Gate on value, and show enough to decide. An approval rate of 100% is a smell.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-bloat">
+  <div class="obj"><div class="ol">Case 10</div>A debugging agent gets slower and more expensive with every step of the same run.</div>
+  <p>The per-step numbers tell you almost everything. The question is where the cost was <em>created</em>, versus where it shows up.</p>
+  <div data-mount="wbcase" data-case="bloat"></div>
+  <div class="callout key"><span class="ic">!</span><p><strong>The transferable rule:</strong> a tool result is context, and the transcript is resent whole on every call — so one unbounded return is a tax you pay for the rest of the run. Cap outputs, shape them for a reader, and hand back a path when the payload is genuinely large.</p></div>
+</script>
+
+<script type="text/html" data-lesson="w-debrief">
+  <div class="obj"><div class="ol">Debrief</div>Your results across the ten cases, rolled up by course — so you know which lens to sharpen rather than just how you scored.</div>
+  <div data-mount="debrief"></div>
+  <h2>Reading it honestly</h2>
+  <p>Two or three decisions per case is a small sample, so treat a single weak bar as a hint rather than a verdict. The pattern worth acting on is the same course coming out low across several cases — that's a real gap, and the course is one click away in the switcher.</p>
+  <h2>The rep that actually counts</h2>
+  <p>These cases are clean: the evidence is curated, the defect is real, and there's a right answer. Production is messier in exactly one way — <strong>nobody hands you the evidence panel.</strong> Assembling it is the job.</p>
+  <p>So the last exercise isn't here. Take something you've built or run, pull one failing run, and reconstruct the panel yourself: the assembled window for the failing turn, the trace with timings and tokens, the tool definitions as sent, the permission policy as configured. If you can build that panel, you can work the case — every one of these ten was solvable from it.</p>
+  <a class="nextcourse" href="./building-agents.html">
+    <span class="nb">🛠️</span>
+    <span class="body"><span class="k">Course 05</span><span class="tt">Building Agents</span><span class="d">The build checklist in lesson 7-2 is the preventative form of most of these cases.</span></span>
+    <span class="ar">→</span>
+  </a>
+  <a class="nextcourse" href="./index.html">
+    <span class="nb">◈</span>
+    <span class="body"><span class="k">Agentcraft</span><span class="tt">Back to the hub</span><span class="d">Five courses and this workbench — pick the one your weakest bar points at.</span></span>
+    <span class="ar">→</span>
+  </a>
+</script>

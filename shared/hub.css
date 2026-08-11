@@ -49,6 +49,7 @@ a{color:var(--accent);}
 .brand{display:flex;align-items:center;gap:11px;}
 .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent);flex:0 0 auto;}
 .brand .name{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;}
+.brand .by{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-faint);padding-left:11px;border-left:1px solid var(--line);}
 h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05;letter-spacing:-.03em;font-weight:800;margin:22px 0 0;text-wrap:balance;}
 .lede{color:var(--ink-soft);margin:14px 0 0;max-width:62ch;font-size:1.03rem;}
 
