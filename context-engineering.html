@@ -302,12 +302,34 @@
 
 <script type="text/html" data-lesson="3-4">
   <div class="obj"><div class="ol">Objective</div>Use few-shot examples deliberately — as high-signal context, not filler.</div>
-  <p>Examples ("few-shot prompting") are one of the strongest ways to shape behavior — a couple of well-chosen input→output examples often beats paragraphs of description. But each example spends budget, so choose them like an engineer.</p>
+  <p><strong>Few-shot prompting</strong> means you stop <em>describing</em> the behavior you want and start <em>showing</em> it: you put a handful of input→output pairs in the window and let the model pattern-match off them. A couple of well-chosen pairs often beats paragraphs of description — but each one spends budget on <em>every</em> call, so choose them like an engineer.</p>
+  <h2>Describing vs. showing</h2>
+  <p>Say you're pulling funding news out of headlines. The instinct is to write rules:</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">prompt-v1.txt</span></div><pre><code>Extract the company and the funding amount from the headline.
+Return JSON. Use null when a field is missing. Normalize the
+amount to a plain USD number — no symbols, no commas, no
+suffixes. A valuation is not a raise. If more than one company
+is named, don't guess which one raised. If the amount isn't in
+USD, don't convert it — return null. ...</code></pre></div>
+  <p>Every rule you add is another thing the model has to hold in mind while reading, and the output format is still only implied. Here's the same behavior <em>shown</em>:</p>
+  <div class="code"><div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="fn">prompt-v2.txt</span></div><pre><code>Extract the company and the funding amount as JSON.
+
+<span class="tok-str">"Bolt confirms €4.5bn valuation, no raise disclosed"</span>
+→ {"company": "Bolt", "amount": null}
+
+<span class="tok-str">"Stripe, Adyen both eye IPO"</span>
+→ {"company": null, "amount": null}
+
+<span class="tok-str">"Northwind closes $850K pre-seed"</span>
+→ {"company": "Northwind", "amount": 850000}</code></pre></div>
+  <p>Three pairs did the work of six sentences — and they nailed down the exact output shape, which prose never quite manages.</p>
+  <h2>Choosing which examples to spend</h2>
   <ul>
-    <li><strong>Show the edge, not the obvious.</strong> Examples should demonstrate the tricky cases and the exact format you want, not the easy path the model already handles.</li>
-    <li><strong>Diverse, not redundant.</strong> Three examples covering three distinct situations teach more than six near-duplicates costing twice the tokens.</li>
-    <li><strong>Curate, don't accumulate.</strong> It's tempting to keep adding examples every time something breaks. That's the wall-of-edge-cases smell again — prune as you add.</li>
+    <li><strong>Show the edge, not the obvious.</strong> Notice what's <em>absent</em> above: no "Acme raises $12M Series B" example. The model already handles that one. The three that made the cut each teach something it would otherwise get wrong — a valuation isn't a raise, ambiguity means refuse rather than guess, and <em>850K</em> becomes <em>850000</em>.</li>
+    <li><strong>Diverse, not redundant.</strong> Six variations on "X raises $NM Series B" teach one thing at six times the cost. Three examples covering a clean case, a missing field, and an ambiguous case teach three things. Every example pays rent in the window — make each one carry a distinct lesson.</li>
+    <li><strong>Curate, don't accumulate.</strong> The real-world failure mode: something breaks in production, you bolt on an example, ship it. Forty times. Now the prompt hauls forty examples — stale, overlapping, occasionally contradicting each other. That's the wall-of-edge-cases smell again. Adding an example should include asking which older one it makes redundant.</li>
   </ul>
+  <div class="callout warn"><span class="ic">▲</span><p><strong>Examples are a recurring charge, not a one-time cost.</strong> A prompt carrying forty examples pays for all forty on every single request, forever. An example has to earn its tokens against the alternative — one sentence of description, or nothing at all.</p></div>
   <div class="callout tip"><span class="ic">✓</span><p>Few-shot is Select in disguise: you're selecting the most instructive examples into the window. Same discipline — relevance and diversity over volume.</p></div>
 </script>
 
