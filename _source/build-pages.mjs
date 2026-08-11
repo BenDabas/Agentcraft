@@ -24,6 +24,8 @@ const root = join(here, '..');
 export const BRAND = 'Agentcraft';
 export const TAGLINE = 'AI Agent Engineering';
 export const STORAGE_PREFIX = 'agentcraft_';
+export const DESCRIPTION =
+  'Five hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, evals & observability, and building agents.';
 
 export const COURSES = [
   {
@@ -65,6 +67,16 @@ export const COURSES = [
     lessons: 33,
     hours: '~3 hrs',
     blurb: 'How you know any of it works. Eval sets, LLM-as-judge, tracing, regression gates and production drift.',
+  },
+  {
+    n: '05',
+    slug: 'building-agents',
+    name: 'Building Agents',
+    icon: '🛠️',
+    key: STORAGE_PREFIX + 'ba_full_v1',
+    lessons: 40,
+    hours: '~4 hrs',
+    blurb: 'Build one yourself — the loop, tools, MCP, permissions — plus the vocabulary: skills, subagents, hooks, plugins.',
   },
 ];
 
@@ -175,7 +187,7 @@ function hub() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${BRAND} — ${TAGLINE}</title>
-<meta name="description" content="Four hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, and evals & observability.">
+<meta name="description" content="${DESCRIPTION}">
 <meta name="theme-color" content="#0E1216">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -196,7 +208,7 @@ function hub() {
 
   <div class="brand"><span class="dot"></span><span class="name">${BRAND}</span></div>
   <h1>Build AI systems that actually work.</h1>
-  <p class="lede">Four hands-on courses, ${totalLessons} lessons. Each one has live instruments to play with, a checkpoint quiz per section and a final exam. Progress saves on this device — nothing is uploaded anywhere.</p>
+  <p class="lede">Five hands-on courses, ${totalLessons} lessons. Each one has live instruments to play with, a checkpoint quiz per section and a final exam. Progress saves on this device — nothing is uploaded anywhere.</p>
 
   <div class="overall">
     <div class="row"><span>Total progress</span><span><b id="ov-done">0</b> / ${totalLessons} lessons</span></div>
@@ -207,7 +219,7 @@ function hub() {
 ${cards}
   </div>
 
-  <div class="note"><b>Suggested order:</b> 01 → 02 → 03 → 04. Each course stands alone, but they build: context engineering is the ground the patterns run on, multi-agent design is those patterns scaled out, and evals are how you find out whether any of it worked. If you only take one, take 01. If you already ship AI features and something feels unmeasurable, jump to 04.</div>
+  <div class="note"><b>Suggested order:</b> 01 → 02 → 03 → 04 → 05, or start at 05 if you'd rather build first and theorize after. Each course stands alone, but they build: context engineering is the ground the patterns run on, multi-agent design is those patterns scaled out, evals are how you find out whether any of it worked, and 05 is the machine all of it runs on — the loop, the tools, the permissions, and the vocabulary (skills, MCP, hooks, plugins) the rest of the ecosystem assumes you know. If you only take one, take 01. If you want to ship an agent this week, take 05.</div>
 
   <footer>
     <button class="btn" id="themeBtn">◐ Theme</button>
@@ -321,8 +333,7 @@ function manifest() {
       {
         name: `${BRAND} — ${TAGLINE}`,
         short_name: BRAND,
-        description:
-          'Four hands-on courses on building AI systems that work: context engineering, agentic patterns, multi-agent systems, and evals & observability.',
+        description: DESCRIPTION,
         start_url: './index.html',
         scope: './',
         display: 'standalone',

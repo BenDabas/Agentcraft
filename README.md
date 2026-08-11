@@ -1,6 +1,6 @@
 # Agentcraft
 
-Four hands-on courses on building AI systems that work — 130 lessons, live
+Five hands-on courses on building AI systems that work — 170 lessons, live
 interactive instruments, checkpoint quizzes and a final exam per course.
 
 | # | Course | Lessons | Instruments |
@@ -9,9 +9,15 @@ interactive instruments, checkpoint quizzes and a final exam per course.
 | 02 | Agentic Patterns | 33 | ReAct loop stepper, pattern selector |
 | 03 | Multi-Agent Systems | 34 | orchestrator stepper, topology explorer, topology selector |
 | 04 | Evals & Observability | 33 | regression-gate simulator, trace explorer, judge-bias drill |
+| 05 | Building Agents | 40 | buzzword decoder, wire-view stepper, agent spec builder |
 
 Courses 01–03 began life as Claude artifacts and were moved here verbatim.
-Course 04 was written for this site.
+Courses 04 and 05 were written for this site.
+
+Course 05 is the hands-on counterpart to the other four: write the agent loop
+yourself, design a tool surface, lock down permissions, and learn the ecosystem
+vocabulary (tools, MCP, skills, subagents, hooks, plugins) including how the
+same primitives map across Claude Code, GitHub Copilot and Cursor.
 
 ## Running it
 
